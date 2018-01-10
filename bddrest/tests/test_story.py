@@ -1,20 +1,38 @@
-
 import unittest
 
-from bddrest import Story
+from bddrest import Story, given
 
 
 class StoryTestCase(unittest.TestCase):
-    def test_load_string(self):
+    def test_given(self):
+given(
+    description='As a new visitor I have to bind my device with activation code and phone number',
+    url='/apiv1/devices/name: SM-12345678',
+    verb='BIND',
+    as_='visitor',
+    form=dict(
+        activationCode='746727',
+        phone='+9897654321'
+    )
+)\
+    .then(200)\
+    .body_contains(dict(
+        secret='ABCDEF'
+    ))\
+    .no_header('Bad Header')\
+    .header('X-Pagination-Count', '10')\
+    .content_type('application/json')\
+    .when(
+        'Trying invalid code',
+        form=dict(
+            activationCode='badCode'
+        ))\
+    .then(400)
+
+
         specification = '''
-        description: As a new visitor I have to bind my device with activation code and phone number.
+        .
         given:
-          url: /apiv1/devices/name: SM-12345678
-          as: visitor
-          verb: BIND
-          form:
-            activationCode: '746727'
-            phone: '+9897654321'
         when:
           response:
             body:
@@ -35,3 +53,7 @@ class StoryTestCase(unittest.TestCase):
 
         story = Story.loads(specification)
         self.assertDictEqual()
+
+
+if __name__ == '__main__':
+    unittest.main()
