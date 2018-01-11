@@ -1,4 +1,5 @@
 from pymlconf import ConfigDict
+from webtest import TestApp
 
 from .types import WsgiApp
 
@@ -23,6 +24,16 @@ class HttpCall(Call):
 
 
 class WsgiCall(HttpCall):
+    response = None
+
     def __init__(self, application: WsgiApp, **kwargs):
-        self.application = application
+        self.application = TestApp(application)
         super().__init__(kwargs)
+
+    def invoke(self):
+        self.response = self.application.request(
+            self.url,
+            method=self.verb,
+            expect_errors=True,
+        )
+

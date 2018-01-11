@@ -1,14 +1,14 @@
 import unittest
 import json
 
-from bddrest import When, Then, Given, story, response, ReturnValueProxy, WsgiCall, CurrentStory
+from bddrest import When, Then, Given, story, response, CurrentResponse, WsgiCall, CurrentStory
 
 
 def wsgi_application(environ, start_response):
-    start_response(200)
-    return json.dumps(dict(
+    start_response('200 OK', [])
+    yield json.dumps(dict(
         secret='ABCDEF'
-    ))
+    )).encode()
 
 
 class StoryTestCase(unittest.TestCase):
@@ -28,10 +28,13 @@ class StoryTestCase(unittest.TestCase):
         )
         with Given(call):
             self.assertIsInstance(story, CurrentStory)
-            self.assertIsInstance(response, ReturnValueProxy)
+            self.assertIsInstance(response, CurrentResponse)
 
-            # Then(
-            #     response.status_code == 200,
+            Then(
+                response.status_code,
+                response.body.secret
+                # response.status_code == 200,
+            )
             #     'secret' in response.body,
             #     response.body.secret == 'ABCDEF',
             #     'Bad Header' not in response.headers,

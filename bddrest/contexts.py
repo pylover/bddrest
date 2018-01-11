@@ -1,6 +1,9 @@
 import threading
 
 
+thread_local = threading.local()
+
+
 class ContextIsNotInitializedError(Exception):
     pass
 
@@ -26,7 +29,6 @@ class Context:
 
     @classmethod
     def __context_stack__(cls):
-        thread_local = threading.local()
         if not hasattr(thread_local, cls.thread_local_key):
             setattr(thread_local, cls.thread_local_key, ContextStack())
         return getattr(thread_local, cls.thread_local_key)

@@ -4,8 +4,8 @@ class BaseAssertionError(AssertionError):
 
 
 class AttributeAssertionError(BaseAssertionError):
-    def __init__(self, object, attribute):
-        raise NotImplementedError()
+    def __init__(self, target, attribute):
+        super().__init__(f'{type(target).__name__} has no attribute {attribute}')
 
 
 class EqualityAssertionError(BaseAssertionError):
