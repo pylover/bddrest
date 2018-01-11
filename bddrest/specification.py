@@ -2,6 +2,11 @@ from pymlconf.proxy import ObjectProxy
 
 from .calls import Call, WsgiCall
 from .contexts import Context
+from .exceptions import AttributeAssertionError, EqualityAssertionError
+
+
+class ReturnValueProxy:
+    pass
 
 
 class Story(Context):
@@ -15,7 +20,7 @@ class Story(Context):
 
     @property
     def current_call(self):
-        return
+        return self.calls[-1]
 
 
 class CurrentStory(ObjectProxy):
@@ -46,10 +51,15 @@ class When:
 
 
 class Then:
-    def __init__(self, status):
-        call = CurrentStory.current_call
-        call.invoke()
+    def __init__(self, *args):
+        call = CurrentStory.call
+        return_value = call.invoke()
+        for k, v in kwargs.items():
+            if not hasattr(return_value, k):
+                raise AttributeAssertionError(return_value, k)
 
-
-
-
+            value = getattr(return_value, k)
+            if callable(v):
+                v(value)
+            elif v == value:
+                raise EqualityAssertionError(v, value)
