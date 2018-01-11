@@ -1,22 +1,14 @@
+from typing import Iterable, Union, Callable
+
 from pymlconf.proxy import ObjectProxy
 
-from .calls import Call, WsgiCall
+from .calls import Call
 from .contexts import Context
-from .exceptions import AttributeAssertionError, EqualityAssertionError
 
 
-class ReturnValueProxy:
-    pass
-
-
-class Story(Context):
-    __call_factory__ = Call
-
-    def __init__(self, title, **kwargs):
-        if isinstance(title, Call):
-            self.calls = [title]
-        else:
-            self.calls = [Call(title=title, **kwargs)]
+class Given(Context):
+    def __init__(self, call: Call):
+        self.calls = [call]
 
     @property
     def current_call(self):
@@ -25,41 +17,29 @@ class Story(Context):
 
 class CurrentStory(ObjectProxy):
     def __init__(self):
-        super().__init__(Story.get_current)
-
-
-class RestApiStory(Story):
-    def __init__(self, title, url, **kwargs):
-        super().__init__(self.__call_factory__(title, url=url, **kwargs))
-
-    def __call_factory__(self, *args, **kwargs):
-        raise NotImplementedError()
-
-
-class WsgiRestApiStory(RestApiStory):
-
-    def __call_factory__(self, *args, **kwargs):
-        return WsgiCall(self.application, *args, **kwargs)
-
-    def __init__(self, application, *args, **kwargs):
-        self.application = application
-        super().__init__(*args, **kwargs)
+        super().__init__(Given.get_current)
 
 
 class When:
+    def __init__(self, **kwargs):
+        old_call = CurrentStory.current_call
+        call = old_call.copy()
+        call.merge(kwargs)
+        call.ensure()
+
+
+class Assert:
     pass
 
 
 class Then:
-    def __init__(self, *args):
-        call = CurrentStory.call
-        return_value = call.invoke()
-        for k, v in kwargs.items():
-            if not hasattr(return_value, k):
-                raise AttributeAssertionError(return_value, k)
+    def __init__(self, asserts: Iterable[Union[Assert, Callable]]):
+        for criteria in asserts:
+            criteria()
 
-            value = getattr(return_value, k)
-            if callable(v):
-                v(value)
-            elif v == value:
-                raise EqualityAssertionError(v, value)
+
+class ReturnValueProxy:
+    pass
+
+
+story = CurrentStory()

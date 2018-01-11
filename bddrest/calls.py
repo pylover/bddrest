@@ -1,15 +1,19 @@
 from pymlconf import ConfigDict
 
+from .types import WsgiApp
+
 
 class Call(ConfigDict):
     def invoke(self):
         raise NotImplementedError()
 
+    def ensure(self):
+        if self.response is not None:
+            return
+        self.invoke()
+
 
 class HttpCall(Call):
-    def verify(self, backend):
-        raise NotImplementedError()
-
     @property
     def status(self):
         raise NotImplementedError()
@@ -19,6 +23,6 @@ class HttpCall(Call):
 
 
 class WsgiCall(HttpCall):
-    def __init__(self, application, *args, **kwargs):
+    def __init__(self, application: WsgiApp, **kwargs):
         self.application = application
-        super().__init__(*args, **kwargs)
+        super().__init__(kwargs)
