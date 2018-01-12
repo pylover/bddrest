@@ -1,10 +1,9 @@
-from typing import Union, Callable
+from typing import Any
 
 from pymlconf.proxy import ObjectProxy
 
 from .calls import Call
 from .contexts import Context
-from .exceptions import AttributeAssertionError
 
 
 class Given(Context):
@@ -29,43 +28,28 @@ story = CurrentStory()
 
 
 class When:
-    def __init__(self, **kwargs):
-        old_call = CurrentStory.call
+    def __init__(self, title, **kwargs):
+        old_call = story.call
         call = old_call.copy()
+        kwargs['title'] = title
         call.merge(kwargs)
         call.ensure()
-        CurrentStory.push(call)
-
-
-class Assert:
-    def __call__(self):
-        raise NotImplementedError()
+        story.push(call)
 
 
 class Then:
-    def __init__(self, *asserts: Union[Assert, Callable]):
-        for criteria in asserts:
-            criteria()
+    def __init__(self, *asserts: Any):
+        for passed in asserts:
+            assert passed is not False
 
 
-class CurrentResponse:
-    def __getattr__(self, name):
-        return AssertAttribute(name)
+class And(Then):
+    pass
+
+
+class CurrentResponse(ObjectProxy):
+    def __init__(self):
+        super().__init__(lambda: story.call.response)
 
 
 response = CurrentResponse()
-
-
-class AssertAttribute(Assert):
-    def __init__(self, name, parent=None):
-        self.name = name
-        self.parent = parent or story.call.response
-
-    def __call__(self):
-        if not hasattr(self.parent, self.name):
-            raise AttributeAssertionError(story.call, self.name)
-
-    def __getattr__(self, name):
-        return AssertAttribute(name, parent=self)
-
-    # def __eq__(self, other):

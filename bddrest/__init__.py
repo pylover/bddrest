@@ -1,7 +1,7 @@
 
 
 from .calls import Call, HttpCall, WsgiCall
-from .specification import Given, When, Then, CurrentResponse, CurrentStory, response, story
+from .specification import Given, When, Then, CurrentResponse, CurrentStory, response, story, And
 
 
 __version__ = '0.1.0-planning.0'
