@@ -1,3 +1,5 @@
+from urllib.parse import urlencode
+
 from pymlconf import ConfigDict
 from webtest import TestApp
 
@@ -41,10 +43,13 @@ class WsgiCall(HttpCall):
             # upload_files=upload_files,
             # content_type=content_type
         )
+
         if hasattr(self, 'form'):
             kwargs['params'] = self.form
 
-        response = self.application._gen_request(self.verb, self.url, **kwargs)
+        query = self.get('query')
+        url = f'{self.url}?{urlencode(query)}' if query else self.url
+        response = self.application._gen_request(self.verb, url, **kwargs)
         members = ['status', 'status_code', 'json', 'body', 'headers', 'content_type']
         self.merge(dict(response={k: getattr(response, k) for k in members if hasattr(response, k)}))
 

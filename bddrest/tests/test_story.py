@@ -25,7 +25,8 @@ def wsgi_application(environ, start_response):
     ])
     result = json.dumps(dict(
         secret='ABCDEF',
-        code=code
+        code=code,
+        query=environ['QUERY_STRING']
     ))
     yield result.encode()
 
@@ -40,6 +41,10 @@ class StoryTestCase(unittest.TestCase):
             url='/apiv1/devices/name: SM-12345678',
             verb='BIND',
             as_='visitor',
+            query=dict(
+                a=1,
+                b=2
+            ),
             form=dict(
                 activationCode='746727',
                 phone='+9897654321'
@@ -56,7 +61,11 @@ class StoryTestCase(unittest.TestCase):
             And('Bad Header' not in response.headers)
             # And(response.headers.get('X-Pagination-Count') == '10')
             And(response.content_type == 'application/json')
-            And(self.assertDictEqual(response.json, dict(code=745525, secret='ABCDEF')))
+            And(self.assertDictEqual(response.json, dict(
+                code=745525,
+                secret='ABCDEF',
+                query='a=1&b=2'
+            )))
 
             When(
                 'Trying invalid code',
