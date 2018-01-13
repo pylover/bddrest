@@ -9,9 +9,15 @@ from .types import WsgiApp
 URL_PARAMETER_PATTERN = re.compile('/(?P<key>\w+):\s?(?P<value>\w+)')
 
 
+class Response:
+    pass
+
+
 class HttpCall:
-    def __init__(self, title, url='/', verb='GET', url_parameters=None, form=None,
-                 content_type=None, headers=None, as_=None, query=None, description=None):
+    response: Response = None
+
+    def __init__(self, title: str, url='/', verb='GET', url_parameters: dict=None, form: dict=None,
+                 content_type: str=None, headers: list=None, as_: str=None, query: dict=None, description: str=None):
         self.description = description
         self.query = query
         self.form = form
@@ -38,32 +44,21 @@ class HttpCall:
 
 class WsgiCall(HttpCall):
 
-    def __init__(self, application: WsgiApp, title, **kwargs):
+    def __init__(self, application: WsgiApp, title: str, extra_environ: dict=None, **kwargs):
         self.application = application
+        self.extra_environ = extra_environ
         super().__init__(title, **kwargs)
 
-    def merge(self, other):
-        if 'url' in other:
-            url = other['url']
-            del other['url']
-            self.set_url(url)
-        return super().merge(other)
-
     def invoke(self):
+        url = f'{self.url}?{urlencode(self.query)}' if self.query else self.url
         kwargs = dict(
             expect_errors=True,
+            extra_environ=self.extra_environ,
+            headers=self.headers,
             # Commented for future usages by pylover
-            # headers=headers,
-            # extra_environ=extra_environ,
             # upload_files=upload_files,
-            # content_type=content_type
         )
-
-        if hasattr(self, 'form'):
+        if self.form:
             kwargs['params'] = self.form
-
-        query = self.get('query')
-        url = f'{self.url}?{urlencode(query)}' if query else self.url
-        response = TestApp(self.application)._gen_request(self.verb, url, **kwargs)
-        members = ['status', 'status_code', 'json', 'body', 'headers', 'content_type']
-        self.merge(dict(response={k: getattr(response, k) for k in members if hasattr(response, k)}))
+        # noinspection PyProtectedMember
+        self.response = TestApp(self.application)._gen_request(self.verb, url, **kwargs)

@@ -6,7 +6,6 @@ import functools
 from bddrest import WsgiCall
 
 
-
 def wsgi_application(environ, start_response):
     form = cgi.FieldStorage(
         fp=environ['wsgi.input'],
@@ -35,3 +34,8 @@ class CallTestCase(unittest.TestCase):
         call = Call('Testing Call contractor', url='/id: 1/:name', url_parameters=dict(name='foo'))
         self.assertEqual(call.url, '/:id/:name')
         self.assertDictEqual(call.url_parameters, dict(id='1', name='foo'))
+
+    def test_call_invoke(self):
+        call = Call('Testing Call contractor', url='/id: 1')
+        call.invoke()
+        self.assertIsNotNone(call.response)
