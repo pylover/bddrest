@@ -45,25 +45,22 @@ class CurrentStory(ObjectProxy):
 story = CurrentStory()
 
 
-class When:
-    def __init__(self, title, **kwargs):
-        old_call = story.call
-        call = old_call.copy()
-        del call['response']
-        kwargs['title'] = title
-        call.merge(kwargs)
-        call.ensure()
-        story.push(call)
+def When(title, **kwargs):
+    old_call = story.call
+    call = old_call.copy()
+    del call['response']
+    kwargs['title'] = title
+    call.merge(kwargs)
+    call.ensure()
+    story.push(call)
 
 
-class Then:
-    def __init__(self, *asserts: Any):
-        for passed in asserts:
-            assert passed is not False
+def Then(*asserts: Any):
+    for passed in asserts:
+        assert passed is not False
 
 
-class And(Then):
-    pass
+And = Then
 
 
 class CurrentResponse(ObjectProxy):
