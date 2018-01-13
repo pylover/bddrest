@@ -1,5 +1,6 @@
-from urllib.parse import urlencode
+from urllib.parse import urlencode, parse_qs
 import re
+import json
 
 from webtest import TestApp
 
@@ -7,10 +8,41 @@ from .types import WsgiApp
 
 
 URL_PARAMETER_PATTERN = re.compile('/(?P<key>\w+):\s?(?P<value>\w+)')
+CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 
 
 class Response:
-    pass
+    content_type = None
+    encoding = None
+    status_code = None
+    status_text = None
+
+    def __init__(self, status, headers, buffer=None):
+        self.status = status
+        self.buffer=buffer
+        self.headers = headers
+
+        if ' ' in status:
+            parts = status.split(' ')
+            self.status_code, self.status_text = int(parts[0]), ' '.join(parts[1:])
+        else:
+            self.status_code = int(status)
+
+        for i in self.headers:
+            k, v = i.split(': ') if isinstance(i, str) else i
+            if k == 'Content-Type':
+                match = CONTENT_TYPE_PATTERN.match(v)
+                if match:
+                    self.content_type, self.encoding = match.groups()
+                break
+
+    @property
+    def text(self):
+        return self.buffer.decode()
+
+    @property
+    def json(self):
+        return json.loads(self.buffer)
 
 
 class HttpCall:
@@ -19,7 +51,8 @@ class HttpCall:
     def __init__(self, title: str, url='/', verb='GET', url_parameters: dict=None, form: dict=None,
                  content_type: str=None, headers: list=None, as_: str=None, query: dict=None, description: str=None):
         self.description = description
-        self.query = query
+        self.query = \
+            {k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()} if isinstance(query, str) else query
         self.form = form
         self.url = url
         self.title = title
@@ -61,4 +94,5 @@ class WsgiCall(HttpCall):
         if self.form:
             kwargs['params'] = self.form
         # noinspection PyProtectedMember
-        self.response = TestApp(self.application)._gen_request(self.verb, url, **kwargs)
+        response = TestApp(self.application)._gen_request(self.verb, url, **kwargs)
+        self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], response.body)

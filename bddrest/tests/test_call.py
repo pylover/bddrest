@@ -14,9 +14,9 @@ def wsgi_application(environ, start_response):
         keep_blank_values=True
     )
 
-    start_response('200 OK', [('Content-Type', 'application/json;encoding=utf-8')])
+    start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
     result = dict(query=environ['QUERY_STRING'])
-    if form:
+    if form and isinstance(form, dict):
         result.update(form)
     yield json.dumps(result).encode()
 
@@ -39,3 +39,21 @@ class CallTestCase(unittest.TestCase):
         call = Call('Testing Call contractor', url='/id: 1')
         call.invoke()
         self.assertIsNotNone(call.response)
+
+    def test_call_response(self):
+        call = Call('Testing Call contractor', url='/id: 1', query='a=1')
+        call.invoke()
+        self.assertIsNotNone(call.response)
+        self.assertIsNotNone(call.response.buffer)
+        self.assertEqual(call.response.status, '200 OK')
+        self.assertEqual(call.response.status_code, 200)
+        self.assertEqual(call.response.status_text, 'OK')
+        self.assertEqual(call.response.encoding, 'utf-8')
+        self.assertEqual(call.response.content_type, 'application/json')
+        self.assertEqual(call.response.text, '{"query": "a=1"}')
+        self.assertDictEqual(call.response.json, {"query": "a=1"})
+        self.assertListEqual(call.response.headers, [('Content-Type', 'application/json;charset=utf-8')])
+
+
+if __name__ == '__main__':
+    unittest.main()

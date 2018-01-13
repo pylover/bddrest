@@ -20,7 +20,7 @@ def wsgi_application(environ, start_response):
         return
 
     start_response('200 OK', [
-        ('Content-Type', 'application/json;encoding=utf-8'),
+        ('Content-Type', 'application/json;charset=utf-8'),
         ('X-Pagination-Count', '10')
     ])
     result = json.dumps(dict(
