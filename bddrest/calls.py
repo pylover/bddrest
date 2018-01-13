@@ -75,7 +75,7 @@ class Response(Serializable):
 
 class HttpCall(Serializable):
     data_attributes = [
-        'title', 'url', 'verb', 'url_parameters', 'form', 'headers', 'as_', 'query', 'description', 'form'
+        'title', 'url', 'verb', 'url_parameters', 'form', 'headers', 'as_', 'query', 'description', 'form', 'response'
     ]
     response: Response = None
 
