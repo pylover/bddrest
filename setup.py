@@ -9,7 +9,7 @@ with open(join(dirname(__file__), 'bddrest', '__init__.py')) as v_file:
 
 
 dependencies = [
-    'pymlconf >= 0.8.4',
+    'pymlconf >= 0.8.6',
     'webtest'
 ]
 

@@ -33,16 +33,18 @@ class WsgiCall(HttpCall):
         super().__init__(kwargs)
 
     def invoke(self):
-        response = self.application._gen_request(
-            self.verb,
-            self.url,
-            params=self.form,
+        kwargs = dict(
+            expect_errors=True,
+            # Commented for future usages by pylover
             # headers=headers,
             # extra_environ=extra_environ,
             # upload_files=upload_files,
             # content_type=content_type
-            expect_errors=True,
         )
+        if hasattr(self, 'form'):
+            kwargs['params'] = self.form
+
+        response = self.application._gen_request(self.verb, self.url, **kwargs)
         members = ['status', 'status_code', 'json', 'body', 'headers']
         self.merge(dict(response={k: getattr(response, k) for k in members}))
 
