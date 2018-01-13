@@ -1,9 +1,13 @@
 from urllib.parse import urlencode
+import re
 
 from pymlconf import ConfigDict
 from webtest import TestApp
 
 from .types import WsgiApp
+
+
+URL_PARAMETER_PATTERN = re.compile('/(?P<key>\w+):\s?(?P<value>\w+)')
 
 
 class Call(ConfigDict):
@@ -28,11 +32,30 @@ class HttpCall(Call):
 
 class WsgiCall(HttpCall):
 
-    def __init__(self, application: WsgiApp, **kwargs):
+    def __init__(self, application: WsgiApp, url='/', **kwargs):
         if not isinstance(application, TestApp):
             application = TestApp(application)
         self.application = application
+        self.set_url(url)
         super().__init__(kwargs)
+
+    def merge(self, other):
+        if 'url' in other:
+            url = other['url']
+            del other['url']
+            self.set_url(url)
+        return super().merge(other)
+
+    def set_url(self, url):
+        if URL_PARAMETER_PATTERN.search(url):
+            url_parameters = dict()
+            for k, v in URL_PARAMETER_PATTERN.findall(url):
+                url_parameters[k] = v
+                url = re.sub(f'{k}:\s?', '', url)
+        else:
+            url_parameters = None
+        self['url'] = url
+        self['url_parameters'] = url_parameters
 
     def invoke(self):
         kwargs = dict(
