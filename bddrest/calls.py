@@ -5,13 +5,12 @@ from .types import WsgiApp
 
 
 class Call(ConfigDict):
-    response = None
 
     def invoke(self):
         raise NotImplementedError()
 
     def ensure(self):
-        if self.response is not None:
+        if 'response' in self and self.response is not None:
             return
         self.invoke()
 
@@ -34,7 +33,7 @@ class WsgiCall(HttpCall):
         super().__init__(kwargs)
 
     def invoke(self):
-        self.response = self.application._gen_request(
+        response = self.application._gen_request(
             self.verb,
             self.url,
             params=self.form,
@@ -44,6 +43,8 @@ class WsgiCall(HttpCall):
             # content_type=content_type
             expect_errors=True,
         )
+        members = ['status', 'status_code', 'json', 'body', 'headers']
+        self.merge(dict(response={k: getattr(response, k) for k in members}))
 
     def copy(self):
         return self.__class__(self.application, **self)

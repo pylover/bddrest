@@ -1,12 +1,14 @@
 from typing import Any
+import io
 
 from pymlconf.proxy import ObjectProxy
+import yaml
 
 from .calls import Call
 from .contexts import Context
 
 
-class Given(Context):
+class Story(Context):
     def __init__(self, call: Call):
         call.ensure()
         self.calls = [call]
@@ -17,6 +19,22 @@ class Given(Context):
 
     def push(self, call: Call):
         self.calls.append(call)
+
+    def to_dict(self):
+        return dict(given=self.calls[0], calls=self.calls[1:])
+
+    def dump(self, file):
+        data = self.to_dict()
+        yaml.dump(data, file, default_flow_style=False)
+
+    def dumps(self):
+        file = io.BytesIO()
+        self.dump(file)
+        return file.getvalue()
+
+
+class Given(Story):
+    pass
 
 
 class CurrentStory(ObjectProxy):
@@ -48,8 +66,12 @@ class And(Then):
 
 
 class CurrentResponse(ObjectProxy):
+    @staticmethod
+    def __get_current_response():
+        return story.call.response
+
     def __init__(self):
-        super().__init__(lambda: story.call.response)
+        super().__init__(self.__get_current_response)
 
 
 response = CurrentResponse()
