@@ -44,7 +44,7 @@ class CallTestCase(unittest.TestCase):
         call = Call('Testing Call contractor', url='/id: 1', query='a=1')
         call.invoke()
         self.assertIsNotNone(call.response)
-        self.assertIsNotNone(call.response.buffer)
+        self.assertIsNotNone(call.response.body)
         self.assertEqual(call.response.status, '200 OK')
         self.assertEqual(call.response.status_code, 200)
         self.assertEqual(call.response.status_text, 'OK')
@@ -53,6 +53,18 @@ class CallTestCase(unittest.TestCase):
         self.assertEqual(call.response.text, '{"query": "a=1"}')
         self.assertDictEqual(call.response.json, {"query": "a=1"})
         self.assertListEqual(call.response.headers, [('Content-Type', 'application/json;charset=utf-8')])
+
+    def test_call_to_dict(self):
+        call = Call('Testing Call to_dict', url='/id: 1', query='a=1')
+        call.invoke()
+        call_dict = call.to_dict()
+        self.assertDictEqual(call_dict, dict(
+            title='Testing Call to_dict',
+            query=dict(a='1'),
+            url='/:id',
+            url_parameters={'id': '1'},
+            verb='GET'
+        ))
 
 
 if __name__ == '__main__':

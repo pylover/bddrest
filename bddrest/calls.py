@@ -11,16 +11,44 @@ URL_PARAMETER_PATTERN = re.compile('/(?P<key>\w+):\s?(?P<value>\w+)')
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 
 
-class Response:
+class Serializable:
+    data_attributes = []
+
+    def __init__(self, **kwargs):
+        for name in self.data_attributes:
+            if name in kwargs:
+                setattr(self, name, kwargs[name])
+
+    def to_dict(self):
+        result = {}
+        for name in self.data_attributes:
+            value = getattr(self, name)
+
+            if value is None:
+                continue
+
+            if hasattr(value, 'to_dict'):
+                value = value.to_dict()
+
+            result[name] = value
+
+        return result
+
+
+class Response(Serializable):
+    data_attributes = [
+        'headers', 'status', 'body'
+    ]
     content_type = None
     encoding = None
+    status = None
     status_code = None
     status_text = None
+    headers = None
+    body = None
 
-    def __init__(self, status, headers, buffer=None):
-        self.status = status
-        self.buffer=buffer
-        self.headers = headers
+    def __init__(self, status, headers, **kwargs):
+        super(Response, self).__init__(status=status, headers=headers, **kwargs)
 
         if ' ' in status:
             parts = status.split(' ')
@@ -38,41 +66,56 @@ class Response:
 
     @property
     def text(self):
-        return self.buffer.decode()
+        return self.body.decode()
 
     @property
     def json(self):
-        return json.loads(self.buffer)
+        return json.loads(self.body)
 
 
-class HttpCall:
+class HttpCall(Serializable):
+    data_attributes = [
+        'title', 'url', 'verb', 'url_parameters', 'form', 'headers', 'as_', 'query', 'description', 'form'
+    ]
     response: Response = None
 
     def __init__(self, title: str, url='/', verb='GET', url_parameters: dict=None, form: dict=None,
-                 content_type: str=None, headers: list=None, as_: str=None, query: dict=None, description: str=None):
-        self.description = description
-        self.query = \
-            {k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()} if isinstance(query, str) else query
-        self.form = form
-        self.url = url
-        self.title = title
-        self.verb = verb
-        self.as_ = as_
-        self.headers = headers or []
-        self.url_parameters = url_parameters
+                 content_type: str=None, headers: list=None, as_: str=None, query: dict=None, description: str=None,
+                 response=None):
+
         if content_type:
-            self.headers.append(('Content-Type', content_type))
+            headers = headers or []
+            headers.append(('Content-Type', content_type))
 
-        if URL_PARAMETER_PATTERN.search(self.url):
-            if self.url_parameters is None:
-                self.url_parameters = {}
+        if URL_PARAMETER_PATTERN.search(url):
+            if url_parameters is None:
+                url_parameters = {}
 
-            for k, v in URL_PARAMETER_PATTERN.findall(self.url):
-                self.url_parameters[k] = v
-                self.url = re.sub(f'{k}:\s?\w+', f':{k}', self.url)
+            for k, v in URL_PARAMETER_PATTERN.findall(url):
+                url_parameters[k] = v
+                url = re.sub(f'{k}:\s?\w+', f':{k}', url)
+
+        super().__init__(
+            title=title,
+            url=url,
+            verb=verb,
+            url_parameters=url_parameters,
+            form=form,
+            content_type=content_type,
+            headers=headers,
+            as_=as_,
+            query={
+                k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()} if isinstance(query, str) else query,
+            description=description,
+            response=Response(**response) if response and not isinstance(response, Response) else response
+        )
 
     def invoke(self):
         raise NotImplementedError()
+
+    def ensure(self):
+        if self.response is None:
+            self.invoke()
 
 
 class WsgiCall(HttpCall):
@@ -95,4 +138,4 @@ class WsgiCall(HttpCall):
             kwargs['params'] = self.form
         # noinspection PyProtectedMember
         response = TestApp(self.application)._gen_request(self.verb, url, **kwargs)
-        self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], response.body)
+        self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
