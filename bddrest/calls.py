@@ -45,8 +45,8 @@ class WsgiCall(HttpCall):
             kwargs['params'] = self.form
 
         response = self.application._gen_request(self.verb, self.url, **kwargs)
-        members = ['status', 'status_code', 'json', 'body', 'headers']
-        self.merge(dict(response={k: getattr(response, k) for k in members}))
+        members = ['status', 'status_code', 'json', 'body', 'headers', 'content_type']
+        self.merge(dict(response={k: getattr(response, k) for k in members if hasattr(response, k)}))
 
     def copy(self):
         return self.__class__(self.application, **self)

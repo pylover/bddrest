@@ -49,6 +49,7 @@ class When:
     def __init__(self, title, **kwargs):
         old_call = story.call
         call = old_call.copy()
+        del call['response']
         kwargs['title'] = title
         call.merge(kwargs)
         call.ensure()

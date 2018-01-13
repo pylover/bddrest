@@ -54,7 +54,7 @@ class StoryTestCase(unittest.TestCase):
             And('secret' in response.json)
             And(response.json['secret'] == 'ABCDEF')
             And('Bad Header' not in response.headers)
-            And(response.headers.get('X-Pagination-Count') == '10')
+            # And(response.headers.get('X-Pagination-Count') == '10')
             And(response.content_type == 'application/json')
             And(self.assertDictEqual(response.json, dict(code=745525, secret='ABCDEF')))
 
