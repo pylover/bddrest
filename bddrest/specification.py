@@ -58,9 +58,6 @@ def Then(*asserts: Any):
         assert passed is not False
 
 
-And = Then
-
-
 class CurrentResponse(ObjectProxy):
     @staticmethod
     def __get_current_response():
