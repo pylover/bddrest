@@ -4,12 +4,12 @@ import io
 from pymlconf.proxy import ObjectProxy
 import yaml
 
-from .calls import Call
+from .calls import HttpCall
 from .contexts import Context
 
 
 class Story(Context):
-    def __init__(self, call: Call):
+    def __init__(self, call: HttpCall):
         call.ensure()
         self.calls = [call]
 
@@ -17,7 +17,7 @@ class Story(Context):
     def call(self):
         return self.calls[-1]
 
-    def push(self, call: Call):
+    def push(self, call: HttpCall):
         self.calls.append(call)
 
     def to_dict(self):

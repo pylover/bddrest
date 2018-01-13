@@ -1,7 +1,6 @@
 from urllib.parse import urlencode
 import re
 
-from pymlconf import ConfigDict
 from webtest import TestApp
 
 from .types import WsgiApp
@@ -10,21 +9,28 @@ from .types import WsgiApp
 URL_PARAMETER_PATTERN = re.compile('/(?P<key>\w+):\s?(?P<value>\w+)')
 
 
-class Call(ConfigDict):
+class HttpCall:
+    def __init__(self, title, url='/', verb='GET', url_parameters=None, form=None,
+                 content_type=None, headers=None, as_=None, query=None, description=None):
+        self.description = description
+        self.query = query
+        self.form = form
+        self.url = url
+        self.title = title
+        self.verb = verb
+        self.as_ = as_
+        self.headers = headers or []
+        self.url_parameters = url_parameters
+        if content_type:
+            self.headers.append(('Content-Type', content_type))
 
-    def invoke(self):
-        raise NotImplementedError()
+        if URL_PARAMETER_PATTERN.search(self.url):
+            if self.url_parameters is None:
+                self.url_parameters = {}
 
-    def ensure(self):
-        if 'response' in self and self.response is not None:
-            return
-        self.invoke()
-
-    def copy(self):
-        return self.__class__(**self)
-
-
-class HttpCall(Call):
+            for k, v in URL_PARAMETER_PATTERN.findall(self.url):
+                self.url_parameters[k] = v
+                self.url = re.sub(f'{k}:\s?\w+', f':{k}', self.url)
 
     def invoke(self):
         raise NotImplementedError()
@@ -32,12 +38,9 @@ class HttpCall(Call):
 
 class WsgiCall(HttpCall):
 
-    def __init__(self, application: WsgiApp, url='/', **kwargs):
-        if not isinstance(application, TestApp):
-            application = TestApp(application)
+    def __init__(self, application: WsgiApp, title, **kwargs):
         self.application = application
-        self.set_url(url)
-        super().__init__(kwargs)
+        super().__init__(title, **kwargs)
 
     def merge(self, other):
         if 'url' in other:
@@ -45,17 +48,6 @@ class WsgiCall(HttpCall):
             del other['url']
             self.set_url(url)
         return super().merge(other)
-
-    def set_url(self, url):
-        if URL_PARAMETER_PATTERN.search(url):
-            url_parameters = dict()
-            for k, v in URL_PARAMETER_PATTERN.findall(url):
-                url_parameters[k] = v
-                url = re.sub(f'{k}:\s?', '', url)
-        else:
-            url_parameters = None
-        self['url'] = url
-        self['url_parameters'] = url_parameters
 
     def invoke(self):
         kwargs = dict(
@@ -72,9 +64,6 @@ class WsgiCall(HttpCall):
 
         query = self.get('query')
         url = f'{self.url}?{urlencode(query)}' if query else self.url
-        response = self.application._gen_request(self.verb, url, **kwargs)
+        response = TestApp(self.application)._gen_request(self.verb, url, **kwargs)
         members = ['status', 'status_code', 'json', 'body', 'headers', 'content_type']
         self.merge(dict(response={k: getattr(response, k) for k in members if hasattr(response, k)}))
-
-    def copy(self):
-        return self.__class__(self.application, **self)
