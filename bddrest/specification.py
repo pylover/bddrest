@@ -1,11 +1,11 @@
 from typing import Any
 import io
 
-from pymlconf.proxy import ObjectProxy
 import yaml
 
 from .calls import HttpCall
 from .contexts import Context
+from .proxy import ObjectProxy
 
 
 class Story(Context):
@@ -45,16 +45,14 @@ class CurrentStory(ObjectProxy):
 story = CurrentStory()
 
 
+# noinspection PyPep8Naming
 def When(title, **kwargs):
-    old_call = story.call
-    call = old_call.copy()
-    del call['response']
-    kwargs['title'] = title
-    call.merge(kwargs)
-    call.ensure()
-    story.push(call)
+    new_call = story.call.copy(title=title, response=None, **kwargs)
+    new_call.ensure()
+    story.push(new_call)
 
 
+# noinspection PyPep8Naming
 def Then(*asserts: Any):
     for passed in asserts:
         assert passed is not False

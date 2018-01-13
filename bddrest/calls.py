@@ -117,6 +117,11 @@ class HttpCall(Serializable):
         if self.response is None:
             self.invoke()
 
+    def copy(self, **kwargs):
+        call_data = self.to_dict()
+        call_data.update(kwargs)
+        return self.__class__(**call_data)
+
 
 class WsgiCall(HttpCall):
 
@@ -139,3 +144,6 @@ class WsgiCall(HttpCall):
         # noinspection PyProtectedMember
         response = TestApp(self.application)._gen_request(self.verb, url, **kwargs)
         self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
+
+    def copy(self, **kwargs):
+        return super().copy(application=self.application, **kwargs)
