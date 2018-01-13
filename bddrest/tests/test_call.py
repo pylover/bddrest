@@ -65,8 +65,8 @@ class CallTestCase(unittest.TestCase):
             url_parameters={'id': '1'},
             verb='GET',
             response=dict(
-                body=b'{"query": "a=1"}',
-                headers=[('Content-Type', 'application/json;charset=utf-8')],
+                body='{"query": "a=1"}',
+                headers=['Content-Type: application/json;charset=utf-8'],
                 status='200 OK'
             )
         ))

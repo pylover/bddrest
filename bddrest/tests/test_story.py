@@ -76,32 +76,58 @@ class StoryTestCase(unittest.TestCase):
 
             Then(response.status_code == 400)
 
-    # def test_dumps(self):
-    #     call = WsgiCall(
-    #         wsgi_application,
-    #         title='Binding and registering the device after verifying the activation code',
-    #         description='As a new visitor I have to bind my device with activation code and phone number',
-    #         url='/apiv1/devices/name: SM-12345678',
-    #         verb='BIND',
-    #         as_='visitor',
-    #         form=dict(
-    #             activationCode='746727',
-    #             phone='+9897654321'
-    #         )
-    #     )
-    #     with Given(call):
-    #         self.assertIsInstance(story, CurrentStory)
-    #         self.assertIsInstance(response, CurrentResponse)
-    #         Then(response.status == '200 OK')
-    #         When(
-    #             'Trying invalid code',
-    #             form=dict(
-    #                 activationCode='badCode'
-    #             )
-    #         )
-    #         Then(response.status_code == 400)
-    #
-    #         self.assertEqual('', story.dumps())
+    def test_to_dict(self):
+        call = WsgiCall(
+            wsgi_application,
+            title='Binding',
+            url='/apiv1/devices/name: SM-12345678',
+            verb='BIND',
+            as_='visitor',
+            form=dict(
+                activationCode='746727',
+                phone='+9897654321'
+            ),
+            headers=[('X-H1', 'Header Value')]
+        )
+        with Given(call):
+            self.assertIsInstance(story, CurrentStory)
+            self.assertIsInstance(response, CurrentResponse)
+            Then(response.status == '200 OK')
+            When(
+                'Trying invalid code',
+                form=dict(
+                    activationCode='badCode'
+                )
+            )
+            Then(response.status_code == 400)
+            story_dict = story.to_dict()
+            self.maxDiff = None
+            self.assertDictEqual(story_dict['given'], dict(
+                title='Binding',
+                url='/apiv1/devices/:name',
+                verb='BIND',
+                as_='visitor',
+                url_parameters=dict(name='SM-12345678'),
+                form=dict(
+                    activationCode='746727',
+                    phone='+9897654321'
+                ),
+                headers=['X-H1: Header Value'],
+                response=dict(
+                    status='200 OK',
+                    headers=[
+                        'Content-Type: application/json;charset=utf-8',
+                        'X-Pagination-Count: 10'
+                    ],
+                    body='{"secret": "ABCDEF", "code": 745525, "query": ""}'
+                )
+            ))
+            self.assertDictEqual(story_dict['calls'][0], dict(
+                title='Trying invalid code',
+                form=dict(
+                    activationCode='badCode'
+                )
+            ))
 
 
 if __name__ == '__main__':

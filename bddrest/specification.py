@@ -21,14 +21,17 @@ class Story(Context):
         self.calls.append(call)
 
     def to_dict(self):
-        return dict(given=self.calls[0], calls=self.calls[1:])
+        return dict(
+            given=self.calls[0].to_dict(),
+            calls=[c.to_dict() for c in self.calls[1:]]
+        )
 
     def dump(self, file):
         data = self.to_dict()
-        yaml.dump(data, file, default_flow_style=False)
+        yaml.dump(data, file, default_style=False, default_flow_style=False)
 
     def dumps(self):
-        file = io.BytesIO()
+        file = io.StringIO()
         self.dump(file)
         return file.getvalue()
 

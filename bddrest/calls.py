@@ -6,8 +6,8 @@ from webtest import TestApp
 
 from .types import WsgiApp
 
-
-URL_PARAMETER_PATTERN = re.compile('/(?P<key>\w+):\s?(?P<value>\w+)')
+URL_PARAMETER_VALUE_PATTERN = '[\w\d_-]+'
+URL_PARAMETER_PATTERN = re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 
 
@@ -36,18 +36,19 @@ class Serializable:
 
 
 class Response(Serializable):
-    data_attributes = [
-        'headers', 'status', 'body'
-    ]
+    data_attributes = ['headers', 'status', 'body']
     content_type = None
     encoding = None
     status = None
     status_code = None
     status_text = None
     headers = None
-    body = None
+    _body = None
 
     def __init__(self, status, headers, **kwargs):
+        body = kwargs.get('body')
+        if not isinstance(body, bytes):
+            kwargs['body'] = body.encode()
         super(Response, self).__init__(status=status, headers=headers, **kwargs)
 
         if ' ' in status:
@@ -72,6 +73,17 @@ class Response(Serializable):
     def json(self):
         return json.loads(self.body)
 
+    def to_dict(self):
+        result = super().to_dict()
+        headers = result.get('headers')
+        if headers:
+            result['headers'] = [': '.join(h) for h in headers]
+
+        body = result.get('body')
+        if body:
+            result['body'] = body.decode()
+        return result
+
 
 class HttpCall(Serializable):
     data_attributes = [
@@ -79,13 +91,18 @@ class HttpCall(Serializable):
     ]
     response: Response = None
 
-    def __init__(self, title: str, url='/', verb='GET', url_parameters: dict=None, form: dict=None,
-                 content_type: str=None, headers: list=None, as_: str=None, query: dict=None, description: str=None,
+    def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None, form: dict = None,
+                 content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
+                 description: str = None,
                  response=None):
 
         if content_type:
             headers = headers or []
             headers.append(('Content-Type', content_type))
+
+        if headers:
+            headers = [h.split(':', 1) if isinstance(h, str) else h for h in headers]
+            headers = [(k.strip(), v.strip()) for k, v in headers]
 
         if URL_PARAMETER_PATTERN.search(url):
             if url_parameters is None:
@@ -93,7 +110,7 @@ class HttpCall(Serializable):
 
             for k, v in URL_PARAMETER_PATTERN.findall(url):
                 url_parameters[k] = v
-                url = re.sub(f'{k}:\s?\w+', f':{k}', url)
+                url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
 
         super().__init__(
             title=title,
@@ -122,10 +139,17 @@ class HttpCall(Serializable):
         call_data.update(kwargs)
         return self.__class__(**call_data)
 
+    def to_dict(self):
+        result = super().to_dict()
+        headers = result.get('headers')
+        if headers:
+            result['headers'] = [': '.join(h) for h in headers]
+        return result
+
 
 class WsgiCall(HttpCall):
 
-    def __init__(self, application: WsgiApp, title: str, extra_environ: dict=None, **kwargs):
+    def __init__(self, application: WsgiApp, title: str, extra_environ: dict = None, **kwargs):
         self.application = application
         self.extra_environ = extra_environ
         super().__init__(title, **kwargs)
