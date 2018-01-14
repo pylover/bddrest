@@ -71,6 +71,21 @@ class CallTestCase(unittest.TestCase):
             )
         ))
 
+    def test_call_alter(self):
+        call = Call('Testing When contractor', url='/id: 1', query=dict(a=1))
+        altered_call = call.alter(
+            query=dict(b=2)
+        )
+        altered_call.invoke()
+        self.assertDictEqual(altered_call.to_dict(), dict(
+            query=dict(b=2),
+            response=dict(
+                status='200 OK',
+                headers=['Content-Type: application/json;charset=utf-8'],
+                body=''
+            )
+        ))
+
 
 if __name__ == '__main__':
     unittest.main()
