@@ -100,9 +100,6 @@ class HttpCall:
         self.description = description
         self.response = Response(**response) if response and not isinstance(response, Response) else response
 
-    def invoke(self, **kwargs):
-        raise NotImplementedError()
-
     def ensure(self):
         if self.response is None:
             self.invoke()
@@ -136,28 +133,9 @@ class HttpCall:
 
         return result
 
-    def alter(self, title: str, verb=None, url_parameters: dict = None, form: dict = None, content_type: str = None,
-              headers: list = None, as_: str = None, query: dict = None, description: str = None, response=None):
-        pass
-
-
-class AlteredCall(HttpCall):
-    pass
-
-
-class WsgiCall(HttpCall):
-
-    def __init__(self, application: WsgiApp, title: str, extra_environ: dict = None, **kwargs):
-        self.application = application
-        self.extra_environ = extra_environ
-        super().__init__(title, **kwargs)
-
-    def invoke(self, **kwargs):
+    def invoke(self):
         # Overriding params using kwargs
-        url = kwargs.get('url', self.url)
-        query = kwargs.get('query', self.query)
-
-        url = f'{url}?{urlencode(query)}' if query else url
+        url = f'{self.url}?{urlencode(self.query)}' if self.query else self.url
 
         request_params = dict(
             expect_errors=True,
@@ -171,3 +149,16 @@ class WsgiCall(HttpCall):
         # noinspection PyProtectedMember
         response = TestApp(self.application)._gen_request(self.verb, url, **request_params)
         self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
+
+
+class AlteredCall(HttpCall):
+    pass
+
+
+class WsgiCall(HttpCall):
+
+    def __init__(self, application: WsgiApp, title: str, extra_environ: dict = None, **kwargs):
+        self.application = application
+        self.extra_environ = extra_environ
+        super().__init__(title, **kwargs)
+
