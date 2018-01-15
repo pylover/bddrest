@@ -54,21 +54,28 @@ class Response:
             result['body'] = self.body.decode()
         return result
 
+
 class Call:
     _response: Response = None
-    verb = NotImplemented
-    url = NotImplemented
-    url_parameters = NotImplemented
-    form = NotImplemented
-    content_type = NotImplemented
-    headers = NotImplemented
-    as_ = NotImplemented
-    query = NotImplemented
-    description = NotImplemented
 
-    def __init__(self, title: str, response=None):
+    def __init__(self, application: WsgiApp, title: str, url='/', verb='GET', url_parameters: dict = None,
+                 form: dict = None, content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
+                 description: str = None, extra_environ: dict = None, response=None):
         self.title = title
         self.response = response
+        self.description = description
+        self.application = application
+        self.extra_environ = extra_environ
+
+        self.url, self.url_parameters = self.extract_url_parameters(url)
+        if url_parameters:
+            self.url_parameters.update(url_parameters)
+        self.verb = verb
+        self.form = form
+        self.content_type = content_type
+        self.headers = self.normalize_headers(headers)
+        self.as_ = as_
+        self.query = self.normalize_query_string(query)
 
     @property
     def response(self) -> Response:
@@ -77,44 +84,6 @@ class Call:
     @response.setter
     def response(self, v):
         self._response = Response(**v) if v and not isinstance(v, Response) else v
-
-    def invoke(self):
-        raise NotImplementedError()
-
-    
-class BaseCall(Call):
-
-    def __init__(self, application: WsgiApp, title: str, url='/', verb='GET', url_parameters: dict = None,
-                 form: dict = None, content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
-                 description: str = None, extra_environ: dict = None, response=None):
-        super().__init__(title, response=response)
-        self.application = application
-        self.extra_environ = extra_environ
-        if content_type:
-            headers = headers or []
-            headers.append(('Content-Type', content_type))
-
-        if URL_PARAMETER_PATTERN.search(url):
-            if url_parameters is None:
-                url_parameters = {}
-
-            for k, v in URL_PARAMETER_PATTERN.findall(url):
-                url_parameters[k] = v
-                url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
-
-        self.url = url
-        self.verb = verb
-        self.url_parameters = url_parameters
-        self.form = form
-        self.content_type = content_type
-        self.headers = self.normalize_headers(headers)
-        self.as_ = as_
-        self.query = self.normalize_query_string(query)
-        self.description = description
-
-    def ensure(self):
-        if self.response is None:
-            self.invoke()
 
     def to_dict(self):
         result = dict(
@@ -145,22 +114,9 @@ class BaseCall(Call):
 
         return result
 
-    def invoke(self):
-        # Overriding params using kwargs
-        url = f'{self.url}?{urlencode(self.query)}' if self.query else self.url
-
-        request_params = dict(
-            expect_errors=True,
-            extra_environ=self.extra_environ,
-            headers=self.headers,
-            # Commented for future usages by pylover
-            # upload_files=upload_files,
-        )
-        if self.form:
-            request_params['params'] = self.form
-        # noinspection PyProtectedMember
-        response = TestApp(self.application)._gen_request(self.verb, url, **request_params)
-        self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
+    def ensure(self):
+        if self.response is None:
+            self.invoke()
 
     @staticmethod
     def normalize_headers(headers):
@@ -170,45 +126,58 @@ class BaseCall(Call):
         return headers
 
     @staticmethod
-    def normalize_query_string(, query):
+    def normalize_query_string(query):
         return {k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()} if isinstance(query, str) else query
+
+    @staticmethod
+    def extract_url_parameters(url):
+        url_parameters = {}
+        if URL_PARAMETER_PATTERN.search(url):
+            for k, v in URL_PARAMETER_PATTERN.findall(url):
+                url_parameters[k] = v
+                url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
+        return url, url_parameters
+
+    def invoke(self):
+        url = f'{self.url}?{urlencode(self.query)}' if self.query else self.url
+
+        headers = self.headers or []
+        if self.content_type:
+            headers = [h for h in headers if h[0].lower() != 'content-type']
+            headers.append(('Content-Type', self.content_type))
+
+        request_params = dict(
+            expect_errors=True,
+            extra_environ=self.extra_environ,
+            headers=headers,
+            # Commented for future usages by pylover
+            # upload_files=upload_files,
+        )
+        if self.form:
+            request_params['params'] = self.form
+
+        # noinspection PyProtectedMember
+        response = TestApp(self.application)._gen_request(self.verb, url, **request_params)
+        self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
 
 
 class AlteredCall(Call):
-    def __init__(self, base_call, title: str, verb=UNCHANGED, url_parameters: dict = UNCHANGED, form: dict = UNCHANGED,
-                 content_type: str = UNCHANGED, headers: list = UNCHANGED, as_: str = UNCHANGED,
-                 query: dict = UNCHANGED, description: str = UNCHANGED, extra_environ: dict = UNCHANGED,
-                 response=None):
-        super().__init__(title, response)
+    def __init__(self, base_call, title: str, description=None, response=None, url_parameters=None, **diff):
         self.base_call = base_call
-        self.diff = diff = {}
-        if verb != UNCHANGED:
-            diff['verb'] = verb
-            
-        if url_parameters != UNCHANGED:
-            diff['url_parameters'] = url_parameters
+        if 'url' in diff:
+            diff['url'], diff['url_parameters'] = self.extract_url_parameters(diff['url'])
+        if url_parameters:
+            diff['url_parameters'].update(url_parameters)
+        self.diff = diff
 
-        if form != UNCHANGED:
-            diff['form'] = form
+        data = {k: v for k, v in base_call.to_dict().items() if k not in ('response', 'title', 'description')}
+        data.update(diff)
+        super().__init__(base_call.application, title, description=description, response=response, **data)
 
-        if content_type != UNCHANGED:
-            diff['content_type'] = content_type
+    def to_dict(self):
+        result = dict(self.diff)
 
-        if headers != UNCHANGED:
-            diff['headers'] = headers
+        if self.response:
+            result['response'] = self.response.to_dict()
 
-        if as_ != UNCHANGED:
-            diff['as_'] = as_
-
-        if query != UNCHANGED:
-            diff['query'] = query
-
-        if description != UNCHANGED:
-            diff['description'] = description
-
-        if extra_environ != UNCHANGED:
-            diff['extra_environ'] = extra_environ
-
-        if verb != UNCHANGED:
-            diff['verb'] = verb
-
+        return result

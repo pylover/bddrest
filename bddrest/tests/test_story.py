@@ -2,7 +2,7 @@ import unittest
 import json
 import cgi
 
-from bddrest import When, Then, Given, story, response, CurrentResponse, WsgiCall, CurrentStory, And
+from bddrest import When, Then, Given, story, response, CurrentResponse, Call, CurrentStory, And
 
 
 def wsgi_application(environ, start_response):
@@ -34,7 +34,7 @@ def wsgi_application(environ, start_response):
 class StoryTestCase(unittest.TestCase):
 
     def test_given_when_then(self):
-        call = WsgiCall(
+        call = Call(
             wsgi_application,
             title='Binding and registering the device after verifying the activation code',
             description='As a new visitor I have to bind my device with activation code and phone number',

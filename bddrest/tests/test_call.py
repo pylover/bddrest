@@ -3,7 +3,7 @@ import cgi
 import json
 import functools
 
-from bddrest import WsgiCall
+from bddrest import Call as BaseCall, AlteredCall
 
 
 def wsgi_application(environ, start_response):
@@ -21,7 +21,7 @@ def wsgi_application(environ, start_response):
     yield json.dumps(result).encode()
 
 
-Call = functools.partial(WsgiCall, wsgi_application)
+Call = functools.partial(BaseCall, wsgi_application)
 
 
 class CallTestCase(unittest.TestCase):
@@ -73,7 +73,9 @@ class CallTestCase(unittest.TestCase):
 
     def test_call_alter(self):
         call = Call('Testing When contractor', url='/id: 1', query=dict(a=1))
-        altered_call = call.alter(
+        altered_call = AlteredCall(
+            call,
+            'Altering a call',
             query=dict(b=2)
         )
         altered_call.invoke()
@@ -82,7 +84,7 @@ class CallTestCase(unittest.TestCase):
             response=dict(
                 status='200 OK',
                 headers=['Content-Type: application/json;charset=utf-8'],
-                body=''
+                body='{"query": "b=2"}'
             )
         ))
 

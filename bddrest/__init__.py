@@ -1,6 +1,6 @@
 
 
-from .calls import HttpCall, WsgiCall
+from .calls import Call, AlteredCall
 from .specification import Given, When, Then, CurrentResponse, CurrentStory, response, story
 
 
