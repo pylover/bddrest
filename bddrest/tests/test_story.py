@@ -78,58 +78,63 @@ class StoryTestCase(unittest.TestCase):
 
             Then(response.status_code == 400)
 
-    # def test_to_dict(self):
-    #     call = WsgiCall(
-    #         wsgi_application,
-    #         title='Binding',
-    #         url='/apiv1/devices/name: SM-12345678',
-    #         verb='BIND',
-    #         as_='visitor',
-    #         form=dict(
-    #             activationCode='746727',
-    #             phone='+9897654321'
-    #         ),
-    #         headers=[('X-H1', 'Header Value')]
-    #     )
-    #     with Given(call):
-    #         self.assertIsInstance(story, CurrentStory)
-    #         self.assertIsInstance(response, CurrentResponse)
-    #         Then(response.status == '200 OK')
-    #         When(
-    #             'Trying invalid code',
-    #             form=dict(
-    #                 activationCode='badCode'
-    #             )
-    #         )
-    #         Then(response.status_code == 400)
-    #         story_dict = story.to_dict()
-    #         self.maxDiff = None
-    #         self.assertDictEqual(story_dict['given'], dict(
-    #             title='Binding',
-    #             url='/apiv1/devices/:name',
-    #             verb='BIND',
-    #             as_='visitor',
-    #             url_parameters=dict(name='SM-12345678'),
-    #             form=dict(
-    #                 activationCode='746727',
-    #                 phone='+9897654321'
-    #             ),
-    #             headers=['X-H1: Header Value'],
-    #             response=dict(
-    #                 status='200 OK',
-    #                 headers=[
-    #                     'Content-Type: application/json;charset=utf-8',
-    #                     'X-Pagination-Count: 10'
-    #                 ],
-    #                 body='{"secret": "ABCDEF", "code": 745525, "query": ""}'
-    #             )
-    #         ))
-    #         self.assertDictEqual(story_dict['calls'][0], dict(
-    #             title='Trying invalid code',
-    #             form=dict(
-    #                 activationCode='badCode'
-    #             )
-    #         ))
+    def test_to_dict(self):
+        call = Call(
+            wsgi_application,
+            title='Binding',
+            url='/apiv1/devices/name: SM-12345678',
+            verb='BIND',
+            as_='visitor',
+            form=dict(
+                activationCode='746727',
+                phone='+9897654321'
+            ),
+            headers=[('X-H1', 'Header Value')]
+        )
+        with Given(call):
+            self.assertIsInstance(story, CurrentStory)
+            self.assertIsInstance(response, CurrentResponse)
+            Then(response.status == '200 OK')
+            When(
+                'Trying invalid code',
+                form=dict(
+                    activationCode='badCode'
+                )
+            )
+            Then(response.status_code == 400)
+            story_dict = story.to_dict()
+            self.maxDiff = None
+            self.assertDictEqual(story_dict['given'], dict(
+                title='Binding',
+                url='/apiv1/devices/:name',
+                verb='BIND',
+                as_='visitor',
+                url_parameters=dict(name='SM-12345678'),
+                form=dict(
+                    activationCode='746727',
+                    phone='+9897654321'
+                ),
+                headers=['X-H1: Header Value'],
+                response=dict(
+                    status='200 OK',
+                    headers=[
+                        'Content-Type: application/json;charset=utf-8',
+                        'X-Pagination-Count: 10'
+                    ],
+                    body='{"secret": "ABCDEF", "code": 745525, "query": ""}'
+                )
+            ))
+            self.maxDiff = None
+            self.assertDictEqual(story_dict['calls'][0], dict(
+                title='Trying invalid code',
+                form=dict(
+                    activationCode='badCode'
+                ),
+                response=dict(
+                    headers=['Content-Type: text/plain;utf-8'],
+                    status='400 Bad Request',
+                )
+            ))
 
 
 if __name__ == '__main__':

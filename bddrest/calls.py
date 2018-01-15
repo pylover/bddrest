@@ -175,9 +175,16 @@ class AlteredCall(Call):
         super().__init__(base_call.application, title, description=description, response=response, **data)
 
     def to_dict(self):
-        result = dict(self.diff)
+        result = dict(
+            title=self.title
+        )
 
-        if self.response:
+        result.update(self.diff)
+
+        if self.description is not None:
+            result['description'] = self.description
+
+        if self.response is not None:
             result['response'] = self.response.to_dict()
 
         return result

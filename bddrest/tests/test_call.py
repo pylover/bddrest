@@ -80,6 +80,7 @@ class CallTestCase(unittest.TestCase):
         )
         altered_call.invoke()
         self.assertDictEqual(altered_call.to_dict(), dict(
+            title='Altering a call',
             query=dict(b=2),
             response=dict(
                 status='200 OK',
