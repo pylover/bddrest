@@ -71,7 +71,7 @@ class CallTestCase(unittest.TestCase):
             )
         ))
 
-    def test_call_alter(self):
+    def test_altered_call(self):
         call = Call('Testing When contractor', url='/id: 1', query=dict(a=1))
         altered_call = AlteredCall(
             call,
