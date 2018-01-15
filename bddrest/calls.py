@@ -51,7 +51,7 @@ class WsgiCall(HttpCall):
             url_parameters = dict()
             for k, v in URL_PARAMETER_PATTERN.findall(url):
                 url_parameters[k] = v
-                url = re.sub(f'{k}:\s?', '', url)
+                url = re.sub(f'{k}:\s?\w+', f':{k}', url)
         else:
             url_parameters = None
         self['url'] = url
@@ -71,7 +71,13 @@ class WsgiCall(HttpCall):
             kwargs['params'] = self.form
 
         query = self.get('query')
-        url = f'{self.url}?{urlencode(query)}' if query else self.url
+
+        url = self.url
+        if self.url_parameters:
+            for k, v in self.url_parameters.items():
+                url = url.replace(f':{k}', str(v))
+        url = f'{url}?{urlencode(query)}' if query else url
+
         response = self.application._gen_request(self.verb, url, **kwargs)
         members = ['status', 'status_code', 'json', 'body', 'headers', 'content_type']
         self.merge(dict(response={k: getattr(response, k) for k in members if hasattr(response, k)}))
