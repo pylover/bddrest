@@ -34,6 +34,9 @@ class Assert:
     def __lt__(self, other):
         return AssertComparison(self, '<', other)
 
+    def __le__(self, other):
+        return AssertComparison(self, '<=', other)
+
 
 class AssertRoot(Assert):
     def __init__(self, target, name='target'):

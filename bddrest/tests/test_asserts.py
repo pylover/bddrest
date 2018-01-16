@@ -145,6 +145,38 @@ class AssertsTestCase(unittest.TestCase):
             str(c.exception)
         )
 
+    def test_assert_lesser_than(self):
+        class A:
+            f = 4
+
+        target = AssertRoot(A)
+        self.assertIsInstance(target.f < 3, AssertComparison)
+        self.assertTrue((target.f < 5).resolve())
+        self.assertEqual('target.f < 4', str(target.f < 4))
+        with self.assertRaises(AssertionFailed) as c:
+            (target.f < 4).resolve()
+        self.assertEqual(
+            '\nThe expression:\n\n\ttarget.f < 4\n\n'
+            'has been failed.\n',
+            str(c.exception)
+        )
+
+    def test_assert_lesser_than_equal(self):
+        class A:
+            f = 4
+
+        target = AssertRoot(A)
+        self.assertIsInstance(target.f <= 3, AssertComparison)
+        self.assertTrue((target.f <= 4).resolve())
+        self.assertEqual('target.f <= 4', str(target.f <= 4))
+        with self.assertRaises(AssertionFailed) as c:
+            (target.f <= 3).resolve()
+        self.assertEqual(
+            '\nThe expression:\n\n\ttarget.f <= 3\n\n'
+            'has been failed.\n',
+            str(c.exception)
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
