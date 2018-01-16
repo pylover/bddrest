@@ -37,6 +37,9 @@ class Assert:
     def __le__(self, other):
         return AssertComparison(self, '<=', other)
 
+    def __call__(self, *args, **kwargs):
+        return AssertCall(self, args=args, kwargs=kwargs)
+
 
 class AssertRoot(Assert):
     def __init__(self, target, name='target'):
@@ -116,13 +119,39 @@ class AssertComparison(Assert):
         return f'{self.target} {self.operator} {self.expected}'
 
 
+class AssertCall(Assert):
+    def __init__(self, target, args=tuple(), kwargs={}):
+            super().__init__(target)
+            self.args = args
+            self.kwargs = kwargs
+
+    def resolve(self):
+        actual = self.target.resolve()
+        return actual(*self.args, **self.kwargs)
+
+    def __str__(self):
+        signature = ''
+
+        def normalize(x):
+            return f'\'{x}\'' if isinstance(x, str) else x
+
+        if self.args:
+            signature += ', '.join(normalize(a) for a in self.args)
+        if self.kwargs:
+            signature += ', ' if signature else ''
+            signature += ', '.join(f'{k}={normalize(v)}' for k, v in self.kwargs.items())
+
+        return f'{self.target}({signature})'
+
+
 __all__ = [
     'AssertionFailed',
     'Assert',
     'AssertRoot',
     'AssertAttribute',
     'AssertGetItem',
-    'AssertComparison'
+    'AssertComparison',
+    'AssertCall'
 ]
     # @property
     # def new_expression(self):

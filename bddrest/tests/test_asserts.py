@@ -1,6 +1,6 @@
 import unittest
 
-from bddrest import AssertAttribute, AssertRoot, AssertionFailed, AssertGetItem, AssertComparison
+from bddrest import AssertAttribute, AssertRoot, AssertionFailed, AssertGetItem, AssertComparison, AssertCall
 
 
 class AssertsTestCase(unittest.TestCase):
@@ -52,11 +52,11 @@ class AssertsTestCase(unittest.TestCase):
         self.assertEqual(root.k[2]['a'].resolve(), 2)
         self.assertEqual(root.k[2]['b'].f.resolve(), 4)
 
-        self.assertEqual('target.b[\'c\']', root.b['c'].__str__())
-        self.assertEqual('target.k[0]', root.k[0].__str__())
-        self.assertEqual('target.k[:2]', root.k[:2].__str__())
-        self.assertEqual('target.k[1:2]', root.k[1:2].__str__())
-        self.assertEqual('target.k[::2]', root.k[::2].__str__())
+        self.assertEqual('target.b[\'c\']', str(root.b['c']))
+        self.assertEqual('target.k[0]', str(root.k[0]))
+        self.assertEqual('target.k[:2]', str(root.k[:2]))
+        self.assertEqual('target.k[1:2]', str(root.k[1:2]))
+        self.assertEqual('target.k[::2]', str(root.k[::2]))
 
         with self.assertRaises(AssertionFailed) as c:
             root.b['missing'].resolve()
@@ -176,6 +176,23 @@ class AssertsTestCase(unittest.TestCase):
             'has been failed.\n',
             str(c.exception)
         )
+
+    def test_assert_call(self):
+        class A:
+            f = ['a', 2, 3, 4]
+
+            @classmethod
+            def g(cls, a, b=None):
+                return f'{a} {b}'
+
+        target = AssertRoot(A)
+        self.assertIsInstance(target.f.index('a'), AssertCall)
+        self.assertEqual('target.f.index(\'a\')', str(target.f.index('a')))
+        self.assertEqual(0, target.f.index('a').resolve())
+
+        self.assertIsInstance(target.g(), AssertCall)
+        self.assertEqual('target.g(\'a\', b=\'b\')', str(target.g('a', b='b')))
+        self.assertEqual('a b', target.g('a', b='b').resolve())
 
 
 if __name__ == '__main__':
