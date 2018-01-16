@@ -7,8 +7,8 @@ class Assert:
     def __init__(self, target):
         self.target = target
 
-    def get_full_qualified_name(self):
-        return self.target.get_full_qualified_name()
+    def __str__(self):
+        return str(self.target)
 
     def resolve(self):
         return self.target
@@ -25,13 +25,22 @@ class Assert:
     def __ne__(self, other):
         return AssertComparison(self, '!=', other, negative=True)
 
+    def __gt__(self, other):
+        return AssertComparison(self, '>', other)
+
+    def __ge__(self, other):
+        return AssertComparison(self, '>=', other)
+
+    def __lt__(self, other):
+        return AssertComparison(self, '<', other)
+
 
 class AssertRoot(Assert):
     def __init__(self, target, name='target'):
         super().__init__(target)
         self.name = name
 
-    def get_full_qualified_name(self):
+    def __str__(self):
         return self.name
 
 
@@ -45,12 +54,12 @@ class AssertAttribute(Assert):
             return getattr(self.target.resolve(), self.attribute_name)
         except AttributeError:
             raise AssertionFailed(
-                f'Assertion Failed:\n'
-                f'Object: {self.target.get_full_qualified_name()} has no attribute {self.attribute_name}'
+                f'\nAssertion Failed:\n'
+                f'Object: {self.target} has no attribute {self.attribute_name}'
             )
 
-    def get_full_qualified_name(self):
-        parent = super().get_full_qualified_name()
+    def __str__(self):
+        parent = super().__str__()
         return f'{parent}.{self.attribute_name}'
 
 
@@ -64,12 +73,12 @@ class AssertGetItem(Assert):
             return self.target.resolve()[self.key]
         except (KeyError, IndexError):
             raise AssertionFailed(
-                f'Assertion Failed:\n'
-                f'Object: {self.target.get_full_qualified_name()} has no item {self.key}'
+                f'\nAssertion Failed:\n'
+                f'Object: {self.target} has no item {self.key}'
             )
 
-    def get_full_qualified_name(self):
-        parent = super().get_full_qualified_name()
+    def __str__(self):
+        parent = super().__str__()
         if isinstance(self.key, slice):
             key = f'{self.key.start or ""}:{self.key.stop or ""}'
             if self.key.step:
@@ -92,13 +101,16 @@ class AssertComparison(Assert):
         actual = self.target.resolve()
         ok = eval(f'{actual} {self.operator} {self.expected}')
         if not ok:
-            expression = f'{self.get_full_qualified_name()} {self.operator} {self.expected}'
-            raise AssertionFailed(
-                f'The expression: {expression} has been failed.\n'
-                f'{"Not " if self.negative else ""}Expected: {self.expected}\n'
-                f'Actual: {actual}'
-            )
+            message = \
+                f'\nThe expression:\n\n\t{self}\n\nhas been failed.\n'
+            if self.operator in ('==', '!='):
+                message += \
+                    f'{"Not " if self.negative else ""}Expected: {self.expected}\nActual: {actual}'
+            raise AssertionFailed(message)
         return ok
+
+    def __str__(self):
+        return f'{self.target} {self.operator} {self.expected}'
 
 
 __all__ = [
