@@ -14,13 +14,19 @@ class Assert:
         return self.target
 
     def __getattr__(self, name):
-        return AttributeAssert(self, name)
+        return AssertAttribute(self, name)
 
     def __getitem__(self, item):
-        return GetItemAssert(self, item)
+        return AssertGetItem(self, item)
+
+    def __eq__(self, other):
+        return AssertComparison(self, '==', other)
+
+    def __ne__(self, other):
+        return AssertComparison(self, '!=', other, negative=True)
 
 
-class RootAssert(Assert):
+class AssertRoot(Assert):
     def __init__(self, target, name='target'):
         super().__init__(target)
         self.name = name
@@ -29,7 +35,7 @@ class RootAssert(Assert):
         return self.name
 
 
-class AttributeAssert(Assert):
+class AssertAttribute(Assert):
     def __init__(self, target, attribute_name=None):
         super().__init__(target)
         self.attribute_name = attribute_name
@@ -48,7 +54,7 @@ class AttributeAssert(Assert):
         return f'{parent}.{self.attribute_name}'
 
 
-class GetItemAssert(Assert):
+class AssertGetItem(Assert):
     def __init__(self, target, key=None):
         super().__init__(target)
         self.key = key
@@ -75,12 +81,33 @@ class GetItemAssert(Assert):
         return f'{parent}[{key}]'
 
 
+class AssertComparison(Assert):
+    def __init__(self, target, operator, expected, negative=False):
+            super().__init__(target)
+            self.operator = operator
+            self.expected = expected
+            self.negative = negative
+
+    def resolve(self):
+        actual = self.target.resolve()
+        ok = eval(f'{actual} {self.operator} {self.expected}')
+        if not ok:
+            expression = f'{self.get_full_qualified_name()} {self.operator} {self.expected}'
+            raise AssertionFailed(
+                f'The expression: {expression} has been failed.\n'
+                f'{"Not " if self.negative else ""}Expected: {self.expected}\n'
+                f'Actual: {actual}'
+            )
+        return ok
+
+
 __all__ = [
     'AssertionFailed',
     'Assert',
-    'RootAssert',
-    'AttributeAssert',
-    'GetItemAssert',
+    'AssertRoot',
+    'AssertAttribute',
+    'AssertGetItem',
+    'AssertComparison'
 ]
     # @property
     # def new_expression(self):

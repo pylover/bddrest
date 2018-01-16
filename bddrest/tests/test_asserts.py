@@ -1,6 +1,6 @@
 import unittest
 
-from bddrest import AttributeAssert, RootAssert, AssertionFailed, GetItemAssert
+from bddrest import AssertAttribute, AssertRoot, AssertionFailed, AssertGetItem, AssertComparison
 
 
 class AssertsTestCase(unittest.TestCase):
@@ -9,7 +9,7 @@ class AssertsTestCase(unittest.TestCase):
         class A:
             pass
 
-        root = RootAssert(A, 'obj')
+        root = AssertRoot(A, 'obj')
         self.assertEqual('obj.a.b.c.d', root.a.b.c.d.get_full_qualified_name())
 
     def test_attribute_assert(self):
@@ -18,10 +18,10 @@ class AssertsTestCase(unittest.TestCase):
             class B:
                 c = 12
 
-        root = RootAssert(A)
-        self.assertIsInstance(root.B, AttributeAssert)
-        self.assertIsInstance(root.B.c, AttributeAssert)
-        self.assertIsInstance(root.missing_attribute, AttributeAssert)
+        root = AssertRoot(A)
+        self.assertIsInstance(root.B, AssertAttribute)
+        self.assertIsInstance(root.B.c, AssertAttribute)
+        self.assertIsInstance(root.missing_attribute, AssertAttribute)
 
         self.assertIs(root.B.resolve(), A.B)
         self.assertEqual(root.B.c.resolve(), 12)
@@ -37,10 +37,10 @@ class AssertsTestCase(unittest.TestCase):
             b = dict(c=12)
             k = [1, 2, dict(a=2, b=B())]
 
-        root = RootAssert(A)
-        self.assertIsInstance(root.b, AttributeAssert)
-        self.assertIsInstance(root.b['c'], GetItemAssert)
-        self.assertIsInstance(root.b['missing_item'], GetItemAssert)
+        root = AssertRoot(A)
+        self.assertIsInstance(root.b, AssertAttribute)
+        self.assertIsInstance(root.b['c'], AssertGetItem)
+        self.assertIsInstance(root.b['missing_item'], AssertGetItem)
 
         self.assertEqual(root.b['c'].resolve(), 12)
         self.assertEqual(root.k[0].resolve(), 1)
@@ -56,6 +56,17 @@ class AssertsTestCase(unittest.TestCase):
 
         self.assertRaises(AssertionFailed, root.b['missing'].resolve)
         self.assertRaises(AssertionFailed, root.k[9999].resolve)
+
+    def test_assert_equal(self):
+
+        class A:
+            f = 4
+
+        root = AssertRoot(A)
+        self.assertIsInstance(root.f == 4, AssertComparison)
+        self.assertIsInstance(root.f == 3, AssertComparison)
+        self.assertTrue((root.f == 4).resolve())
+        self.assertRaises(AssertionFailed, (root.f == 3).resolve)
 
 
 if __name__ == '__main__':
