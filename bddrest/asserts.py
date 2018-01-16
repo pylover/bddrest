@@ -1,40 +1,48 @@
+class AssertionFailed(AssertionError):
+    def __init__(self, message):
+        super().__init__(message)
+
 
 class Assert:
+    def __init__(self, target):
+        self.target = target
 
     def get_full_qualified_name(self):
-        attribute_tree = []
-        current = self
-        while True:
-            if isinstance(self, AttributeAssert):
-                attribute_tree.insert(0, current.attribute_name)
-
-            elif isinstance(self, RootAssert):
-                break
-
-            current = current.resolve()
-
-        return '.'.join(attribute_tree)
+        return self.target.get_full_qualified_name()
 
     def __getattr__(self, name):
         return AttributeAssert(self, name)
 
     def resolve(self):
-        raise NotImplementedError()
+        return self.target
 
 
 class RootAssert(Assert):
-    def __init__(self, resolve):
-        self.resolve = resolve
+    def __init__(self, target, name=''):
+        super().__init__(target)
+        self.name = name
+
+    def get_full_qualified_name(self):
+        return self.name
 
 
 class AttributeAssert(Assert):
     def __init__(self, target, attribute_name=None):
-        self.target = target
+        super().__init__(target)
         self.attribute_name = attribute_name
 
     def resolve(self):
-        return getattr(self.target, self.attribute_name)
+        try:
+            return getattr(self.target.resolve(), self.attribute_name)
+        except AttributeError:
+            raise AssertionFailed(
+                f'Assertion Failed:\n'
+                f'Object: {self.target.get_full_qualified_name()} has no attribute {self.attribute_name}'
+            )
 
+    def get_full_qualified_name(self):
+        result = super().get_full_qualified_name()
+        return f'{result}.{self.attribute_name}'
 
     # @property
     # def new_expression(self):
