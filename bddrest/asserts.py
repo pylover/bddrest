@@ -10,15 +10,18 @@ class Assert:
     def get_full_qualified_name(self):
         return self.target.get_full_qualified_name()
 
-    def __getattr__(self, name):
-        return AttributeAssert(self, name)
-
     def resolve(self):
         return self.target
 
+    def __getattr__(self, name):
+        return AttributeAssert(self, name)
+
+    def __getitem__(self, item):
+        return GetItemAssert(self, item)
+
 
 class RootAssert(Assert):
-    def __init__(self, target, name=''):
+    def __init__(self, target, name='target'):
         super().__init__(target)
         self.name = name
 
@@ -41,9 +44,44 @@ class AttributeAssert(Assert):
             )
 
     def get_full_qualified_name(self):
-        result = super().get_full_qualified_name()
-        return f'{result}.{self.attribute_name}'
+        parent = super().get_full_qualified_name()
+        return f'{parent}.{self.attribute_name}'
 
+
+class GetItemAssert(Assert):
+    def __init__(self, target, key=None):
+        super().__init__(target)
+        self.key = key
+
+    def resolve(self):
+        try:
+            return self.target.resolve()[self.key]
+        except (KeyError, IndexError):
+            raise AssertionFailed(
+                f'Assertion Failed:\n'
+                f'Object: {self.target.get_full_qualified_name()} has no item {self.key}'
+            )
+
+    def get_full_qualified_name(self):
+        parent = super().get_full_qualified_name()
+        if isinstance(self.key, slice):
+            key = f'{self.key.start or ""}:{self.key.stop or ""}'
+            if self.key.step:
+                key += f':{self.key.step}'
+        elif isinstance(self.key, str):
+            key = f'\'{self.key}\''
+        else:
+            key = self.key
+        return f'{parent}[{key}]'
+
+
+__all__ = [
+    'AssertionFailed',
+    'Assert',
+    'RootAssert',
+    'AttributeAssert',
+    'GetItemAssert',
+]
     # @property
     # def new_expression(self):
     #     return functools.partial(ExpressionProxy, self)

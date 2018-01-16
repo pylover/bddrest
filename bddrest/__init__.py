@@ -2,7 +2,7 @@ import functools
 
 from .helpers import ObjectProxy
 from .models import Story, Call, AlteredCall
-from .asserts import AttributeAssert, RootAssert, AssertionFailed
+from .asserts import *
 
 __version__ = '0.1.0-planning.0'
 
