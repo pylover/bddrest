@@ -1,15 +1,19 @@
-from urllib.parse import urlencode, parse_qs
+import io
 import re
 import json
+from typing import Any
+from urllib.parse import urlencode, parse_qs
 
 from webtest import TestApp
+import yaml
 
 from .types import WsgiApp
+from .helpers import Context
+
 
 URL_PARAMETER_VALUE_PATTERN = '[\w\d_-]+'
 URL_PARAMETER_PATTERN = re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
-UNCHANGED = 'UNCHANGED'
 
 
 class Response:
@@ -188,3 +192,49 @@ class AlteredCall(Call):
             result['response'] = self.response.to_dict()
 
         return result
+
+
+class Story(Context):
+    def __init__(self, call: Call):
+        call.ensure()
+        self.calls = [call]
+
+    @property
+    def call(self) -> Call:
+        return self.calls[-1]
+
+    @property
+    def base_call(self) -> Call:
+        return self.calls[0]
+
+    @property
+    def altered_calls(self):
+        return self.calls[1:]
+
+    def push(self, call: Call):
+        self.calls.append(call)
+
+    def to_dict(self):
+        return dict(
+            given=self.base_call.to_dict(),
+            calls=[c.to_dict() for c in self.altered_calls]
+        )
+
+    def dump(self, file):
+        data = self.to_dict()
+        yaml.dump(data, file, default_style=False, default_flow_style=False)
+
+    def dumps(self):
+        file = io.StringIO()
+        self.dump(file)
+        return file.getvalue()
+
+    def when(self, title, **kwargs):
+        new_call = AlteredCall(self.base_call, title, **kwargs)
+        new_call.ensure()
+        self.push(new_call)
+
+    def then(self, *asserts: Any):
+        self.call.ensure()
+        for passed in asserts:
+            assert passed is not False

@@ -2,7 +2,7 @@ import unittest
 import json
 import cgi
 
-from bddrest import When, Then, Given, story, response, CurrentResponse, Call, CurrentStory, And
+from bddrest import given, when, then, story, response, Call, and_
 
 
 def wsgi_application(environ, start_response):
@@ -50,33 +50,31 @@ class StoryTestCase(unittest.TestCase):
                 phone='+9897654321'
             )
         )
-        with Given(call):
-            self.assertIsInstance(story, CurrentStory)
-            self.assertIsInstance(response, CurrentResponse)
+        with given(call):
 
-            Then(
+            then(
                 response.status == '200 OK',
                 response.status_code == 200
             )
-            And('secret' in response.json)
-            And(response.json['secret'] == 'ABCDEF')
-            And('Bad Header' not in response.headers)
-            # And(response.headers.get('X-Pagination-Count') == '10')
-            And(response.content_type == 'application/json')
-            And(self.assertDictEqual(response.json, dict(
+            and_('secret' in response.json)
+            and_(response.json['secret'] == 'ABCDEF')
+            and_('Bad Header' not in response.headers)
+            # and_(response.headers.get('X-Pagination-Count') == '10')
+            and_(response.content_type == 'application/json')
+            and_(self.assertDictEqual(response.json, dict(
                 code=745525,
                 secret='ABCDEF',
                 query='a=1&b=2'
             )))
 
-            When(
+            when(
                 'Trying invalid code',
                 form=dict(
                     activationCode='badCode'
                 )
             )
 
-            Then(response.status_code == 400)
+            then(response.status_code == 400)
 
     def test_to_dict(self):
         call = Call(
@@ -91,17 +89,15 @@ class StoryTestCase(unittest.TestCase):
             ),
             headers=[('X-H1', 'Header Value')]
         )
-        with Given(call):
-            self.assertIsInstance(story, CurrentStory)
-            self.assertIsInstance(response, CurrentResponse)
-            Then(response.status == '200 OK')
-            When(
+        with given(call):
+            then(response.status == '200 OK')
+            when(
                 'Trying invalid code',
                 form=dict(
                     activationCode='badCode'
                 )
             )
-            Then(response.status_code == 400)
+            then(response.status_code == 400)
 
             story_dict = story.to_dict()
             self.maxDiff = None
