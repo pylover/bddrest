@@ -102,6 +102,7 @@ class StoryTestCase(unittest.TestCase):
                 )
             )
             Then(response.status_code == 400)
+
             story_dict = story.to_dict()
             self.maxDiff = None
             self.assertDictEqual(story_dict['given'], dict(
