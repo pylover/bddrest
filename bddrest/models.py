@@ -62,13 +62,12 @@ class Response:
 class Call:
     _response: Response = None
 
-    def __init__(self, application: WsgiApp, title: str, url='/', verb='GET', url_parameters: dict = None,
+    def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None,
                  form: dict = None, content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
                  description: str = None, extra_environ: dict = None, response=None):
         self.title = title
         self.response = response
         self.description = description
-        self.application = application
         self.extra_environ = extra_environ
 
         self.url, self.url_parameters = self.extract_url_parameters(url)
@@ -118,9 +117,9 @@ class Call:
 
         return result
 
-    def ensure(self):
+    def ensure(self, application):
         if self.response is None:
-            self.invoke()
+            self.invoke(application)
 
     @staticmethod
     def normalize_headers(headers):
@@ -142,7 +141,7 @@ class Call:
                 url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
         return url, url_parameters
 
-    def invoke(self):
+    def invoke(self, application):
         url = f'{self.url}?{urlencode(self.query)}' if self.query else self.url
 
         headers = self.headers or []
@@ -161,11 +160,11 @@ class Call:
             request_params['params'] = self.form
 
         # noinspection PyProtectedMember
-        response = TestApp(self.application)._gen_request(self.verb, url, **request_params)
+        response = TestApp(application)._gen_request(self.verb, url, **request_params)
         self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
 
 
-class AlteredCall(Call):
+class When(Call):
     def __init__(self, base_call, title: str, description=None, response=None, url_parameters=None, **diff):
         self.base_call = base_call
         if 'url' in diff:
@@ -176,13 +175,10 @@ class AlteredCall(Call):
 
         data = {k: v for k, v in base_call.to_dict().items() if k not in ('response', 'title', 'description')}
         data.update(diff)
-        super().__init__(base_call.application, title, description=description, response=response, **data)
+        super().__init__(title, description=description, response=response, **data)
 
     def to_dict(self):
-        result = dict(
-            title=self.title
-        )
-
+        result = dict(title=self.title)
         result.update(self.diff)
 
         if self.description is not None:
@@ -194,30 +190,15 @@ class AlteredCall(Call):
         return result
 
 
-class Story(Context):
-    def __init__(self, call: Call):
-        call.ensure()
-        self.calls = [call]
-
-    @property
-    def call(self) -> Call:
-        return self.calls[-1]
-
-    @property
-    def base_call(self) -> Call:
-        return self.calls[0]
-
-    @property
-    def altered_calls(self):
-        return self.calls[1:]
-
-    def push(self, call: Call):
-        self.calls.append(call)
+class Story:
+    def __init__(self, base_call, calls=None):
+        self.base_call = base_call
+        self.calls = calls or []
 
     def to_dict(self):
         return dict(
             given=self.base_call.to_dict(),
-            calls=[c.to_dict() for c in self.altered_calls]
+            calls=[c.to_dict() for c in self.calls]
         )
 
     def dump(self, file):
@@ -229,12 +210,26 @@ class Story(Context):
         self.dump(file)
         return file.getvalue()
 
+
+class Composer(Story, Context):
+    def __init__(self, application: WsgiApp, base_call: Call):
+        self.application = application
+        base_call.ensure(application)
+        super().__init__(base_call)
+
+    @property
+    def current_call(self) -> Call:
+        if self.calls:
+            return self.calls[-1]
+        else:
+            return self.base_call
+
     def when(self, title, **kwargs):
-        new_call = AlteredCall(self.base_call, title, **kwargs)
-        new_call.ensure()
-        self.push(new_call)
+        new_call = When(self.base_call, title, **kwargs)
+        new_call.ensure(self.application)
+        self.calls.append(new_call)
 
     def then(self, *asserts: Any):
-        self.call.ensure()
+        self.current_call.ensure(self.application)
         for passed in asserts:
             assert passed is not False

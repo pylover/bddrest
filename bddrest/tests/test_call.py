@@ -1,9 +1,8 @@
 import unittest
 import cgi
 import json
-import functools
 
-from bddrest import Call as BaseCall, AlteredCall
+from bddrest import Call, When
 
 
 def wsgi_application(environ, start_response):
@@ -21,9 +20,6 @@ def wsgi_application(environ, start_response):
     yield json.dumps(result).encode()
 
 
-Call = functools.partial(BaseCall, wsgi_application)
-
-
 class CallTestCase(unittest.TestCase):
 
     def test_call_constructor(self):
@@ -37,12 +33,12 @@ class CallTestCase(unittest.TestCase):
 
     def test_call_invoke(self):
         call = Call('Testing Call contractor', url='/id: 1')
-        call.invoke()
+        call.invoke(wsgi_application)
         self.assertIsNotNone(call.response)
 
     def test_call_response(self):
         call = Call('Testing Call contractor', url='/id: 1', query='a=1')
-        call.invoke()
+        call.invoke(wsgi_application)
         self.assertIsNotNone(call.response)
         self.assertIsNotNone(call.response.body)
         self.assertEqual(call.response.status, '200 OK')
@@ -56,7 +52,7 @@ class CallTestCase(unittest.TestCase):
 
     def test_call_to_dict(self):
         call = Call('Testing Call to_dict', url='/id: 1', query='a=1')
-        call.invoke()
+        call.invoke(wsgi_application)
         call_dict = call.to_dict()
         self.assertDictEqual(call_dict, dict(
             title='Testing Call to_dict',
@@ -73,12 +69,12 @@ class CallTestCase(unittest.TestCase):
 
     def test_altered_call(self):
         call = Call('Testing When contractor', url='/id: 1', query=dict(a=1))
-        altered_call = AlteredCall(
+        altered_call = When(
             call,
             'Altering a call',
             query=dict(b=2)
         )
-        altered_call.invoke()
+        altered_call.invoke(wsgi_application)
         self.assertDictEqual(altered_call.to_dict(), dict(
             title='Altering a call',
             query=dict(b=2),

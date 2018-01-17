@@ -35,7 +35,6 @@ class StoryTestCase(unittest.TestCase):
 
     def test_given_when_then(self):
         call = Call(
-            wsgi_application,
             title='Binding and registering the device after verifying the activation code',
             description='As a new visitor I have to bind my device with activation code and phone number',
             url='/apiv1/devices/name: SM-12345678',
@@ -50,7 +49,7 @@ class StoryTestCase(unittest.TestCase):
                 phone='+9897654321'
             )
         )
-        with given(call):
+        with given(wsgi_application, call):
 
             then(
                 response.status == '200 OK',
@@ -78,7 +77,6 @@ class StoryTestCase(unittest.TestCase):
 
     def test_to_dict(self):
         call = Call(
-            wsgi_application,
             title='Binding',
             url='/apiv1/devices/name: SM-12345678',
             verb='BIND',
@@ -89,7 +87,7 @@ class StoryTestCase(unittest.TestCase):
             ),
             headers=[('X-H1', 'Header Value')]
         )
-        with given(call):
+        with given(wsgi_application, call):
             then(response.status == '200 OK')
             when(
                 'Trying invalid code',
