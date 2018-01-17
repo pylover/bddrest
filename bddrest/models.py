@@ -212,8 +212,12 @@ class Story:
 
 
 class Composer(Story, Context):
-    def __init__(self, application: WsgiApp, base_call: Call):
+    def __init__(self, application: WsgiApp, *args, **kwargs):
         self.application = application
+        if args and isinstance(args[0], Call):
+            base_call = args[0]
+        else:
+            base_call = Call(*args, **kwargs)
         base_call.ensure(application)
         super().__init__(base_call)
 

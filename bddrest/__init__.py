@@ -4,20 +4,16 @@ from .helpers import ObjectProxy
 from .models import Composer, Call, When
 
 
-__version__ = '0.1.0-planning.0'
+__version__ = '0.1.0-planning.1'
 
 
 story = ObjectProxy(Composer.get_current)
 response = ObjectProxy(lambda: story.current_call.response)
 
 
-@functools.wraps(Call)
+@functools.wraps(Composer)
 def given(application, *args, **kwargs):
-    if args and isinstance(args[0], Call):
-        call = args[0]
-    else:
-        call = Call(*args, **kwargs)
-    return Composer(application, call)
+    return Composer(application, *args, **kwargs)
 
 
 def when(*args, **kwargs):
