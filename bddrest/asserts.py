@@ -153,30 +153,3 @@ __all__ = [
     'AssertComparison',
     'AssertCall'
 ]
-    # @property
-    # def new_expression(self):
-    #     return functools.partial(ExpressionProxy, self)
-    #
-    # def __eq__(self, other):
-    #     return self.new_expression('==', other)
-    #
-    # def __ne__(self, other):
-    #     return self.new_expression('!=', other, negative=True)
-#
-#
-# class ExpressionProxy(ObjectProxy):
-#
-#     def __init__(self, backend, operator, expected, negative=None):
-#         super().__init__(backend)
-#         self.operator = operator
-#         self.expected = expected
-#         self.negative = negative
-#
-#     def evaluate(self):
-#         actual = super().evaluate()
-#         ok = eval(f'{actual} {self.operator} {self.expected}')
-#         if not ok:
-#             expression = f'response.{self.get_full_qualified_name()} {self.operator} {self.expected}'
-#             print(f'The expression: {expression} is failed.')
-#             print(f'{"Not " if self.negative else ""}Expected: {self.expected}')
-#             print(f'Actual: {actual}')
