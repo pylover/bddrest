@@ -2,7 +2,7 @@ import unittest
 import json
 import cgi
 
-from bddrest import given, when, then, story, response, Call, and_
+from bddrest import given, when, then, story, response, Call, and_, Story, When
 
 
 def wsgi_application(environ, start_response):
@@ -50,7 +50,6 @@ class StoryTestCase(unittest.TestCase):
             )
         )
         with given(wsgi_application, call):
-
             then(
                 response.status == '200 OK',
                 response.status_code == 200
@@ -99,7 +98,7 @@ class StoryTestCase(unittest.TestCase):
 
             story_dict = story.to_dict()
             self.maxDiff = None
-            self.assertDictEqual(story_dict['given'], dict(
+            self.assertDictEqual(story_dict['base_call'], dict(
                 title='Binding',
                 url='/apiv1/devices/:name',
                 verb='BIND',
@@ -130,6 +129,48 @@ class StoryTestCase(unittest.TestCase):
                     status='400 Bad Request',
                 )
             ))
+
+    def test_from_dict(self):
+        data = dict(
+            base_call=dict(
+                title='Binding',
+                url='/apiv1/devices/:name',
+                verb='BIND',
+                as_='visitor',
+                url_parameters=dict(name='SM-12345678'),
+                form=dict(
+                    activationCode='746727',
+                    phone='+9897654321'
+                ),
+                headers=['X-H1: Header Value'],
+                response=dict(
+                    status='200 OK',
+                    headers=[
+                        'Content-Type: application/json;charset=utf-8',
+                        'X-Pagination-Count: 10'
+                    ],
+                    body='{"secret": "ABCDEF", "code": 745525, "query": ""}'
+                )
+            ),
+            calls=[
+                dict(
+                    title='Trying invalid code',
+                    form=dict(
+                        activationCode='badCode'
+                    ),
+                    response=dict(
+                        headers=['Content-Type: text/plain;utf-8'],
+                        status='400 Bad Request',
+                    )
+                )
+            ]
+        )
+        loaded_story = Story.from_dict(data)
+        self.assertIsNotNone(loaded_story)
+        self.assertIsInstance(loaded_story.base_call, Call)
+        self.assertIsInstance(loaded_story.calls[0], When)
+
+        self.assertEqual(loaded_story.base_call.response.status_code, 200)
 
 
 if __name__ == '__main__':

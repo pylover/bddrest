@@ -23,7 +23,7 @@ class Response:
     def __init__(self, status, headers, body=None):
         self.status = status
         self.headers = headers
-        self.body = body.encode() if not isinstance(body, bytes) else body
+        self.body = body.encode() if body is not None and not isinstance(body, bytes) else body
 
         if ' ' in status:
             parts = status.split(' ')
@@ -197,8 +197,16 @@ class Story:
 
     def to_dict(self):
         return dict(
-            given=self.base_call.to_dict(),
+            base_call=self.base_call.to_dict(),
             calls=[c.to_dict() for c in self.calls]
+        )
+
+    @classmethod
+    def from_dict(cls, data):
+        base_call = Call(**data['base_call'])
+        return cls(
+            base_call,
+            calls=[When(base_call, **d) for d in data['calls']] if data.get('calls') else None
         )
 
     def dump(self, file):
