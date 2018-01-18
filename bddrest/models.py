@@ -16,13 +16,24 @@ URL_PARAMETER_PATTERN = re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_V
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 
 
+def normalize_headers(headers):
+    if headers:
+        headers = [h.split(':', 1) if isinstance(h, str) else h for h in headers]
+        headers = [(k.strip(), v.strip()) for k, v in headers]
+    return headers
+
+
+def normalize_query_string(query):
+    return {k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()} if isinstance(query, str) else query
+
+
 class Response:
     content_type = None
     encoding = None
 
     def __init__(self, status, headers, body=None):
         self.status = status
-        self.headers = headers
+        self.headers = normalize_headers(headers)
         self.body = body.encode() if body is not None and not isinstance(body, bytes) else body
 
         if ' ' in status:
@@ -31,8 +42,7 @@ class Response:
         else:
             self.status_code = int(status)
 
-        for i in self.headers:
-            k, v = i.split(': ') if isinstance(i, str) else i
+        for k, v in self.headers:
             if k == 'Content-Type':
                 match = CONTENT_TYPE_PATTERN.match(v)
                 if match:
@@ -76,9 +86,9 @@ class Call:
         self.verb = verb
         self.form = form
         self.content_type = content_type
-        self.headers = self.normalize_headers(headers)
+        self.headers = normalize_headers(headers)
         self.as_ = as_
-        self.query = self.normalize_query_string(query)
+        self.query = normalize_query_string(query)
 
     @property
     def response(self) -> Response:
@@ -120,17 +130,6 @@ class Call:
     def ensure(self, application):
         if self.response is None:
             self.invoke(application)
-
-    @staticmethod
-    def normalize_headers(headers):
-        if headers:
-            headers = [h.split(':', 1) if isinstance(h, str) else h for h in headers]
-            headers = [(k.strip(), v.strip()) for k, v in headers]
-        return headers
-
-    @staticmethod
-    def normalize_query_string(query):
-        return {k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()} if isinstance(query, str) else query
 
     @staticmethod
     def extract_url_parameters(url):

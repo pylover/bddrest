@@ -171,6 +171,8 @@ class StoryTestCase(unittest.TestCase):
         self.assertIsInstance(loaded_story.calls[0], When)
 
         self.assertEqual(loaded_story.base_call.response.status_code, 200)
+        self.maxDiff = None
+        self.assertDictEqual(data, loaded_story.to_dict())
 
 
 if __name__ == '__main__':
