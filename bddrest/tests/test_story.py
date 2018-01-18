@@ -1,8 +1,9 @@
 import unittest
 import json
 import cgi
+import functools
 
-from bddrest import given, when, then, story, response, Call, and_, Story, When, OverriddenCall
+from bddrest import given, when, then, story, response, Call, and_, Story, OverriddenCall, VerifyError
 
 
 def wsgi_application(environ, start_response):
@@ -196,6 +197,34 @@ class StoryTestCase(unittest.TestCase):
             dumped_story = story.dumps()
             loaded_story = Story.loads(dumped_story)
             self.assertDictEqual(story.to_dict(), loaded_story.to_dict())
+
+    def test_verify(self):
+        call = dict(
+            title='Binding',
+            url='/apiv1/devices/name: SM-12345678',
+            verb='BIND',
+            as_='visitor',
+            form=dict(
+                activationCode='746727',
+                phone='+9897654321'
+            ),
+            headers=[('X-H1', 'Header Value')]
+        )
+        with given(wsgi_application, **call):
+            then(response.status == '200 OK')
+            when(
+                'Trying invalid code',
+                form=dict(
+                    activationCode='badCode'
+                )
+            )
+            dumped_story = story.dumps()
+
+        loaded_story = Story.loads(dumped_story)
+        loaded_story.verify(wsgi_application)
+
+        loaded_story.base_call.response.body = '{"a": 1}'
+        self.assertRaises(VerifyError, functools.partial(loaded_story.verify, wsgi_application))
 
 
 if __name__ == '__main__':

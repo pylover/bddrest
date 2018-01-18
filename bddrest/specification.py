@@ -20,11 +20,13 @@ class VerifyError(Exception):
 class Response:
     content_type = None
     encoding = None
+    body = None
 
     def __init__(self, status, headers, body=None):
         self.status = status
         self.headers = normalize_headers(headers)
-        self.body = body.encode() if body is not None and not isinstance(body, bytes) else body
+        if body:
+            self.body = body.encode() if not isinstance(body, bytes) else body
 
         if ' ' in status:
             parts = status.split(' ')
@@ -159,7 +161,8 @@ class Call:
         return Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
 
     def verify(self, application):
-        if self.response != self.invoke(application):
+        response = self.invoke(application)
+        if self.response != response:
             raise VerifyError()
 
 
@@ -217,6 +220,11 @@ class Story:
     def dumps(self):
         data = self.to_dict()
         return yaml.dump(data, **self._yaml_options)
+
+    def verify(self, application):
+        self.base_call.verify(application)
+        for c in self.calls:
+            c.verify(application)
 
     @classmethod
     def load(cls, file):
