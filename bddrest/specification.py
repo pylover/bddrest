@@ -1,6 +1,5 @@
 import re
 import json
-import io
 from urllib.parse import urlencode
 
 import yaml
@@ -12,6 +11,10 @@ from .helpers import normalize_headers, normalize_query_string
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 URL_PARAMETER_VALUE_PATTERN = '[\w\d_-]+'
 URL_PARAMETER_PATTERN = re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
+
+
+class VerifyError(Exception):
+    pass
 
 
 class Response:
@@ -54,6 +57,16 @@ class Response:
         if self.body:
             result['body'] = self.body.decode()
         return result
+
+    def __eq__(self, other: 'Response'):
+        if self.status != other.status \
+                or self.headers != other.headers:
+            return False
+
+        if self.content_type == 'application/json':
+            return self.json == other.json
+
+        return self.body == other.body
 
 
 class Call:
@@ -144,6 +157,10 @@ class Call:
         # noinspection PyProtectedMember
         response = TestApp(application)._gen_request(self.verb, url, **request_params)
         return Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
+
+    def verify(self, application):
+        if self.response != self.invoke(application):
+            raise VerifyError()
 
 
 class OverriddenCall(Call):

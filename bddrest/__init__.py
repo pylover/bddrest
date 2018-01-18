@@ -1,7 +1,7 @@
 import functools
 
 from .helpers import ObjectProxy
-from .specification import Call, Story, OverriddenCall
+from .specification import Call, Story, OverriddenCall, VerifyError
 from .authoring import Composer, ComposingMixin, When, ComposingCall
 
 

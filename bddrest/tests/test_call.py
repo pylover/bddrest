@@ -1,8 +1,9 @@
 import unittest
 import cgi
 import json
+import functools
 
-from bddrest import ComposingCall, When
+from bddrest import ComposingCall, When, VerifyError
 
 
 def wsgi_application(environ, start_response):
@@ -84,6 +85,22 @@ class CallTestCase(unittest.TestCase):
                 body='{"query": "b=2"}'
             )
         ))
+
+    def test_call_verify(self):
+        call = ComposingCall('Testing When contractor', url='/id: 1', query=dict(a=1))
+        call.conclude(wsgi_application)
+        call.verify(wsgi_application)
+
+        altered_call = When(
+            call,
+            'Altering a call',
+            query=dict(b=2)
+        )
+        altered_call.conclude(wsgi_application)
+        altered_call.verify(wsgi_application)
+
+        altered_call.response.body = '{"a": 1}'
+        self.assertRaises(VerifyError, functools.partial(altered_call.verify, wsgi_application))
 
 
 if __name__ == '__main__':
