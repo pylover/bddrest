@@ -1,7 +1,8 @@
 import functools
 
 from .helpers import ObjectProxy
-from .models import Composer, Call, When, Story, ComposingCall
+from .specification import Call, Story, OverriddenCall
+from .authoring import Composer, ComposingMixin, When, ComposingCall
 
 
 __version__ = '0.1.0-planning.1'

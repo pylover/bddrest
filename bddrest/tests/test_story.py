@@ -2,7 +2,7 @@ import unittest
 import json
 import cgi
 
-from bddrest import given, when, then, story, response, Call, and_, Story, When
+from bddrest import given, when, then, story, response, Call, and_, Story, When, OverriddenCall
 
 
 def wsgi_application(environ, start_response):
@@ -168,7 +168,7 @@ class StoryTestCase(unittest.TestCase):
         loaded_story = Story.from_dict(data)
         self.assertIsNotNone(loaded_story)
         self.assertIsInstance(loaded_story.base_call, Call)
-        self.assertIsInstance(loaded_story.calls[0], When)
+        self.assertIsInstance(loaded_story.calls[0], OverriddenCall)
 
         self.assertEqual(loaded_story.base_call.response.status_code, 200)
         self.maxDiff = None
