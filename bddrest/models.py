@@ -127,10 +127,6 @@ class Call:
 
         return result
 
-    def ensure(self, application):
-        if self.response is None:
-            self.invoke(application)
-
     @staticmethod
     def extract_url_parameters(url):
         url_parameters = {}
@@ -160,11 +156,17 @@ class Call:
 
         # noinspection PyProtectedMember
         response = TestApp(application)._gen_request(self.verb, url, **request_params)
-        self.response = Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
+        return Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
 
 
-class When(Call):
-    def __init__(self, base_call, title: str, description=None, response=None, url_parameters=None, **diff):
+class ComposingCall(Call):
+    def conclude(self, application):
+        if self.response is None:
+            self.response = self.invoke(application)
+
+
+class When(ComposingCall):
+    def __init__(self, base_call: ComposingCall, title: str, description=None, response=None, url_parameters=None, **diff):
         self.base_call = base_call
         if 'url' in diff:
             diff['url'], diff['url_parameters'] = self.extract_url_parameters(diff['url'])
@@ -221,15 +223,12 @@ class Story:
 class Composer(Story, Context):
     def __init__(self, application: WsgiApp, *args, **kwargs):
         self.application = application
-        if args and isinstance(args[0], Call):
-            base_call = args[0]
-        else:
-            base_call = Call(*args, **kwargs)
-        base_call.ensure(application)
+        base_call = ComposingCall(*args, **kwargs)
+        base_call.conclude(application)
         super().__init__(base_call)
 
     @property
-    def current_call(self) -> Call:
+    def current_call(self) -> ComposingCall:
         if self.calls:
             return self.calls[-1]
         else:
@@ -237,10 +236,10 @@ class Composer(Story, Context):
 
     def when(self, title, **kwargs):
         new_call = When(self.base_call, title, **kwargs)
-        new_call.ensure(self.application)
+        new_call.conclude(self.application)
         self.calls.append(new_call)
 
     def then(self, *asserts: Any):
-        self.current_call.ensure(self.application)
+        self.current_call.conclude(self.application)
         for passed in asserts:
             assert passed is not False

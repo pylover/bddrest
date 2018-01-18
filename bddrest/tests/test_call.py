@@ -2,7 +2,7 @@ import unittest
 import cgi
 import json
 
-from bddrest import Call, When
+from bddrest import ComposingCall, When
 
 
 def wsgi_application(environ, start_response):
@@ -23,22 +23,22 @@ def wsgi_application(environ, start_response):
 class CallTestCase(unittest.TestCase):
 
     def test_call_constructor(self):
-        call = Call('Testing Call contractor', url='/id: 1')
+        call = ComposingCall('Testing Call contractor', url='/id: 1')
         self.assertEqual(call.url, '/:id')
         self.assertDictEqual(call.url_parameters, dict(id='1'))
 
-        call = Call('Testing Call contractor', url='/id: 1/:name', url_parameters=dict(name='foo'))
+        call = ComposingCall('Testing Call contractor', url='/id: 1/:name', url_parameters=dict(name='foo'))
         self.assertEqual(call.url, '/:id/:name')
         self.assertDictEqual(call.url_parameters, dict(id='1', name='foo'))
 
     def test_call_invoke(self):
-        call = Call('Testing Call contractor', url='/id: 1')
-        call.invoke(wsgi_application)
+        call = ComposingCall('Testing Call contractor', url='/id: 1')
+        call.conclude(wsgi_application)
         self.assertIsNotNone(call.response)
 
     def test_call_response(self):
-        call = Call('Testing Call contractor', url='/id: 1', query='a=1')
-        call.invoke(wsgi_application)
+        call = ComposingCall('Testing Call contractor', url='/id: 1', query='a=1')
+        call.conclude(wsgi_application)
         self.assertIsNotNone(call.response)
         self.assertIsNotNone(call.response.body)
         self.assertEqual(call.response.status, '200 OK')
@@ -51,8 +51,8 @@ class CallTestCase(unittest.TestCase):
         self.assertListEqual(call.response.headers, [('Content-Type', 'application/json;charset=utf-8')])
 
     def test_call_to_dict(self):
-        call = Call('Testing Call to_dict', url='/id: 1', query='a=1')
-        call.invoke(wsgi_application)
+        call = ComposingCall('Testing Call to_dict', url='/id: 1', query='a=1')
+        call.conclude(wsgi_application)
         call_dict = call.to_dict()
         self.assertDictEqual(call_dict, dict(
             title='Testing Call to_dict',
@@ -68,13 +68,13 @@ class CallTestCase(unittest.TestCase):
         ))
 
     def test_altered_call(self):
-        call = Call('Testing When contractor', url='/id: 1', query=dict(a=1))
+        call = ComposingCall('Testing When contractor', url='/id: 1', query=dict(a=1))
         altered_call = When(
             call,
             'Altering a call',
             query=dict(b=2)
         )
-        altered_call.invoke(wsgi_application)
+        altered_call.conclude(wsgi_application)
         self.assertDictEqual(altered_call.to_dict(), dict(
             title='Altering a call',
             query=dict(b=2),
