@@ -226,6 +226,34 @@ class StoryTestCase(unittest.TestCase):
         loaded_story.base_call.response.body = '{"a": 1}'
         self.assertRaises(VerifyError, functools.partial(loaded_story.verify, wsgi_application))
 
+    def test_dump_load_file(self):
+        import tempfile
+        with tempfile.TemporaryFile(mode='w+', encoding='utf-8') as temp_file:
+            call = dict(
+                title='Binding',
+                url='/apiv1/devices/name: SM-12345678',
+                verb='BIND',
+                as_='visitor',
+                form=dict(
+                    activationCode='746727',
+                    phone='+9897654321'
+                ),
+                headers=[('X-H1', 'Header Value')]
+            )
+            with given(wsgi_application, **call):
+                then(response.status == '200 OK')
+                when(
+                    'Trying invalid code',
+                    form=dict(
+                        activationCode='badCode'
+                    )
+                )
+                story.dump(temp_file)
+
+            temp_file.seek(0)
+            loaded_story = Story.load(temp_file)
+            loaded_story.verify(wsgi_application)
+
 
 if __name__ == '__main__':
     unittest.main()
