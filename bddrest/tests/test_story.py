@@ -97,7 +97,6 @@ class StoryTestCase(unittest.TestCase):
             then(response.status_code == 400)
 
             story_dict = story.to_dict()
-            self.maxDiff = None
             self.assertDictEqual(story_dict['base_call'], dict(
                 title='Binding',
                 url='/apiv1/devices/:name',
@@ -118,7 +117,6 @@ class StoryTestCase(unittest.TestCase):
                     body='{"secret": "ABCDEF", "code": 745525, "query": ""}'
                 )
             ))
-            self.maxDiff = None
             self.assertDictEqual(story_dict['calls'][0], dict(
                 title='Trying invalid code',
                 form=dict(
@@ -171,8 +169,33 @@ class StoryTestCase(unittest.TestCase):
         self.assertIsInstance(loaded_story.calls[0], OverriddenCall)
 
         self.assertEqual(loaded_story.base_call.response.status_code, 200)
-        self.maxDiff = None
         self.assertDictEqual(data, loaded_story.to_dict())
+
+    def test_dump_load(self):
+        call = dict(
+            title='Binding',
+            url='/apiv1/devices/name: SM-12345678',
+            verb='BIND',
+            as_='visitor',
+            form=dict(
+                activationCode='746727',
+                phone='+9897654321'
+            ),
+            headers=[('X-H1', 'Header Value')]
+        )
+        with given(wsgi_application, **call):
+            then(response.status == '200 OK')
+            when(
+                'Trying invalid code',
+                form=dict(
+                    activationCode='badCode'
+                )
+            )
+            then(response.status_code == 400)
+
+            dumped_story = story.dumps()
+            loaded_story = Story.loads(dumped_story)
+            self.assertDictEqual(story.to_dict(), loaded_story.to_dict())
 
 
 if __name__ == '__main__':

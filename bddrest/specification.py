@@ -173,6 +173,8 @@ class OverriddenCall(Call):
 
 
 class Story:
+    _yaml_options = dict(default_style=False, default_flow_style=False)
+
     def __init__(self, base_call, calls=None):
         self.base_call = base_call
         self.calls = calls or []
@@ -193,9 +195,18 @@ class Story:
 
     def dump(self, file):
         data = self.to_dict()
-        yaml.dump(data, file, default_style=False, default_flow_style=False)
+        yaml.dump(data, file, **self._yaml_options)
 
     def dumps(self):
-        file = io.StringIO()
-        self.dump(file)
-        return file.getvalue()
+        data = self.to_dict()
+        return yaml.dump(data, **self._yaml_options)
+
+    @classmethod
+    def load(cls, file):
+        data = yaml.load(file)
+        return cls.from_dict(data)
+
+    @classmethod
+    def loads(cls, string):
+        data = yaml.load(string)
+        return cls.from_dict(data)
