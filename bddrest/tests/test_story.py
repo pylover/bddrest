@@ -2,6 +2,7 @@ import unittest
 import json
 import cgi
 import functools
+import tempfile
 
 from bddrest import given, when, then, story, response, Call, and_, Story, OverriddenCall, VerifyError
 
@@ -227,7 +228,6 @@ class StoryTestCase(unittest.TestCase):
         self.assertRaises(VerifyError, functools.partial(loaded_story.verify, wsgi_application))
 
     def test_dump_load_file(self):
-        import tempfile
         with tempfile.TemporaryFile(mode='w+', encoding='utf-8') as temp_file:
             call = dict(
                 title='Binding',
@@ -252,7 +252,7 @@ class StoryTestCase(unittest.TestCase):
 
             temp_file.seek(0)
             loaded_story = Story.load(temp_file)
-            loaded_story.verify(wsgi_application)
+            self.assertIsNone(loaded_story.verify(wsgi_application))
 
 
 if __name__ == '__main__':
