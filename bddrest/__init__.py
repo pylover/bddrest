@@ -5,7 +5,7 @@ from .specification import Call, Story, OverriddenCall, VerifyError
 from .authoring import Composer, ComposingMixin, When, ComposingCall
 
 
-__version__ = '0.1.0-planning.1'
+__version__ = '0.2.0-planning.2'
 
 
 story = ObjectProxy(Composer.get_current)
