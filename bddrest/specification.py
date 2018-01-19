@@ -1,5 +1,5 @@
 import re
-import json
+import json as jsonlib
 from urllib.parse import urlencode
 
 import yaml
@@ -17,15 +17,36 @@ class VerifyError(Exception):
     pass
 
 
+# FIXME: Implement it!
+class HeaderSet(set):
+
+    def __init(self, headers):
+        # TODO: normalize
+        raise NotImplementedError()
+
+    def add(self, item, overwrite=False):
+        """
+        Error if header exists and overwrite is False.
+        :param item:
+        :param overwrite:
+        :return:
+        """
+        raise NotImplementedError()
+
+
 class Response:
     content_type = None
     encoding = None
     body = None
 
-    def __init__(self, status, headers, body=None):
+    def __init__(self, status, headers, body=None, json=None):
         self.status = status
         self.headers = normalize_headers(headers)
-        if body:
+        if json:
+            self.body = jsonlib.dumps(json)
+            # FIXME: enable it after HeaderSet is implemented.
+            # self.headers.append('Content-Type: application/json;charset=utf-8')
+        elif body:
             self.body = body.encode() if not isinstance(body, bytes) else body
 
         if ' ' in status:
@@ -47,7 +68,7 @@ class Response:
 
     @property
     def json(self):
-        return json.loads(self.body)
+        return jsonlib.loads(self.body)
 
     def to_dict(self):
         result = dict(
@@ -57,7 +78,10 @@ class Response:
             result['headers'] = [': '.join(h) for h in self.headers]
 
         if self.body:
-            result['body'] = self.body.decode()
+            if self.content_type == 'application/json':
+                result['json'] = self.json
+            else:
+                result['body'] = self.body.decode()
         return result
 
     def __eq__(self, other: 'Response'):
@@ -139,7 +163,12 @@ class Call:
         return url, url_parameters
 
     def invoke(self, application):
-        url = f'{self.url}?{urlencode(self.query)}' if self.query else self.url
+        url = self.url
+        if self.url_parameters:
+            for k, v in self.url_parameters.items():
+                url = url.replace(f':{k}', str(v))
+
+        url = f'{url}?{urlencode(self.query)}' if self.query else url
 
         headers = self.headers or []
         if self.content_type:
@@ -172,6 +201,7 @@ class OverriddenCall(Call):
         if 'url' in diff:
             diff['url'], diff['url_parameters'] = self.extract_url_parameters(diff['url'])
         if url_parameters:
+            diff.setdefault('url_parameters', {})
             diff['url_parameters'].update(url_parameters)
         self.diff = diff
 

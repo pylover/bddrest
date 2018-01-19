@@ -19,7 +19,7 @@ class When(OverriddenCall, ComposingMixin):
     pass
 
 
-class Composer(Story, Context):
+class Given(Story, Context):
     def __init__(self, application: WsgiApp, *args, **kwargs):
         self.application = application
         base_call = ComposingCall(*args, **kwargs)

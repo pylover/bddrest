@@ -116,7 +116,7 @@ class StoryTestCase(unittest.TestCase):
                         'Content-Type: application/json;charset=utf-8',
                         'X-Pagination-Count: 10'
                     ],
-                    body='{"secret": "ABCDEF", "code": 745525, "query": ""}'
+                    json={'secret': 'ABCDEF', 'code': 745525, 'query': ''}
                 )
             ))
             self.assertDictEqual(story_dict['calls'][0], dict(
@@ -149,7 +149,7 @@ class StoryTestCase(unittest.TestCase):
                         'Content-Type: application/json;charset=utf-8',
                         'X-Pagination-Count: 10'
                     ],
-                    body='{"secret": "ABCDEF", "code": 745525, "query": ""}'
+                    json={'secret': 'ABCDEF', 'code': 745525, 'query': ''}
                 )
             ),
             calls=[

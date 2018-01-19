@@ -15,7 +15,10 @@ def wsgi_application(environ, start_response):
     )
 
     start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
-    result = dict(query=environ['QUERY_STRING'])
+    result = dict(
+        query=environ['QUERY_STRING'],
+        url=environ['PATH_INFO']
+    )
     if form and isinstance(form, dict):
         result.update(form)
     yield json.dumps(result).encode()
@@ -31,6 +34,8 @@ class CallTestCase(unittest.TestCase):
         call = ComposingCall('Testing Call contractor', url='/id: 1/:name', url_parameters=dict(name='foo'))
         self.assertEqual(call.url, '/:id/:name')
         self.assertDictEqual(call.url_parameters, dict(id='1', name='foo'))
+        call.conclude(wsgi_application)
+        self.assertEqual('/1/foo', call.response.json['url'])
 
     def test_call_invoke(self):
         call = ComposingCall('Testing Call contractor', url='/id: 1')
@@ -47,8 +52,8 @@ class CallTestCase(unittest.TestCase):
         self.assertEqual(call.response.status_text, 'OK')
         self.assertEqual(call.response.encoding, 'utf-8')
         self.assertEqual(call.response.content_type, 'application/json')
-        self.assertEqual(call.response.text, '{"query": "a=1"}')
-        self.assertDictEqual(call.response.json, {"query": "a=1"})
+        self.assertIsNotNone(call.response.text)
+        self.assertDictEqual(call.response.json, {'query': 'a=1', 'url': '/1'})
         self.assertListEqual(call.response.headers, [('Content-Type', 'application/json;charset=utf-8')])
 
     def test_call_to_dict(self):
@@ -62,9 +67,9 @@ class CallTestCase(unittest.TestCase):
             url_parameters={'id': '1'},
             verb='GET',
             response=dict(
-                body='{"query": "a=1"}',
+                json={'query': 'a=1', 'url': '/1'},
                 headers=['Content-Type: application/json;charset=utf-8'],
-                status='200 OK'
+                status='200 OK',
             )
         ))
 
@@ -82,7 +87,7 @@ class CallTestCase(unittest.TestCase):
             response=dict(
                 status='200 OK',
                 headers=['Content-Type: application/json;charset=utf-8'],
-                body='{"query": "b=2"}'
+                json={'query': 'b=2', 'url': '/1'}
             )
         ))
 
