@@ -1,4 +1,7 @@
+#! /usr/bin/env python3.6
 import json
+
+from bddrest import given, when, then, and_, response
 
 
 def wsgi_application(environ, start_response):
@@ -13,14 +16,11 @@ def wsgi_application(environ, start_response):
     yield result.encode()
 
 
-from bddrest import given, when, then, and_, response
-
-
 with given(
         wsgi_application,
         title='Quickstart!',
         url='/books/id: 1',
-        as_='visitor'):
+        as_='visitor') as story:
 
     then(response.status == '200 OK')
     and_('foo' in response.json)
@@ -32,3 +32,8 @@ with given(
     )
 
     then(response.status_code == 404)
+
+
+if __name__ == '__main__':
+    import sys
+    story.dump(sys.stdout)

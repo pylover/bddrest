@@ -2,7 +2,7 @@
 from .helpers import ObjectProxy
 from .specification import Call, Story, OverriddenCall, VerifyError
 from .authoring import Given, ComposingMixin, When, ComposingCall
-
+# from .documentary import DocumentGenerator, Formatter, MarkdownFormatter
 
 __version__ = '0.3.1a1.dev4'
 
@@ -24,3 +24,13 @@ def then(*args, **kwargs):
 
 
 and_ = then
+
+
+# TODO: Move it to cli package
+# def generate_documents(directory):
+#     doc = DocumentGenerator(
+#         formatter=MarkdownFormatter(),
+#         output_directory='<TODO:>',
+#     )
+#     for spec in directory:
+#         doc.generate(spec)
