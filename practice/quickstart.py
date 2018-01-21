@@ -1,4 +1,3 @@
-#! /usr/bin/env python3.6
 import json
 
 from bddrest import given, when, then, and_, response
