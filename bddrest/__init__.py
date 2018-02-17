@@ -4,7 +4,7 @@ from .specification import Call, Story, OverriddenCall, VerifyError
 from .authoring import Given, ComposingMixin, When, ComposingCall
 
 
-__version__ = '0.3.0-planning.2'
+__version__ = '0.3.1-planning.3'
 
 
 story = ObjectProxy(Given.get_current)
