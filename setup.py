@@ -18,6 +18,7 @@ setup(
     name='bddrest',
     version=package_version,
     description='A toolchain for testing REST APIs in BDD manner.',
+    long_description=open('README.md').read(),
     author='Vahid Mardani',
     author_email='vahid.mardani@gmail.com',
     install_requires=dependencies,
@@ -29,6 +30,7 @@ setup(
     },
     test_suite='bddrest.tests',
     license='MIT',
+    url='https://github.com/Carrene/bddrest',
     classifiers=[
         'Environment :: Console',
         'Environment :: Web Environment',
