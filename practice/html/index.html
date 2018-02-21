@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hello Bulma!</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
+  <!--<script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>-->
+</head>
+<body>
+<section class="section">
+  <div class="container" id="app">
+    <h1 class="title">
+      {{ message }}
+    </h1>
+    <p class="subtitle">
+      My first website with <strong>Bulma</strong>!
+    </p>
+    <div class="columns">
+      <div class="column is-one-quarter">
+        <aside class="menu">
+          <p class="menu-label">
+            List of APIs
+          </p>
+          <ul class="menu-list">
+            <li v-for="(api, index) in apis" :key="index" @click="toggleMenu(index)">
+              <a :class="{'is-active': activeMenu === index}"><span class="tag is-info">{{ api.verb }}</span> {{ api.url }}</a>
+              <ul v-if="activeMenu === index">
+                <li v-for="(example, subIndex) in api.examples" @click.stop="activeSubMenu = subIndex" :key="subIndex">
+                  <a :class="{'is-active': activeSubMenu === subIndex}" :title="example.url">
+                    <span class="tag is-info">{{ example.verb }}</span> {{ example.url.substring(0, 23) }}...
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </aside>
+      </div>
+      <div class="column">
+        <h1 class="title is-3">
+          <span class="tag is-info is-large">{{ apis[activeMenu].examples[activeSubMenu].verb }}</span>
+          {{ apis[activeMenu].examples[activeSubMenu].url }}
+        </h1>
+        <h2 class="title is-4">
+          {{ apis[activeMenu].examples[activeSubMenu].title }}
+        </h2>
+        <h2 class="subtitle is-4">
+          {{ apis[activeMenu].examples[activeSubMenu].description }}
+        </h2>
+        <h3 class="title is-5" v-if="apis[activeMenu].examples[activeSubMenu].role">
+          Role: <code>{{ apis[activeMenu].examples[activeSubMenu].role }}</code>
+        </h3>
+        <h3 class="title is-5">
+          Status Code: <code>{{ apis[activeMenu].examples[activeSubMenu].expected_status }}</code>
+        </h3>
+        <div>form</div>
+        <div>query string</div>
+        <div>url param</div>
+        <div>response</div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  new Vue({
+    el: '#app',
+    data: {
+      message: 'HELLO VUE',
+      apis: [
+
+        {
+          "url": "/apiv1/tokens",
+          "verb": "VERIFY",
+          "examples": [
+            {
+              "description": null,
+              "expected_status": 200,
+              "form": null,
+              "query_string": null,
+              "response": {
+                "body": "",
+                "headers": [],
+                "status_code": 200,
+                "status_text": "OK"
+              },
+              "role": null,
+              "title": "SKIP: ensure the code is valid",
+              "url": "/apiv1/tokens/1/codes/97458A009AB01102",
+              "url_parameters": {
+                "code": "97458A009AB01102",
+                "token_id": "1"
+              },
+              "verb": "VERIFY"
+
+            },
+            {
+              "description": null,
+              "expected_status": 200,
+              "form": null,
+              "query_string": null,
+              "response": {
+                "body": "",
+                "headers": [],
+                "status_code": 200,
+                "status_text": "OK"
+              },
+              "role": "provider",
+              "title": "Verifying time based OTP",
+              "url": "/apiv1/tokens/1/codes/97458A009AB01103",
+              "url_parameters": {
+                "code": "97458A009AB01102",
+                "token_id": "1"
+              },
+              "verb": "VERIFY"
+            }
+          ]
+        },
+        {
+          "url": "/apiv1/tokens",
+          "verb": "ENSURE",
+          "examples": [
+            {
+              "description": null,
+              "expected_status": 200,
+              "form": {
+                "cryptomoduleId": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "1"
+                },
+                "expireDate": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "1613434403"
+                },
+                "name": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "DummyTokenName"
+                },
+                "phone": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "989122451075"
+                }
+              },
+              "query_string": null,
+              "response": {
+                "body": {
+                  "createdAt": "2018-01-22T17:19:37.902131Z",
+                  "cryptomodule": {
+                    "challengeResponseLength": 6,
+                    "id": 1,
+                    "ocraSuite": {
+                      "algorithm": "OCRA-1",
+                      "challenge_limit": 40,
+                      "counter_type": "time",
+                      "hash_algorithm": "SHA-1",
+                      "length": 6,
+                      "time_interval": 60
+                    },
+                    "oneTimePasswordLength": 4,
+                    "timeInterval": 60
+                  },
+                  "expireDate": "2021-02-16",
+                  "id": 3,
+                  "isActive": true,
+                  "isExpired": false,
+                  "isLocked": false,
+                  "modifiedAt": null,
+                  "name": "DummyTokenName",
+                  "ocraSuite": "OCRA-1:HOTP-SHA1-6:QA40-T1M",
+                  "phone": 989122451075,
+                  "provisioning": "mt://oath/totp/DUMMYTOKENNAME468E16B1772442C701A2F0C468E1F722EC53B78112F9B1AD7C46425A2EAE3371043A34342C84A7CAFCF82298A12F3440012102163515"
+                },
+                "headers": [
+                  "Content-Type: application/json; charset=utf-8"
+                ],
+                "status_code": 200,
+                "status_text": "OK"
+              },
+              "role": "provider",
+              "title": "Provisioning",
+              "url": "/apiv1/tokens",
+              "url_parameters": null,
+              "verb": "ENSURE"
+            },
+            {
+              "description": null,
+              "expected_status": 200,
+              "form": {
+                "cryptomoduleId": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "1"
+                },
+                "expireDate": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "1513434403"
+                },
+                "name": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "DummyTokenName"
+                },
+                "phone": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "989122451075"
+                }
+              },
+              "query_string": null,
+              "response": {
+                "body": {
+                  "createdAt": "2018-01-22T17:19:37.902131Z",
+                  "cryptomodule": {
+                    "challengeResponseLength": 6,
+                    "id": 1,
+                    "ocraSuite": {
+                      "algorithm": "OCRA-1",
+                      "challenge_limit": 40,
+                      "counter_type": "time",
+                      "hash_algorithm": "SHA-1",
+                      "length": 6,
+                      "time_interval": 60
+                    },
+                    "oneTimePasswordLength": 4,
+                    "timeInterval": 60
+                  },
+                  "expireDate": "2021-02-16",
+                  "id": 3,
+                  "isActive": true,
+                  "isExpired": false,
+                  "isLocked": false,
+                  "modifiedAt": null,
+                  "name": "DummyTokenName",
+                  "ocraSuite": "OCRA-1:HOTP-SHA1-6:QA40-T1M",
+                  "phone": 989122451075,
+                  "provisioning": "mt://oath/totp/DUMMYTOKENNAME468E16B1772442C701A2F0C468E1F722EC53B78112F9B1AD7C46425A2EAE3371043A34342C84A7CAFCF82298A12F3440012102163515"
+                },
+                "headers": [
+                  "Content-Type: application/json; charset=utf-8"
+                ],
+                "status_code": 200,
+                "status_text": "OK"
+              },
+              "role": "provider",
+              "title": "Provisioning multiple times",
+              "url": "/apiv1/tokens",
+              "url_parameters": null,
+              "verb": "ENSURE"
+            },
+            {
+              "description": null,
+              "expected_status": 400,
+              "form": {
+                "cryptomoduleId": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "1"
+                },
+                "expireDate": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "1513434403"
+                },
+                "name": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "MoreThan50Charsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                },
+                "phone": {
+                  "default": null,
+                  "max_length": null,
+                  "min_length": null,
+                  "optional": false,
+                  "pattern": null,
+                  "protected": false,
+                  "readonly": false,
+                  "type_": "str",
+                  "value": "989122451075"
+                }
+              },
+              "query_string": null,
+              "response": {
+                "body": {
+                  "description": "Cannot enter more than: 50 in field: name.",
+                  "message": "Bad Request"
+                },
+                "headers": [
+                  "Content-Type: application/json; charset=utf-8",
+                  "X-Reason: extra-name-length"
+                ],
+                "status_code": 400,
+                "status_text": "Bad Request"
+              },
+              "role": "provider",
+              "title": "Provisioning with a long token name",
+              "url": "/apiv1/tokens",
+              "url_parameters": null,
+              "verb": "ENSURE"
+            }
+          ]
+        }
+      ],
+      activeMenu: 0,
+      activeSubMenu: 0
+    },
+    methods: {
+      toggleMenu (index) {
+        this.activeMenu = index
+        this.activeSubMenu = 0
+      }
+    }
+  })
+</script>
+</body>
+</html>
