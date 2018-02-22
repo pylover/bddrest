@@ -25,7 +25,7 @@
           </p>
           <ul class="menu-list">
             <li v-for="(api, index) in apis" :key="index" @click="toggleMenu(index)">
-              <a :class="{'is-active': activeMenu === index}">
+              <a :class="{'is-active': activeMenu === index}" href="#api-top">
                 <span class="tag is-info">{{ api.verb }}</span> {{ api.url }}
               </a>
               <ul v-if="activeMenu === index">
@@ -43,6 +43,7 @@
         </aside>
       </div>
       <div class="column" style="overflow-y: auto; height: 82vh">
+        <span id="api-top"></span>
         <h1 class="title is-3">
           <span class="tag is-info is-large">{{ currentAPI.verb }}</span>
           {{ currentAPI.url }}
