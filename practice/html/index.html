@@ -25,11 +25,16 @@
           </p>
           <ul class="menu-list">
             <li v-for="(api, index) in apis" :key="index" @click="toggleMenu(index)">
-              <a :class="{'is-active': activeMenu === index}"><span class="tag is-info">{{ api.verb }}</span> {{ api.url }}</a>
+              <a :class="{'is-active': activeMenu === index}">
+                <span class="tag is-info">{{ api.verb }}</span> {{ api.url }}
+              </a>
               <ul v-if="activeMenu === index">
-                <li v-for="(example, subIndex) in api.examples" @click.stop="activeSubMenu = subIndex" :key="subIndex">
-                  <a :class="{'is-active': activeSubMenu === subIndex}" :title="example.url">
-                    <span class="tag is-info">{{ example.verb }}</span> {{ example.url.substring(0, 23) }}...
+                <li v-for="(example, subIndex) in api.tests" @click.stop="activeSubMenu = subIndex" :key="subIndex">
+                  <a :class="{'is-active': activeSubMenu === subIndex}"
+                     :title="example.title"
+                     :href="'#' + subIndex"
+                  >
+                    <span class="tag is-success">{{ example.expected_status }}</span> {{ example.title }}
                   </a>
                 </li>
               </ul>
@@ -37,27 +42,74 @@
           </ul>
         </aside>
       </div>
-      <div class="column">
+      <div class="column" style="overflow-y: auto; height: 82vh">
         <h1 class="title is-3">
-          <span class="tag is-info is-large">{{ apis[activeMenu].examples[activeSubMenu].verb }}</span>
-          {{ apis[activeMenu].examples[activeSubMenu].url }}
+          <span class="tag is-info is-large">{{ currentAPI.verb }}</span>
+          {{ currentAPI.url }}
         </h1>
-        <h2 class="title is-4">
-          {{ apis[activeMenu].examples[activeSubMenu].title }}
-        </h2>
-        <h2 class="subtitle is-4">
-          {{ apis[activeMenu].examples[activeSubMenu].description }}
-        </h2>
-        <h3 class="title is-5" v-if="apis[activeMenu].examples[activeSubMenu].role">
-          Role: <code>{{ apis[activeMenu].examples[activeSubMenu].role }}</code>
-        </h3>
-        <h3 class="title is-5">
-          Status Code: <code>{{ apis[activeMenu].examples[activeSubMenu].expected_status }}</code>
-        </h3>
-        <div>form</div>
-        <div>query string</div>
-        <div>url param</div>
-        <div>response</div>
+        <div class="test-case" v-for="(test, index) in currentAPI.tests" :key="index" :id="index">
+          <p class="title is-5">
+            Status Code: <span class="tag is-success is-medium">{{ test.expected_status }}</span>
+          </p>
+          <p class="title is-4">
+            {{ test.title }}
+          </p>
+          <p class="subtitle is-4">
+            {{ test.description }}
+          </p>
+          <br>
+
+          <p class="title is-5" v-if="test.role">
+            Role: <code>{{ test.role }}</code>
+          </p>
+
+          <div v-if="test.form">
+            <h5 class="title is-5">Form Parameters</h5>
+            <table class="table is-bordered">
+              <thead>
+              <tr>
+                <th>Form Parameter</th>
+                <th v-for="(header, index) in test.form[Object.keys(test.form)[0]]"
+                    v-if="header !== null"
+                >
+                  {{ index }}
+                </th>
+              </tr>
+              </thead>
+              <tr v-for="(tablerow, index) in test.form">
+                <th>
+                  {{ index }}
+                </th>
+                <td v-for="item in tablerow" v-if="item !== null">
+                  {{ item }}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <h5 class="title is-5">URL: <code>{{ test.url }}</code></h5>
+          <div v-if="test.url_parameters">
+            <h5 class="title is-5">URL Parameters</h5>
+            <table class="table is-bordered">
+              <tr v-for="(tablerow, index) in test.url_parameters">
+                <th>
+                  {{ index }}
+                </th>
+                <td>
+                  {{ tablerow }}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div v-if="test.query_string">
+            <h5 class="title is-5">Query String</h5>
+            <p>{{test.query_string}}</p>
+          </div>
+          <div class="response">
+            <h5 class="title is-5">Response</h5>
+            <pre>{{test.response.body}}</pre>
+          </div>
+          <hr>
+        </div>
       </div>
     </div>
   </div>
@@ -68,11 +120,10 @@
     data: {
       message: 'HELLO VUE',
       apis: [
-
         {
           "url": "/apiv1/tokens",
           "verb": "VERIFY",
-          "examples": [
+          "tests": [
             {
               "description": null,
               "expected_status": 200,
@@ -107,9 +158,9 @@
               },
               "role": "provider",
               "title": "Verifying time based OTP",
-              "url": "/apiv1/tokens/1/codes/97458A009AB01103",
+              "url": "/apiv1/tokens/1/codes/97458A009AB01555",
               "url_parameters": {
-                "code": "97458A009AB01102",
+                "code": "97458A009AB01555",
                 "token_id": "1"
               },
               "verb": "VERIFY"
@@ -119,7 +170,7 @@
         {
           "url": "/apiv1/tokens",
           "verb": "ENSURE",
-          "examples": [
+          "tests": [
             {
               "description": null,
               "expected_status": 200,
@@ -372,13 +423,19 @@
         }
       ],
       activeMenu: 0,
-      activeSubMenu: 0
+      activeSubMenu: 0,
+      currentAPI: ''
     },
     methods: {
       toggleMenu (index) {
+        this.currentAPI = this.apis[index]
         this.activeMenu = index
         this.activeSubMenu = 0
       }
+    },
+    mounted () {
+      console.log(this.apis[0])
+      this.currentAPI = this.apis[0]
     }
   })
 </script>
