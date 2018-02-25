@@ -1,8 +1,8 @@
 
 from .helpers import ObjectProxy
-from .specification import Call, Story, OverriddenCall, VerifyError
+from .specification import Call, Story, ModifiedCall, VerifyError
 from .authoring import Given, ComposingMixin, When, ComposingCall
-
+from .exceptions import IncompleteUrlParametersError
 
 __version__ = '0.3.1a1.dev4'
 

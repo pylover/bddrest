@@ -4,7 +4,8 @@ import cgi
 import functools
 import tempfile
 
-from bddrest import given, when, then, story, response, Call, and_, Story, OverriddenCall, VerifyError
+from bddrest import given, when, then, story, response, Call, and_, Story, ModifiedCall, VerifyError, \
+    IncompleteUrlParametersError
 
 
 def wsgi_application(environ, start_response):
@@ -75,6 +76,27 @@ class StoryTestCase(unittest.TestCase):
             )
 
             then(response.status_code == 400)
+
+    def test_url_parameters(self):
+        call = dict(
+            title='Multiple url parameters',
+            url='/apiv1/devices/name: SM-12345678/id: 1',
+            verb='BIND',
+            form=dict(
+                activationCode='746727',
+                phone='+9897654321'
+            ),
+        )
+
+        with given(wsgi_application, **call):
+            then(response.status == '200 OK')
+            with self.assertRaises(IncompleteUrlParametersError):
+                when(
+                    title='Incomplete url parameters',
+                    url_parameters=dict(
+                        id=2
+                    )
+                )
 
     def test_to_dict(self):
         call = dict(
@@ -168,7 +190,7 @@ class StoryTestCase(unittest.TestCase):
         loaded_story = Story.from_dict(data)
         self.assertIsNotNone(loaded_story)
         self.assertIsInstance(loaded_story.base_call, Call)
-        self.assertIsInstance(loaded_story.calls[0], OverriddenCall)
+        self.assertIsInstance(loaded_story.calls[0], ModifiedCall)
 
         self.assertEqual(loaded_story.base_call.response.status_code, 200)
         self.assertDictEqual(data, loaded_story.to_dict())

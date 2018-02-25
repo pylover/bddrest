@@ -1,4 +1,4 @@
-from .specification import Call, OverriddenCall, Story
+from .specification import Call, ModifiedCall, Story
 from .helpers import Context
 from .types import WsgiApp
 
@@ -15,7 +15,7 @@ class ComposingCall(Call, ComposingMixin):
     pass
 
 
-class When(OverriddenCall, ComposingMixin):
+class When(ModifiedCall, ComposingMixin):
     pass
 
 

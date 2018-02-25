@@ -195,7 +195,7 @@ class Call:
             raise VerifyError()
 
 
-class OverriddenCall(Call):
+class ModifiedCall(Call):
     def __init__(self, base_call: Call, title: str, description=None, response=None, url_parameters=None, **diff):
         self.base_call = base_call
         if 'url' in diff:
@@ -240,7 +240,7 @@ class Story:
         base_call = Call(**data['base_call'])
         return cls(
             base_call,
-            calls=[OverriddenCall(base_call, **d) for d in data['calls']] if data.get('calls') else None
+            calls=[ModifiedCall(base_call, **d) for d in data['calls']] if data.get('calls') else None
         )
 
     def dump(self, file):
