@@ -1,444 +1,247 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Hello Bulma!</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.13/vue.js"></script>
-  <!--<script defer src="https://use.fontawesome.com/releases/v5.0.0/js/all.js"></script>-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hello Bulma!</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/json.min.js"></script>
 </head>
 <body>
 <section class="section">
-  <div class="container" id="app">
-    <h1 class="title">
-      {{ message }}
-    </h1>
-    <p class="subtitle">
-      My first website with <strong>Bulma</strong>!
-    </p>
-    <div class="columns">
-      <div class="column is-one-quarter">
-        <aside class="menu">
-          <p class="menu-label">
-            List of APIs
-          </p>
-          <ul class="menu-list">
-            <li v-for="(api, index) in apis" :key="index" @click="toggleMenu(index)">
-              <a :class="{'is-active': activeMenu === index}" href="#api-top">
-                <span class="tag is-info">{{ api.verb }}</span> {{ api.url }}
-              </a>
-              <ul v-if="activeMenu === index">
-                <li v-for="(example, subIndex) in api.tests" @click.stop="activeSubMenu = subIndex" :key="subIndex">
-                  <a :class="{'is-active': activeSubMenu === subIndex}"
-                     :title="example.title"
-                     :href="'#' + subIndex"
-                  >
-                    <span class="tag is-success">{{ example.expected_status }}</span> {{ example.title }}
-                  </a>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </aside>
-      </div>
-      <div class="column" style="overflow-y: auto; height: 82vh">
-        <span id="api-top"></span>
-        <h1 class="title is-3">
-          <span class="tag is-info is-large">{{ currentAPI.verb }}</span>
-          {{ currentAPI.url }}
-        </h1>
-        <div class="test-case" v-for="(test, index) in currentAPI.tests" :key="index" :id="index">
-          <p class="title is-5">
-            Status Code: <span class="tag is-success is-medium">{{ test.expected_status }}</span>
-          </p>
-          <p class="title is-4">
-            {{ test.title }}
-          </p>
-          <p class="subtitle is-4">
-            {{ test.description }}
-          </p>
-          <br>
+    <div class="container" id="app">
+        <div class="columns">
+            <div class="column is-three-fifths is-offset-one-fifth main">
+                <span id="api-top"></span>
+                <div class="metadata">
+                    <p>Version: <code>v1.0.1-dev</code></p>
+                    <p>Date: <code>2018/01/01</code></p>
+                </div>
+                <h1 class="title is-4">
+                    <span class="tag is-info is-large">VERIFY</span>
+                    /apiv1/tokens/{code}/{member}
+                </h1>
+                <div>
+                    <h3 class="title is-3">
+                        Title
+                    </h3>
+                    <p class="subtitle is-4">
+                        Description
+                    </p>
+                    <br>
+                    <div class="test-case">
+                        <h3 class="title is-3">Given</h3>
+                        <div class="request">
 
-          <p class="title is-5" v-if="test.role">
-            Role: <code>{{ test.role }}</code>
-          </p>
+                            <p class="title is-5">
+                                Role: <code>provider</code>
+                            </p>
+                            <div class="url-parameter">
+                                <h4 class="title is-4">URL parameters</h4>
+                                <table class="table is-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Example</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>code</td>
+                                        <td>12</td>
+                                    </tr>
+                                    <tr>
+                                        <td>member</td>
+                                        <td>1</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="query-string">
+                                <h4 class="title is-4">Query strings</h4>
+                                <table class="table is-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Example</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>sort</td>
+                                        <td>DESC</td>
+                                    </tr>
+                                    <tr>
+                                        <td>member</td>
+                                        <td>1</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
-          <div v-if="test.form">
-            <h5 class="title is-5">Form Parameters</h5>
-            <table class="table is-bordered">
-              <thead>
-              <tr>
-                <th>Form Parameter</th>
-                <th v-for="(header, index) in test.form[Object.keys(test.form)[0]]"
-                    v-if="header !== null"
-                >
-                  {{ index }}
-                </th>
-              </tr>
-              </thead>
-              <tr v-for="(tablerow, index) in test.form">
-                <th>
-                  {{ index }}
-                </th>
-                <td v-for="item in tablerow" v-if="item !== null">
-                  {{ item }}
-                </td>
-              </tr>
-            </table>
-          </div>
-          <h5 class="title is-5">URL: <code>{{ test.url }}</code></h5>
-          <div v-if="test.url_parameters">
-            <h5 class="title is-5">URL Parameters</h5>
-            <table class="table is-bordered">
-              <tr v-for="(tablerow, index) in test.url_parameters">
-                <th>
-                  {{ index }}
-                </th>
-                <td>
-                  {{ tablerow }}
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div v-if="test.query_string">
-            <h5 class="title is-5">Query String</h5>
-            <p>{{test.query_string}}</p>
-          </div>
-          <div class="response">
-            <h5 class="title is-5">Response</h5>
-            <pre>{{test.response.body}}</pre>
-          </div>
-          <hr>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-<script>
-  new Vue({
-    el: '#app',
-    data: {
-      message: 'HELLO VUE',
-      apis: [
-        {
-          "url": "/apiv1/tokens",
-          "verb": "VERIFY",
-          "tests": [
-            {
-              "description": null,
-              "expected_status": 200,
-              "form": null,
-              "query_string": null,
-              "response": {
-                "body": "",
-                "headers": [],
-                "status_code": 200,
-                "status_text": "OK"
-              },
-              "role": null,
-              "title": "SKIP: ensure the code is valid",
-              "url": "/apiv1/tokens/1/codes/97458A009AB01102",
-              "url_parameters": {
-                "code": "97458A009AB01102",
-                "token_id": "1"
-              },
-              "verb": "VERIFY"
+                            <div class="form-parameters">
+                                <h4 class="title is-4">Form Parameters</h4>
+                                <table class="table is-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Form Parameter</th>
+                                        <th>type</th>
+                                        <th>optional</th>
+                                    </tr>
+                                    </thead>
+                                    <tr>
+                                        <th>
+                                            code
+                                        </th>
+                                        <td>
+                                            string
+                                        </td>
+                                        <td>
+                                            false
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>
+                                            name
+                                        </th>
+                                        <td>
+                                            string
+                                        </td>
+                                        <td>
+                                            true
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <h3 class="title is-3">Then</h3>
+                        <div class="response">
 
-            },
-            {
-              "description": null,
-              "expected_status": 200,
-              "form": null,
-              "query_string": null,
-              "response": {
-                "body": "",
-                "headers": [],
-                "status_code": 200,
-                "status_text": "OK"
-              },
-              "role": "provider",
-              "title": "Verifying time based OTP",
-              "url": "/apiv1/tokens/1/codes/97458A009AB01555",
-              "url_parameters": {
-                "code": "97458A009AB01555",
-                "token_id": "1"
-              },
-              "verb": "VERIFY"
-            }
-          ]
-        },
-        {
-          "url": "/apiv1/tokens",
-          "verb": "ENSURE",
-          "tests": [
-            {
-              "description": null,
-              "expected_status": 200,
-              "form": {
-                "cryptomoduleId": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "1"
-                },
-                "expireDate": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "1613434403"
-                },
-                "name": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "DummyTokenName"
-                },
-                "phone": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "989122451075"
-                }
-              },
-              "query_string": null,
-              "response": {
-                "body": {
-                  "createdAt": "2018-01-22T17:19:37.902131Z",
-                  "cryptomodule": {
-                    "challengeResponseLength": 6,
-                    "id": 1,
-                    "ocraSuite": {
-                      "algorithm": "OCRA-1",
-                      "challenge_limit": 40,
-                      "counter_type": "time",
-                      "hash_algorithm": "SHA-1",
-                      "length": 6,
-                      "time_interval": 60
-                    },
-                    "oneTimePasswordLength": 4,
-                    "timeInterval": 60
-                  },
-                  "expireDate": "2021-02-16",
-                  "id": 3,
-                  "isActive": true,
-                  "isExpired": false,
-                  "isLocked": false,
-                  "modifiedAt": null,
-                  "name": "DummyTokenName",
-                  "ocraSuite": "OCRA-1:HOTP-SHA1-6:QA40-T1M",
-                  "phone": 989122451075,
-                  "provisioning": "mt://oath/totp/DUMMYTOKENNAME468E16B1772442C701A2F0C468E1F722EC53B78112F9B1AD7C46425A2EAE3371043A34342C84A7CAFCF82298A12F3440012102163515"
-                },
-                "headers": [
-                  "Content-Type: application/json; charset=utf-8"
-                ],
-                "status_code": 200,
-                "status_text": "OK"
-              },
-              "role": "provider",
-              "title": "Provisioning",
-              "url": "/apiv1/tokens",
-              "url_parameters": null,
-              "verb": "ENSURE"
-            },
-            {
-              "description": null,
-              "expected_status": 200,
-              "form": {
-                "cryptomoduleId": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "1"
-                },
-                "expireDate": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "1513434403"
-                },
-                "name": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "DummyTokenName"
-                },
-                "phone": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "989122451075"
-                }
-              },
-              "query_string": null,
-              "response": {
-                "body": {
-                  "createdAt": "2018-01-22T17:19:37.902131Z",
-                  "cryptomodule": {
-                    "challengeResponseLength": 6,
-                    "id": 1,
-                    "ocraSuite": {
-                      "algorithm": "OCRA-1",
-                      "challenge_limit": 40,
-                      "counter_type": "time",
-                      "hash_algorithm": "SHA-1",
-                      "length": 6,
-                      "time_interval": 60
-                    },
-                    "oneTimePasswordLength": 4,
-                    "timeInterval": 60
-                  },
-                  "expireDate": "2021-02-16",
-                  "id": 3,
-                  "isActive": true,
-                  "isExpired": false,
-                  "isLocked": false,
-                  "modifiedAt": null,
-                  "name": "DummyTokenName",
-                  "ocraSuite": "OCRA-1:HOTP-SHA1-6:QA40-T1M",
-                  "phone": 989122451075,
-                  "provisioning": "mt://oath/totp/DUMMYTOKENNAME468E16B1772442C701A2F0C468E1F722EC53B78112F9B1AD7C46425A2EAE3371043A34342C84A7CAFCF82298A12F3440012102163515"
-                },
-                "headers": [
-                  "Content-Type: application/json; charset=utf-8"
-                ],
-                "status_code": 200,
-                "status_text": "OK"
-              },
-              "role": "provider",
-              "title": "Provisioning multiple times",
-              "url": "/apiv1/tokens",
-              "url_parameters": null,
-              "verb": "ENSURE"
-            },
-            {
-              "description": null,
-              "expected_status": 400,
-              "form": {
-                "cryptomoduleId": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "1"
-                },
-                "expireDate": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "1513434403"
-                },
-                "name": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "MoreThan50Charsxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-                },
-                "phone": {
-                  "default": null,
-                  "max_length": null,
-                  "min_length": null,
-                  "optional": false,
-                  "pattern": null,
-                  "protected": false,
-                  "readonly": false,
-                  "type_": "str",
-                  "value": "989122451075"
-                }
-              },
-              "query_string": null,
-              "response": {
-                "body": {
-                  "description": "Cannot enter more than: 50 in field: name.",
-                  "message": "Bad Request"
-                },
-                "headers": [
-                  "Content-Type: application/json; charset=utf-8",
-                  "X-Reason: extra-name-length"
-                ],
-                "status_code": 400,
-                "status_text": "Bad Request"
-              },
-              "role": "provider",
-              "title": "Provisioning with a long token name",
-              "url": "/apiv1/tokens",
-              "url_parameters": null,
-              "verb": "ENSURE"
-            }
-          ]
-        }
-      ],
-      activeMenu: 0,
-      activeSubMenu: 0,
-      currentAPI: ''
-    },
-    methods: {
-      toggleMenu (index) {
-        this.currentAPI = this.apis[index]
-        this.activeMenu = index
-        this.activeSubMenu = 0
-      }
-    },
-    mounted () {
-      console.log(this.apis[0])
-      this.currentAPI = this.apis[0]
+                            <p class="title is-5">
+                                Status Code: <span class="tag is-success is-medium">200</span>
+                            </p>
+                            <div class="response-headers">
+                                <h5 class="title is-5">Response Headers</h5>
+                                <pre>
+                             <code>
+Content-Type: application/json; charset=utf-8
+X-Pagination-Take: 100
+X-Pagination-Skip: 0
+X-Pagination-Count: 1
+Content-Length: 231
+                            </code>
+                         </pre>
+                            </div>
+
+                            <div class="response-body">
+                                <h5 class="title is-5">Response Body</h5>
+                                <pre>
+                                    <code class="json">
+[
+    {
+        "id":21,
+        "code":"A1801",
+        "type":"icd10",
+        "description":"Tuberculosis of spine",
+        "billable":true,
+        "specialityId":null,
+        "sectionId":2,
+        "collections":null
     }
-  })
-</script>
+]
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="test-case">
+                        <h3 class="title is-3">When</h3>
+                        <div class="request">
+                            <div class="url-parameter">
+                                <h4 class="title is-4">URL parameters</h4>
+                                <table class="table is-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Parameter</th>
+                                        <th>Example</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>code</td>
+                                        <td>12</td>
+                                    </tr>
+                                    <tr>
+                                        <td>member</td>
+                                        <td>1</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="form-parameters">
+                                <h4 class="title is-4">Form Parameters</h4>
+                                <table class="table is-bordered">
+                                    <thead>
+                                    <tr>
+                                        <th>Form Parameter</th>
+                                        <th>type</th>
+                                        <th>optional</th>
+                                    </tr>
+                                    </thead>
+                                    <tr>
+                                        <th>
+                                            code
+                                        </th>
+                                        <td>
+                                            string
+                                        </td>
+                                        <td>
+                                            false
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <h3 class="title is-3">Then</h3>
+                        <div class="response">
+
+                            <p class="title is-5">
+                                Status Code: <span class="tag is-danger is-medium">404</span>
+                            </p>
+                            <div class="response-headers">
+                                <h5 class="title is-5">Response Headers</h5>
+                                <pre>
+                             <code>
+Content-Type: application/json; charset=utf-8
+X-Pagination-Take: 100
+X-Pagination-Skip: 0
+X-Pagination-Count: 1
+Content-Length: 231
+                            </code>
+                         </pre>
+                            </div>
+
+                            <div class="response-body">
+                                <h5 class="title is-5">Response Body</h5>
+                                <pre>
+                                    <code class="json">
+[
+    {
+        "message":"Error! page not found",
+    }
+]
+                                    </code>
+                                </pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>hljs.initHighlightingOnLoad();</script>
 </body>
 </html>
