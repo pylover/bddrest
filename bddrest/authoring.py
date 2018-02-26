@@ -1,4 +1,4 @@
-from .specification import Call, ModifiedCall, Story
+from .specification import Call, ModifiedCall, RestApi
 from .helpers import Context
 from .types import WsgiApp
 
@@ -19,7 +19,7 @@ class When(ModifiedCall, ComposingMixin):
     pass
 
 
-class Given(Story, Context):
+class Given(RestApi, Context):
     def __init__(self, application: WsgiApp, *args, **kwargs):
         self.application = application
         base_call = ComposingCall(*args, **kwargs)

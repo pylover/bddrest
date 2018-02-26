@@ -1,6 +1,6 @@
 
 from .helpers import ObjectProxy
-from .specification import Call, Story, ModifiedCall, VerifyError
+from .specification import Call, RestApi, ModifiedCall, VerifyError
 from .authoring import Given, ComposingMixin, When, ComposingCall
 from .exceptions import IncompleteUrlParametersError
 

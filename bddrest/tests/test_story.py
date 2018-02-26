@@ -4,7 +4,7 @@ import cgi
 import functools
 import tempfile
 
-from bddrest import given, when, then, story, response, Call, and_, Story, ModifiedCall, VerifyError, \
+from bddrest import given, when, then, story, response, Call, and_, RestApi, ModifiedCall, VerifyError, \
     IncompleteUrlParametersError
 
 
@@ -187,7 +187,7 @@ class StoryTestCase(unittest.TestCase):
                 )
             ]
         )
-        loaded_story = Story.from_dict(data)
+        loaded_story = RestApi.from_dict(data)
         self.assertIsNotNone(loaded_story)
         self.assertIsInstance(loaded_story.base_call, Call)
         self.assertIsInstance(loaded_story.calls[0], ModifiedCall)
@@ -218,7 +218,7 @@ class StoryTestCase(unittest.TestCase):
             then(response.status_code == 400)
 
             dumped_story = story.dumps()
-            loaded_story = Story.loads(dumped_story)
+            loaded_story = RestApi.loads(dumped_story)
             self.assertDictEqual(story.to_dict(), loaded_story.to_dict())
 
     def test_verify(self):
@@ -243,7 +243,7 @@ class StoryTestCase(unittest.TestCase):
             )
             dumped_story = story.dumps()
 
-        loaded_story = Story.loads(dumped_story)
+        loaded_story = RestApi.loads(dumped_story)
         loaded_story.verify(wsgi_application)
 
         loaded_story.base_call.response.body = '{"a": 1}'
@@ -273,7 +273,7 @@ class StoryTestCase(unittest.TestCase):
                 story.dump(temp_file)
 
             temp_file.seek(0)
-            loaded_story = Story.load(temp_file)
+            loaded_story = RestApi.load(temp_file)
             self.assertIsNone(loaded_story.verify(wsgi_application))
 
 

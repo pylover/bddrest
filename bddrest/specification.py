@@ -97,6 +97,7 @@ class Response:
 
 class Call:
     _response: Response = None
+    _url_parameters = None
 
     def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None,
                  form: dict = None, content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
@@ -107,8 +108,8 @@ class Call:
         self.extra_environ = extra_environ
 
         self.url, self.url_parameters = self.extract_url_parameters(url)
-        if url_parameters:
-            self.url_parameters.update(url_parameters)
+        if url_parameters is not None:
+            self.url_parameters = url_parameters
         self.verb = verb
         self.form = form
         self.content_type = content_type
@@ -152,6 +153,15 @@ class Call:
             result['response'] = self.response.to_dict()
 
         return result
+
+    @property
+    def url_parameters(self):
+        return self._url_parameters
+
+    @url_parameters.setter
+    def url_parameters(self, value):
+        # FIXME: Validate the value
+        self._url_parameters = value
 
     @staticmethod
     def extract_url_parameters(url):
@@ -222,7 +232,7 @@ class ModifiedCall(Call):
         return result
 
 
-class Story:
+class RestApi:
     _yaml_options = dict(default_style=False, default_flow_style=False)
 
     def __init__(self, base_call, calls=None):
