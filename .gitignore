@@ -102,3 +102,7 @@ ENV/
 
 # jetbrains
 .idea
+
+# vim ctags
+.vimtags
+
