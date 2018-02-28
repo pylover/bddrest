@@ -5,7 +5,7 @@ import functools
 import tempfile
 
 from bddrest import given, when, then, story, response, Call, and_, RestApi, ModifiedCall, VerifyError, \
-    IncompleteUrlParametersError
+    InvalidUrlParametersError
 
 
 def wsgi_application(environ, start_response):
@@ -90,7 +90,7 @@ class StoryTestCase(unittest.TestCase):
 
         with given(wsgi_application, **call):
             then(response.status == '200 OK')
-            with self.assertRaises(IncompleteUrlParametersError):
+            with self.assertRaises(InvalidUrlParametersError):
                 when(
                     title='Incomplete url parameters',
                     url_parameters=dict(

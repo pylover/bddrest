@@ -103,6 +103,8 @@ ENV/
 # jetbrains
 .idea
 
-# vim ctags
+# vim 
 .vimtags
+.*.swp
+
 

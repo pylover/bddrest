@@ -6,6 +6,7 @@ import yaml
 from webtest import TestApp
 
 from .helpers import normalize_headers, normalize_query_string
+from .exceptions import InvalidUrlParametersError
 
 
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
@@ -154,14 +155,22 @@ class Call:
 
         return result
 
-    @property
-    def url_parameters(self):
-        return self._url_parameters
+    def validate_url_parameters(self):
+        given_parameters = set(self.url_parameters)
+        required_parameters = set(i[1:] for i in re.findall(':\w+', self.url))
+        
+        if given_parameters != required_parameters:
+            raise InvalidUrlParametersError(
+                required_parameters,
+                given_parameters
+            )
+        
+        for k, v in self.url_parameters.items():
+            if not isinstance(v, str):
+                self.url_parameters[k] = str(v)
 
-    @url_parameters.setter
-    def url_parameters(self, value):
-        # FIXME: Validate the value
-        self._url_parameters = value
+    def validate(self):
+        self.validate_url_parameters()
 
     @staticmethod
     def extract_url_parameters(url):
@@ -275,3 +284,8 @@ class RestApi:
     def loads(cls, string):
         data = yaml.load(string)
         return cls.from_dict(data)
+
+    def validate(self):
+        self.base_call.validate()
+        for call in self.calls:
+            call.validate()

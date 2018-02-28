@@ -1,8 +1,7 @@
 
-
-class BDDRESTException(Exception):
+class ValidationError(ValueError):
     pass
 
-
-class IncompleteUrlParametersError(BDDRESTException):
+class InvalidUrlParametersError(ValidationError):
     pass
+

@@ -31,11 +31,12 @@ class CallTestCase(unittest.TestCase):
         self.assertEqual(call.url, '/:id')
         self.assertDictEqual(call.url_parameters, dict(id='1'))
 
-        call = ComposingCall('Testing Call contractor', url='/id: 1/:name', url_parameters=dict(name='foo'))
+        call = ComposingCall('Testing Call contractor', url='/id: 1/:name', url_parameters=dict(name='foo', id=2))
+        call.validate()
         self.assertEqual(call.url, '/:id/:name')
-        self.assertDictEqual(call.url_parameters, dict(id='1', name='foo'))
+        self.assertDictEqual(call.url_parameters, dict(id='2', name='foo'))
         call.conclude(wsgi_application)
-        self.assertEqual('/1/foo', call.response.json['url'])
+        self.assertEqual('/2/foo', call.response.json['url'])
 
     def test_call_invoke(self):
         call = ComposingCall('Testing Call contractor', url='/id: 1')

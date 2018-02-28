@@ -8,6 +8,7 @@ class ComposingMixin:
 
     def conclude(self: Call, application):
         if self.response is None:
+            self.validate()
             self.response = self.invoke(application)
 
 
@@ -19,7 +20,7 @@ class When(ModifiedCall, ComposingMixin):
     pass
 
 
-class Given(RestApi, Context):
+class Story(RestApi, Context):
     def __init__(self, application: WsgiApp, *args, **kwargs):
         self.application = application
         base_call = ComposingCall(*args, **kwargs)
@@ -37,8 +38,11 @@ class Given(RestApi, Context):
         new_call = When(self.base_call, title, **kwargs)
         new_call.conclude(self.application)
         self.calls.append(new_call)
+        return new_call
 
     def then(self, *asserts):
         self.current_call.conclude(self.application)
         for passed in asserts:
             assert passed is not False
+        return self.current_call
+

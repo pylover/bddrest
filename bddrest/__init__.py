@@ -1,18 +1,18 @@
 
 from .helpers import ObjectProxy
 from .specification import Call, RestApi, ModifiedCall, VerifyError
-from .authoring import Given, ComposingMixin, When, ComposingCall
-from .exceptions import IncompleteUrlParametersError
+from .authoring import Story, ComposingMixin, When, ComposingCall
+from .exceptions import InvalidUrlParametersError, ValidationError
 
 __version__ = '0.3.1a1.dev4'
 
 
-story = ObjectProxy(Given.get_current)
+story = ObjectProxy(Story.get_current)
 response = ObjectProxy(lambda: story.current_call.response)
 
 
 def given(application, *args, **kwargs):
-    return Given(application, *args, **kwargs)
+    return Story(application, *args, **kwargs)
 
 
 def when(*args, **kwargs):
