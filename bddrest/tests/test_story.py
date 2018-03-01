@@ -98,6 +98,16 @@ class StoryTestCase(unittest.TestCase):
                     )
                 )
 
+            with self.assertRaises(InvalidUrlParametersError):
+                when(
+                    title='Extra url parameters',
+                    url_parameters=dict(
+                        name='any',
+                        id=3,
+                        garbage='yes'
+                    )
+                )
+
     def test_to_dict(self):
         call = dict(
             title='Binding',
