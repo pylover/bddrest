@@ -102,3 +102,6 @@ ENV/
 
 # jetbrains
 .idea
+
+# sass cache
+**/.sass-cache/
