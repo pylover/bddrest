@@ -98,7 +98,7 @@ class Response:
 
 class Call:
     _response: Response = None
-    _url_parameters = None
+    _url = None
 
     def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None,
                  form: dict = None, content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
@@ -107,8 +107,7 @@ class Call:
         self.response = response
         self.description = description
         self.extra_environ = extra_environ
-
-        self.url, self.url_parameters = self.extract_url_parameters(url)
+        self.url = url
         if url_parameters is not None:
             self.url_parameters = url_parameters
         self.verb = verb
@@ -117,6 +116,14 @@ class Call:
         self.headers = normalize_headers(headers)
         self.as_ = as_
         self.query = normalize_query_string(query)
+
+    @property
+    def url(self):
+        return self._url
+
+    @url.setter
+    def url(self, value):
+        self._url, self.url_parameters = self.extract_url_parameters(value)
 
     @property
     def response(self) -> Response:
