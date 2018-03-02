@@ -99,6 +99,8 @@ class Response:
 class Call:
     _response: Response = None
     _url = None
+    _headers = None
+    _query = None
 
     def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None,
                  form: dict = None, content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
@@ -108,14 +110,16 @@ class Call:
         self.description = description
         self.extra_environ = extra_environ
         self.url = url
+        # the `url_parameters` attribute may be set by the url setter. so we're
+        # not going to override it anyway.
         if url_parameters is not None:
             self.url_parameters = url_parameters
         self.verb = verb
         self.form = form
         self.content_type = content_type
-        self.headers = normalize_headers(headers)
+        self.headers = headers
         self.as_ = as_
-        self.query = normalize_query_string(query)
+        self.query = query
 
     @property
     def url(self):
@@ -124,6 +128,22 @@ class Call:
     @url.setter
     def url(self, value):
         self._url, self.url_parameters = self.extract_url_parameters(value)
+
+    @property
+    def headers(self):
+        return self._headers
+
+    @headers.setter
+    def headers(self, value):
+        self._headers = normalize_headers(value)
+
+    @property
+    def query(self):
+        return self._query
+
+    @query.setter
+    def query(self, value):
+        self._query = normalize_query_string(value)
 
     @property
     def response(self) -> Response:
