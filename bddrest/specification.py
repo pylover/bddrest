@@ -404,19 +404,18 @@ class Call(AbstractCall):
         self._form = value
 
 
-class ModifiedCall(Call):
-    def __init__(self, base_call: Call, title: str, description=None, response=None, url_parameters=None, **diff):
+class ModifiedCall(AbstractCall):
+    def __init__(self, base_call: Call, title: str, description=None, response=None, **diff):
         self.base_call = base_call
-        if 'url' in diff:
-            diff['url'], diff['url_parameters'] = self.extract_url_parameters(diff['url'])
-        if url_parameters:
-            diff.setdefault('url_parameters', {})
-            diff['url_parameters'].update(url_parameters)
-        self.diff = diff
+        super().__init__(title, description=description)
 
-        data = {k: v for k, v in base_call.to_dict().items() if k not in ('response', 'title', 'description')}
-        data.update(diff)
-        super().__init__(title, description=description, response=response, **data)
+        if 'url' in diff:
+            diff['url'], url_parameters = self.extract_url_parameters(diff['url'])
+            if url_parameters and 'url_parameters' not in diff:
+                diff['url_parameters'] = url_parameters
+
+        self.diff = diff
+        self.response = response
 
     def to_dict(self):
         result = dict(title=self.title)
@@ -430,7 +429,85 @@ class ModifiedCall(Call):
 
         return result
 
+    @property
+    def url(self):
+        return self.diff.get('url', self.base_call.url)
 
+    @url.setter
+    def url(self, value):
+        self.diff['url'], self.url_parameters = self.extract_url_parameters(value)
+
+    @property
+    def url_parameters(self):
+        return self.diff.get('url_parameters', self.base_call.url_parameters)
+
+    @url_parameters.setter
+    def url_parameters(self, value):
+        self.diff['url_parameters'] = value
+
+    @property
+    def verb(self):
+        return self.diff.get('verb', self.base_call.verb)
+
+    @verb.setter
+    def verb(self, value):
+        self.diff['verb'] = value
+
+    @property
+    def headers(self):
+        return self.diff.get('headers', self.base_call.headers)
+
+    @headers.setter
+    def headers(self, value):
+        self.diff['headers'] = value
+
+    @property
+    def query(self):
+        return self.diff.get('query', self.base_call.query)
+
+    @query.setter
+    def query(self, value):
+        self.diff['query'] = value
+
+    @property
+    def response(self) -> Response:
+        return self._response
+
+    @response.setter
+    def response(self, v):
+        self._response = Response(**v) if v and not isinstance(v, Response) else v
+
+    @property
+    def content_type(self):
+        return self._content_type
+
+    @content_type.setter
+    def content_type(self, value):
+        self._content_type = value
+
+    @property
+    def as_(self):
+        return self._as
+
+    @as_.setter
+    def as_(self, value):
+        self._as = value
+
+    @property
+    def extra_environ(self):
+        return self._extra_environ
+
+    @extra_environ.setter
+    def extra_environ(self, value):
+        self._extra_environ = value
+
+    @property
+    def form(self):
+        return self._form
+
+    @form.setter
+    def form(self, value):
+        self._form = value
 class RestApi:
     _yaml_options = dict(default_style=False, default_flow_style=False)
 
