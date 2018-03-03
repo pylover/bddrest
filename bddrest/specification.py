@@ -1,5 +1,6 @@
 import re
 import json as jsonlib
+from abc import ABCMeta, abstractmethod
 from urllib.parse import urlencode
 
 import yaml
@@ -96,19 +97,120 @@ class Response:
         return self.body == other.body
 
 
-class Call:
-    _response: Response = None
-    _url = None
-    _headers = None
-    _query = None
-
-    def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None,
-                 form: dict = None, content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
-                 description: str = None, extra_environ: dict = None, response=None):
+class AbstractCall(metaclass=ABCMeta):
+    def __init__(self, title, description=None):
         self.title = title
-        self.response = response
         self.description = description
-        self.extra_environ = extra_environ
+
+    @property
+    @abstractmethod
+    def verb(self):
+        pass
+
+    @verb.setter
+    @abstractmethod
+    def verb(self, value):
+        pass
+
+    @property
+    @abstractmethod
+    def url(self):
+        pass
+
+    @url.setter
+    @abstractmethod
+    def url(self, value):
+        pass
+    
+    @property
+    @abstractmethod
+    def url_parameters(self):
+        pass
+
+    @url_parameters.setter
+    @abstractmethod
+    def url_parameters(self, value):
+        pass
+    
+    @property
+    @abstractmethod
+    def headers(self):
+        pass
+
+    @headers.setter
+    @abstractmethod
+    def headers(self, value):
+        pass
+   
+    @property
+    @abstractmethod
+    def form(self):
+        pass
+    
+    @form.setter
+    @abstractmethod
+    def form(self, value):
+        pass
+
+    @property
+    @abstractmethod
+    def query(self):
+        pass
+
+    @query.setter
+    @abstractmethod
+    def query(self, value):
+        pass
+ 
+    @property
+    @abstractmethod
+    def content_type(self):
+        pass
+
+    @content_type.setter
+    @abstractmethod
+    def content_type(self, value):
+        pass
+    
+    @property
+    @abstractmethod
+    def as_(self):
+        pass
+
+    @as_.setter
+    @abstractmethod
+    def as_(self, value):
+        pass
+
+    @property
+    @abstractmethod
+    def extra_environ(self):
+        pass
+
+    @extra_environ.setter
+    @abstractmethod
+    def extra_environ(self, value):
+        pass
+    
+
+class Call(AbstractCall):
+
+    _response: Response = None
+    _headers = None
+    _url = None
+    _url_parameters = None
+    _verb = None
+    _query = None
+    _form = None
+    _content_type = None  # FIXME: remove it and use header set to store it.
+    _as = None
+    _extra_environ = None
+
+    def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None, form: dict = None,
+                 content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
+                 description: str = None, extra_environ: dict = None, response=None):
+        super().__init__(title, description=description)
+
         self.url = url
         # the `url_parameters` attribute may be set by the url setter. so we're
         # not going to override it anyway.
@@ -120,6 +222,8 @@ class Call:
         self.headers = headers
         self.as_ = as_
         self.query = query
+        self.extra_environ = extra_environ
+        self.response = response
 
     @property
     def url(self):
@@ -128,6 +232,22 @@ class Call:
     @url.setter
     def url(self, value):
         self._url, self.url_parameters = self.extract_url_parameters(value)
+
+    @property
+    def url_parameters(self):
+        return self._url_parameters
+
+    @url_parameters.setter
+    def url_parameters(self, value):
+        self._url_parameters = value
+
+    @property
+    def verb(self):
+        return self._verb
+
+    @verb.setter
+    def verb(self, value):
+        self._verb = value
 
     @property
     def headers(self):
@@ -152,6 +272,38 @@ class Call:
     @response.setter
     def response(self, v):
         self._response = Response(**v) if v and not isinstance(v, Response) else v
+
+    @property
+    def content_type(self):
+        return self._content_type
+
+    @content_type.setter
+    def content_type(self, value):
+        self._content_type = value
+
+    @property
+    def as_(self):
+        return self._as
+
+    @as_.setter
+    def as_(self, value):
+        self._as = value
+
+    @property
+    def extra_environ(self):
+        return self._extra_environ
+
+    @extra_environ.setter
+    def extra_environ(self, value):
+        self._extra_environ = value
+
+    @property
+    def form(self):
+        return self._form
+
+    @form.setter
+    def form(self, value):
+        self._form = value
 
     def to_dict(self):
         result = dict(
@@ -206,7 +358,7 @@ class Call:
             for k, v in URL_PARAMETER_PATTERN.findall(url):
                 url_parameters[k] = v
                 url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
-        return url, url_parameters
+        return url, url_parameters if url_parameters else None
 
     def invoke(self, application):
         url = self.url
