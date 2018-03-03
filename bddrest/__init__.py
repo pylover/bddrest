@@ -4,7 +4,7 @@ from .specification import Call, RestApi, ModifiedCall, VerifyError
 from .authoring import Story, ComposingMixin, When, ComposingCall
 from .exceptions import InvalidUrlParametersError, ValidationError
 
-__version__ = '0.3.1a1.dev4'
+__version__ = '0.4.0a2'
 
 
 story = ObjectProxy(Story.get_current)
