@@ -404,7 +404,6 @@ class Call(AbstractCall):
         self._form = value
 
 
-
 class ModifiedCall(Call):
     def __init__(self, base_call: Call, title: str, description=None, response=None, url_parameters=None, **diff):
         self.base_call = base_call
