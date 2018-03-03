@@ -2,6 +2,7 @@ import re
 import json as jsonlib
 from abc import ABCMeta, abstractmethod
 from urllib.parse import urlencode
+from typing import Iterable
 
 import yaml
 from webtest import TestApp
@@ -102,9 +103,96 @@ class AbstractCall(metaclass=ABCMeta):
         self.title = title
         self.description = description
 
+    def to_dict(self):
+        result = dict(
+            title=self.title,
+            url=self.url,
+            verb=self.verb,
+        )
+        if self.url_parameters is not None:
+            result['url_parameters'] = self.url_parameters
+
+        if self.form is not None:
+            result['form'] = self.form
+
+        if self.headers is not None:
+            result['headers'] = [': '.join(h) for h in self.headers]
+
+        if self.as_ is not None:
+            result['as_'] = self.as_
+
+        if self.query is not None:
+            result['query'] = self.query
+
+        if self.description is not None:
+            result['description'] = self.description
+
+        if self.response is not None:
+            result['response'] = self.response.to_dict()
+
+        return result
+
+    def validate_url_parameters(self):
+        given_parameters = set(self.url_parameters)
+        required_parameters = set(i[1:] for i in re.findall(':\w+', self.url))
+
+        if given_parameters != required_parameters:
+            raise InvalidUrlParametersError(
+                required_parameters,
+                given_parameters
+            )
+
+        for k, v in self.url_parameters.items():
+            if not isinstance(v, str):
+                self.url_parameters[k] = str(v)
+
+    def validate(self):
+        self.validate_url_parameters()
+
+    @staticmethod
+    def extract_url_parameters(url):
+        url_parameters = {}
+        if URL_PARAMETER_PATTERN.search(url):
+            for k, v in URL_PARAMETER_PATTERN.findall(url):
+                url_parameters[k] = v
+                url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
+        return url, url_parameters if url_parameters else None
+
+    def invoke(self, application):
+        url = self.url
+        if self.url_parameters:
+            for k, v in self.url_parameters.items():
+                url = url.replace(f':{k}', str(v))
+
+        url = f'{url}?{urlencode(self.query)}' if self.query else url
+
+        headers = self.headers or []
+        if self.content_type:
+            headers = [h for h in headers if h[0].lower() != 'content-type']
+            headers.append(('Content-Type', self.content_type))
+
+        request_params = dict(
+            expect_errors=True,
+            extra_environ=self.extra_environ,
+            headers=headers,
+            # Commented for future usages by pylover
+            # upload_files=upload_files,
+        )
+        if self.form:
+            request_params['params'] = self.form
+
+        # noinspection PyProtectedMember
+        response = TestApp(application)._gen_request(self.verb, url, **request_params)
+        return Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
+
+    def verify(self, application):
+        response = self.invoke(application)
+        if self.response != response:
+            raise VerifyError()
+
     @property
     @abstractmethod
-    def verb(self):
+    def verb(self) -> str:
         pass
 
     @verb.setter
@@ -114,7 +202,7 @@ class AbstractCall(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def url(self):
+    def url(self) -> str:
         pass
 
     @url.setter
@@ -124,7 +212,7 @@ class AbstractCall(metaclass=ABCMeta):
     
     @property
     @abstractmethod
-    def url_parameters(self):
+    def url_parameters(self) -> dict:
         pass
 
     @url_parameters.setter
@@ -134,17 +222,17 @@ class AbstractCall(metaclass=ABCMeta):
     
     @property
     @abstractmethod
-    def headers(self):
+    def headers(self) -> Iterable:
         pass
 
     @headers.setter
     @abstractmethod
-    def headers(self, value):
+    def headers(self, value: Iterable):
         pass
    
     @property
     @abstractmethod
-    def form(self):
+    def form(self) -> dict:
         pass
     
     @form.setter
@@ -154,7 +242,7 @@ class AbstractCall(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def query(self):
+    def query(self) -> dict:
         pass
 
     @query.setter
@@ -164,7 +252,7 @@ class AbstractCall(metaclass=ABCMeta):
  
     @property
     @abstractmethod
-    def content_type(self):
+    def content_type(self) -> str:
         pass
 
     @content_type.setter
@@ -174,7 +262,7 @@ class AbstractCall(metaclass=ABCMeta):
     
     @property
     @abstractmethod
-    def as_(self):
+    def as_(self) -> str:
         pass
 
     @as_.setter
@@ -184,7 +272,7 @@ class AbstractCall(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def extra_environ(self):
+    def extra_environ(self) -> dict:
         pass
 
     @extra_environ.setter
@@ -192,6 +280,16 @@ class AbstractCall(metaclass=ABCMeta):
     def extra_environ(self, value):
         pass
     
+    @property
+    @abstractmethod
+    def response(self) -> Response:
+        pass
+
+    @response.setter
+    @abstractmethod
+    def response(self, value):
+        pass
+
 
 class Call(AbstractCall):
 
@@ -305,92 +403,6 @@ class Call(AbstractCall):
     def form(self, value):
         self._form = value
 
-    def to_dict(self):
-        result = dict(
-            title=self.title,
-            url=self.url,
-            verb=self.verb,
-        )
-        if self.url_parameters is not None:
-            result['url_parameters'] = self.url_parameters
-
-        if self.form is not None:
-            result['form'] = self.form
-
-        if self.headers is not None:
-            result['headers'] = [': '.join(h) for h in self.headers]
-
-        if self.as_ is not None:
-            result['as_'] = self.as_
-
-        if self.query is not None:
-            result['query'] = self.query
-
-        if self.description is not None:
-            result['description'] = self.description
-
-        if self.response is not None:
-            result['response'] = self.response.to_dict()
-
-        return result
-
-    def validate_url_parameters(self):
-        given_parameters = set(self.url_parameters)
-        required_parameters = set(i[1:] for i in re.findall(':\w+', self.url))
-        
-        if given_parameters != required_parameters:
-            raise InvalidUrlParametersError(
-                required_parameters,
-                given_parameters
-            )
-        
-        for k, v in self.url_parameters.items():
-            if not isinstance(v, str):
-                self.url_parameters[k] = str(v)
-
-    def validate(self):
-        self.validate_url_parameters()
-
-    @staticmethod
-    def extract_url_parameters(url):
-        url_parameters = {}
-        if URL_PARAMETER_PATTERN.search(url):
-            for k, v in URL_PARAMETER_PATTERN.findall(url):
-                url_parameters[k] = v
-                url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
-        return url, url_parameters if url_parameters else None
-
-    def invoke(self, application):
-        url = self.url
-        if self.url_parameters:
-            for k, v in self.url_parameters.items():
-                url = url.replace(f':{k}', str(v))
-
-        url = f'{url}?{urlencode(self.query)}' if self.query else url
-
-        headers = self.headers or []
-        if self.content_type:
-            headers = [h for h in headers if h[0].lower() != 'content-type']
-            headers.append(('Content-Type', self.content_type))
-
-        request_params = dict(
-            expect_errors=True,
-            extra_environ=self.extra_environ,
-            headers=headers,
-            # Commented for future usages by pylover
-            # upload_files=upload_files,
-        )
-        if self.form:
-            request_params['params'] = self.form
-
-        # noinspection PyProtectedMember
-        response = TestApp(application)._gen_request(self.verb, url, **request_params)
-        return Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
-
-    def verify(self, application):
-        response = self.invoke(application)
-        if self.response != response:
-            raise VerifyError()
 
 
 class ModifiedCall(Call):
