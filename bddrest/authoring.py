@@ -1,34 +1,17 @@
-from .specification import Call, ModifiedCall, RestApi
-from .helpers import Context
+from .specification import Given, When, Story, Call
+from .helpers import Context, ObjectProxy
 from .types import WsgiApp
 
 
-class ComposingMixin:
-    response = None
-
-    def conclude(self: Call, application):
-        if self.response is None:
-            self.validate()
-            self.response = self.invoke(application)
-
-
-class ComposingCall(Call, ComposingMixin):
-    pass
-
-
-class When(ModifiedCall, ComposingMixin):
-    pass
-
-
-class Story(RestApi, Context):
+class Composer(Story, Context):
     def __init__(self, application: WsgiApp, *args, **kwargs):
         self.application = application
-        base_call = ComposingCall(*args, **kwargs)
+        base_call = Given(*args, **kwargs)
         base_call.conclude(application)
         super().__init__(base_call)
 
     @property
-    def current_call(self) -> ComposingMixin:
+    def current_call(self) -> Call:
         if self.calls:
             return self.calls[-1]
         else:
@@ -45,4 +28,23 @@ class Story(RestApi, Context):
         for passed in asserts:
             assert passed is not False
         return self.current_call
+
+
+composer = ObjectProxy(Composer.get_current)
+response = ObjectProxy(lambda: composer.current_call.response)
+
+
+def given(application, *args, **kwargs):
+    return Composer(application, *args, **kwargs)
+
+
+def when(*args, **kwargs):
+    composer.when(*args, **kwargs)
+
+
+def then(*args, **kwargs):
+    composer.then(*args, **kwargs)
+
+
+and_ = then
 

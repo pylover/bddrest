@@ -23,7 +23,22 @@ Toolchain to define and verify REST API in BDD.
 
 ```python
 
-from bddrest import given, when, then, and_, response
+import sys
+import json
+
+from bddrest.authoring import given, when, then, and_, response, composer
+
+
+def wsgi_application(environ, start_response):
+    path = environ['PATH_INFO']
+    if path.endswith('/None'):
+        start_response('404 Not Found', [('Content-Type', 'text/plain;charset=utf-8')])
+        return ''
+    start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
+    result = json.dumps(dict(
+        foo='bar'
+    ))
+    yield result.encode()
 
 
 with given(
@@ -43,5 +58,6 @@ with given(
 
     then(response.status_code == 404)
 
+    composer.dump(sys.stdout)
 
 ```

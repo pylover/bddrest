@@ -8,16 +8,12 @@ import yaml
 from webtest import TestApp
 
 from .helpers import normalize_headers, normalize_query_string
-from .exceptions import InvalidUrlParametersError
+from .exceptions import InvalidUrlParametersError, CallVerifyError
 
 
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 URL_PARAMETER_VALUE_PATTERN = '[\w\d_-]+'
 URL_PARAMETER_PATTERN = re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
-
-
-class VerifyError(Exception):
-    pass
 
 
 # FIXME: Implement it!
@@ -98,7 +94,7 @@ class Response:
         return self.body == other.body
 
 
-class AbstractCall(metaclass=ABCMeta):
+class Call(metaclass=ABCMeta):
 
     def __init__(self, title, description=None, response=None):
         self.title = title
@@ -192,7 +188,12 @@ class AbstractCall(metaclass=ABCMeta):
     def verify(self, application):
         response = self.invoke(application)
         if self.response != response:
-            raise VerifyError()
+            raise CallVerifyError()
+
+    def conclude(self, application):
+        if self.response is None:
+            self.validate()
+            self.response = self.invoke(application)
 
     @property
     @abstractmethod
@@ -285,7 +286,7 @@ class AbstractCall(metaclass=ABCMeta):
         pass
 
 
-class Call(AbstractCall):
+class Given(Call):
 
     _headers = None
     _url = None
@@ -388,8 +389,8 @@ class Call(AbstractCall):
         self._form = value
 
 
-class ModifiedCall(AbstractCall):
-    def __init__(self, base_call: Call, title: str, description=None, response=None, **diff):
+class When(Call):
+    def __init__(self, base_call: Given, title: str, description=None, response=None, **diff):
         self.base_call = base_call
         super().__init__(title, description=description, response=response)
 
@@ -485,7 +486,7 @@ class ModifiedCall(AbstractCall):
         self.diff['form'] = value
 
 
-class RestApi:
+class Story:
     _yaml_options = dict(default_style=False, default_flow_style=False)
 
     def __init__(self, base_call, calls=None):
@@ -500,10 +501,10 @@ class RestApi:
 
     @classmethod
     def from_dict(cls, data):
-        base_call = Call(**data['base_call'])
+        base_call = Given(**data['base_call'])
         return cls(
             base_call,
-            calls=[ModifiedCall(base_call, **d) for d in data['calls']] if data.get('calls') else None
+            calls=[When(base_call, **d) for d in data['calls']] if data.get('calls') else None
         )
 
     def dump(self, file):

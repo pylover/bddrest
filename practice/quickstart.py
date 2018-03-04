@@ -1,4 +1,7 @@
+import sys
 import json
+
+from bddrest.authoring import given, when, then, and_, response, composer
 
 
 def wsgi_application(environ, start_response):
@@ -11,9 +14,6 @@ def wsgi_application(environ, start_response):
         foo='bar'
     ))
     yield result.encode()
-
-
-from bddrest import given, when, then, and_, response
 
 
 with given(
@@ -32,3 +32,6 @@ with given(
     )
 
     then(response.status_code == 404)
+
+    composer.dump(sys.stdout)
+

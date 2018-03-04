@@ -4,8 +4,9 @@ import cgi
 import functools
 import tempfile
 
-from bddrest import given, when, then, story, response, Call, and_, RestApi, ModifiedCall, VerifyError, \
-    InvalidUrlParametersError
+from bddrest.specification import Call, Story, When, Given
+from bddrest.authoring import given, when, then, composer, response, and_ 
+from bddrest.exceptions import InvalidUrlParametersError, CallVerifyError
 
 
 def wsgi_application(environ, start_response):
@@ -41,7 +42,7 @@ class StoryTestCase(unittest.TestCase):
             title='Binding and registering the device after verifying the activation code',
             description='As a new visitor I have to bind my device with activation code and phone number',
             url='/apiv1/devices/name: SM-12345678',
-            verb='BIND',
+            verb='POST',
             as_='visitor',
             query=dict(
                 a=1,
@@ -81,7 +82,7 @@ class StoryTestCase(unittest.TestCase):
         call = dict(
             title='Multiple url parameters',
             url='/apiv1/devices/name: SM-12345678/id: 1',
-            verb='BIND',
+            verb='POST',
             form=dict(
                 activationCode='746727',
                 phone='+9897654321'
@@ -112,7 +113,7 @@ class StoryTestCase(unittest.TestCase):
         call = dict(
             title='Binding',
             url='/apiv1/devices/name: SM-12345678',
-            verb='BIND',
+            verb='POST',
             as_='visitor',
             form=dict(
                 activationCode='746727',
@@ -130,11 +131,11 @@ class StoryTestCase(unittest.TestCase):
             )
             then(response.status_code == 400)
 
-            story_dict = story.to_dict()
+            story_dict = composer.to_dict()
             self.assertDictEqual(story_dict['base_call'], dict(
                 title='Binding',
                 url='/apiv1/devices/:name',
-                verb='BIND',
+                verb='POST',
                 as_='visitor',
                 url_parameters=dict(name='SM-12345678'),
                 form=dict(
@@ -167,7 +168,7 @@ class StoryTestCase(unittest.TestCase):
             base_call=dict(
                 title='Binding',
                 url='/apiv1/devices/:name',
-                verb='BIND',
+                verb='POST',
                 as_='visitor',
                 url_parameters=dict(name='SM-12345678'),
                 form=dict(
@@ -197,10 +198,10 @@ class StoryTestCase(unittest.TestCase):
                 )
             ]
         )
-        loaded_story = RestApi.from_dict(data)
+        loaded_story = Story.from_dict(data)
         self.assertIsNotNone(loaded_story)
         self.assertIsInstance(loaded_story.base_call, Call)
-        self.assertIsInstance(loaded_story.calls[0], ModifiedCall)
+        self.assertIsInstance(loaded_story.calls[0], When)
 
         self.assertEqual(loaded_story.base_call.response.status_code, 200)
         self.assertDictEqual(data, loaded_story.to_dict())
@@ -209,7 +210,7 @@ class StoryTestCase(unittest.TestCase):
         call = dict(
             title='Binding',
             url='/apiv1/devices/name: SM-12345678',
-            verb='BIND',
+            verb='POST',
             as_='visitor',
             form=dict(
                 activationCode='746727',
@@ -227,15 +228,15 @@ class StoryTestCase(unittest.TestCase):
             )
             then(response.status_code == 400)
 
-            dumped_story = story.dumps()
-            loaded_story = RestApi.loads(dumped_story)
-            self.assertDictEqual(story.to_dict(), loaded_story.to_dict())
+            dumped_story = composer.dumps()
+            loaded_story = Story.loads(dumped_story)
+            self.assertDictEqual(composer.to_dict(), loaded_story.to_dict())
 
     def test_verify(self):
         call = dict(
             title='Binding',
             url='/apiv1/devices/name: SM-12345678',
-            verb='BIND',
+            verb='POST',
             as_='visitor',
             form=dict(
                 activationCode='746727',
@@ -251,20 +252,20 @@ class StoryTestCase(unittest.TestCase):
                     activationCode='badCode'
                 )
             )
-            dumped_story = story.dumps()
+            dumped_story = composer.dumps()
 
-        loaded_story = RestApi.loads(dumped_story)
+        loaded_story = Story.loads(dumped_story)
         loaded_story.verify(wsgi_application)
 
         loaded_story.base_call.response.body = '{"a": 1}'
-        self.assertRaises(VerifyError, functools.partial(loaded_story.verify, wsgi_application))
+        self.assertRaises(CallVerifyError, functools.partial(loaded_story.verify, wsgi_application))
 
     def test_dump_load_file(self):
         with tempfile.TemporaryFile(mode='w+', encoding='utf-8') as temp_file:
             call = dict(
                 title='Binding',
                 url='/apiv1/devices/name: SM-12345678',
-                verb='BIND',
+                verb='POST',
                 as_='visitor',
                 form=dict(
                     activationCode='746727',
@@ -280,10 +281,10 @@ class StoryTestCase(unittest.TestCase):
                         activationCode='badCode'
                     )
                 )
-                story.dump(temp_file)
+                composer.dump(temp_file)
 
             temp_file.seek(0)
-            loaded_story = RestApi.load(temp_file)
+            loaded_story = Story.load(temp_file)
             self.assertIsNone(loaded_story.verify(wsgi_application))
 
 
