@@ -99,9 +99,11 @@ class Response:
 
 
 class AbstractCall(metaclass=ABCMeta):
-    def __init__(self, title, description=None):
+
+    def __init__(self, title, description=None, response=None):
         self.title = title
         self.description = description
+        self.response = response
 
     def to_dict(self):
         result = dict(
@@ -279,21 +281,10 @@ class AbstractCall(metaclass=ABCMeta):
     @abstractmethod
     def extra_environ(self, value):
         pass
-    
-    @property
-    @abstractmethod
-    def response(self) -> Response:
-        pass
-
-    @response.setter
-    @abstractmethod
-    def response(self, value):
-        pass
 
 
 class Call(AbstractCall):
 
-    _response: Response = None
     _headers = None
     _url = None
     _url_parameters = None
@@ -306,8 +297,8 @@ class Call(AbstractCall):
 
     def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None, form: dict = None,
                  content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
-                 description: str = None, extra_environ: dict = None, response=None):
-        super().__init__(title, description=description)
+                 description: str = None, extra_environ: dict = None, response: Response=None):
+        super().__init__(title, description=description, response=response)
 
         self.url = url
         # the `url_parameters` attribute may be set by the url setter. so we're
@@ -321,7 +312,6 @@ class Call(AbstractCall):
         self.as_ = as_
         self.query = query
         self.extra_environ = extra_environ
-        self.response = response
 
     @property
     def url(self):
@@ -364,14 +354,6 @@ class Call(AbstractCall):
         self._query = normalize_query_string(value)
 
     @property
-    def response(self) -> Response:
-        return self._response
-
-    @response.setter
-    def response(self, v):
-        self._response = Response(**v) if v and not isinstance(v, Response) else v
-
-    @property
     def content_type(self):
         return self._content_type
 
@@ -407,7 +389,7 @@ class Call(AbstractCall):
 class ModifiedCall(AbstractCall):
     def __init__(self, base_call: Call, title: str, description=None, response=None, **diff):
         self.base_call = base_call
-        super().__init__(title, description=description)
+        super().__init__(title, description=description, response=response)
 
         if 'url' in diff:
             diff['url'], url_parameters = self.extract_url_parameters(diff['url'])
@@ -415,7 +397,6 @@ class ModifiedCall(AbstractCall):
                 diff['url_parameters'] = url_parameters
 
         self.diff = diff
-        self.response = response
 
     def to_dict(self):
         result = dict(title=self.title)
@@ -470,14 +451,6 @@ class ModifiedCall(AbstractCall):
         self.diff['query'] = value
 
     @property
-    def response(self) -> Response:
-        return self._response
-
-    @response.setter
-    def response(self, v):
-        self._response = Response(**v) if v and not isinstance(v, Response) else v
-
-    @property
     def content_type(self):
         return self._content_type
 
@@ -508,6 +481,8 @@ class ModifiedCall(AbstractCall):
     @form.setter
     def form(self, value):
         self._form = value
+
+
 class RestApi:
     _yaml_options = dict(default_style=False, default_flow_style=False)
 
