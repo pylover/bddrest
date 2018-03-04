@@ -133,8 +133,8 @@ class Call(metaclass=ABCMeta):
         return result
 
     def validate_url_parameters(self):
-        given_parameters = set(self.url_parameters)
         required_parameters = set(i[1:] for i in re.findall(':\w+', self.url))
+        given_parameters = set(self.url_parameters or [])
 
         if given_parameters != required_parameters:
             raise InvalidUrlParametersError(

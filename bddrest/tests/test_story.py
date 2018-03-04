@@ -91,6 +91,7 @@ class StoryTestCase(unittest.TestCase):
 
         with given(wsgi_application, **call):
             then(response.status == '200 OK')
+
             with self.assertRaises(InvalidUrlParametersError):
                 when(
                     title='Incomplete url parameters',
@@ -109,6 +110,14 @@ class StoryTestCase(unittest.TestCase):
                     )
                 )
 
+            with self.assertRaises(InvalidUrlParametersError):
+                when(
+                    title='Without url parameters',
+                    url_parameters=None                
+                )
+                
+
+ 
     def test_to_dict(self):
         call = dict(
             title='Binding',
