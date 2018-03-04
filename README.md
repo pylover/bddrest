@@ -60,3 +60,32 @@ with given(
     composer.dump(sys.stdout)
 
 ```
+
+Will produces:
+
+```yaml
+
+base_call:
+  as_: visitor
+  response:
+    headers:
+    - 'Content-Type: application/json;charset=utf-8'
+    json:
+      foo: bar
+    status: 200 OK
+  title: Quickstart!
+  url: /books/:id
+  url_parameters:
+    id: '1'
+  verb: GET
+calls:
+- response:
+    headers:
+    - 'Content-Type: text/plain;charset=utf-8'
+    status: 404 Not Found
+  title: Trying invalid book id
+  url_parameters:
+    id: None
+
+```
+
