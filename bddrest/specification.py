@@ -103,6 +103,8 @@ class AbstractCall(metaclass=ABCMeta):
     def __init__(self, title, description=None, response=None):
         self.title = title
         self.description = description
+        if response is not None and not isinstance(response, Response):
+            response = Response(**response)
         self.response = response
 
     def to_dict(self):
@@ -160,7 +162,7 @@ class AbstractCall(metaclass=ABCMeta):
                 url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
         return url, url_parameters if url_parameters else None
 
-    def invoke(self, application):
+    def invoke(self, application) -> Response:
         url = self.url
         if self.url_parameters:
             for k, v in self.url_parameters.items():
@@ -452,35 +454,35 @@ class ModifiedCall(AbstractCall):
 
     @property
     def content_type(self):
-        return self._content_type
+        return self.diff.get('content_type', self.base_call.content_type)
 
     @content_type.setter
     def content_type(self, value):
-        self._content_type = value
+        self.diif['content_type'] = value
 
     @property
     def as_(self):
-        return self._as
+        return self.diff.get('as_', self.base_call.as_)
 
     @as_.setter
     def as_(self, value):
-        self._as = value
+        self.diff['as_'] = value
 
     @property
     def extra_environ(self):
-        return self._extra_environ
+        return self.diff.get('extra_environ', self.base_call.extra_environ)
 
     @extra_environ.setter
     def extra_environ(self, value):
-        self._extra_environ = value
+        self.diff['extra_environ'] = value
 
     @property
     def form(self):
-        return self._form
+        return self.diff.get('form', self.base_call.form)
 
     @form.setter
     def form(self, value):
-        self._form = value
+        self.diff['form'] = value
 
 
 class RestApi:
