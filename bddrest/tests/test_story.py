@@ -115,9 +115,20 @@ class StoryTestCase(unittest.TestCase):
                     title='Without url parameters',
                     url_parameters=None                
                 )
-                
 
- 
+        call = dict(
+            title='No url parameters',
+            url='/apiv1/devices',
+            verb='POST',
+            form=dict(
+                activationCode='746727',
+                phone='+9897654321'
+            ),
+        )
+
+        with given(wsgi_application, **call):
+            then(response.status == '200 OK')
+
     def test_to_dict(self):
         call = dict(
             title='Binding',

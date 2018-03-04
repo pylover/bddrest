@@ -134,6 +134,9 @@ class Call(metaclass=ABCMeta):
 
     def validate_url_parameters(self):
         required_parameters = set(i[1:] for i in re.findall(':\w+', self.url))
+        if not required_parameters and self.url_parameters is None:
+            return
+
         given_parameters = set(self.url_parameters or [])
 
         if given_parameters != required_parameters:
