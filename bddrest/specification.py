@@ -399,7 +399,7 @@ class When(Call):
 
         if 'url' in diff:
             diff['url'], url_parameters = self.extract_url_parameters(diff['url'])
-            if url_parameters and 'url_parameters' not in diff:
+            if 'url_parameters' not in diff:
                 diff['url_parameters'] = url_parameters
 
         self.diff = diff
