@@ -16,22 +16,23 @@ def wsgi_application(environ, start_response):
     yield result.encode()
 
 
-with given(
-        wsgi_application,
-        title='Quickstart!',
-        url='/books/id: 1',
-        as_='visitor'):
+if __name__ == '__main__':
+    with given(
+            wsgi_application,
+            title='Quickstart!',
+            url='/books/id: 1',
+            as_='visitor'):
 
-    then(response.status == '200 OK')
-    and_('foo' in response.json)
-    and_(response.json['foo'] == 'bar')
+        then(response.status == '200 OK')
+        and_('foo' in response.json)
+        and_(response.json['foo'] == 'bar')
 
-    when(
-        'Trying invalid book id',
-        url_parameters={'id': None}
-    )
+        when(
+            'Trying invalid book id',
+            url_parameters={'id': None}
+        )
 
-    then(response.status_code == 404)
+        then(response.status_code == 404)
 
-    composer.dump(sys.stdout)
+        composer.dump(sys.stdout)
 
