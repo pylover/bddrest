@@ -15,10 +15,11 @@ class DocumentaryTestCase(unittest.TestCase):
               foo: bar
             status: 200 OK
           title: Quickstart!
+          description: Awesome API!
           url: /books/:id
           url_parameters:
             id: '1'
-          verb: GET
+          verb: PUT
         calls:
         - response:
             headers:
@@ -32,9 +33,14 @@ class DocumentaryTestCase(unittest.TestCase):
         story = Story.loads(self.sample_yaml)
         outfile = io.BytesIO()
         story.document(outfile)
+        outputstring = outfile.getvalue().decode()
         self.assertEqual(
             '# Quickstart!\n'
-            '', outfile.getvalue().decode())
+            '## PUT /books/:id\n'
+            'Awesome API!\n'
+            '',
+            outputstring
+        )
 
 
 if __name__ == '__main__':

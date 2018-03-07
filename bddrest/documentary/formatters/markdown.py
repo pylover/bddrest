@@ -20,3 +20,6 @@ class MarkdownFormatter(Formatter):
     def write_header6(self, text):
         self.writeline(f'###### {text}')
 
+    def write_paragraph(self, text):
+        self.writeline(text)
+

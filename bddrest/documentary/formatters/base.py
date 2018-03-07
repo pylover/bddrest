@@ -35,3 +35,7 @@ class Formatter(metaclass=ABCMeta):
     def write_header6(self, text):
         pass
 
+    @abstractmethod
+    def write_paragraph(self, text):
+        pass
+
