@@ -6,5 +6,6 @@ class Documenter:
         self.formatter_factory = formatter_factory
 
     def document(self, story, outfile):
-        raise NotImplementedError()
+        formatter = self.formatter_factory(outfile)
+        formatter.write_header1(story.title)
 

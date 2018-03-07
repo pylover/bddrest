@@ -57,3 +57,7 @@ class Story:
         documenter = Documenter(formatter_factory)
         documenter.document(self, outfile)
 
+    @property
+    def title(self):
+        return self.base_call.title
+

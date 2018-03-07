@@ -31,9 +31,10 @@ class DocumentaryTestCase(unittest.TestCase):
     def test_markdown(self):
         story = Story.loads(self.sample_yaml)
         outfile = io.BytesIO()
-        markdown = story.document(outfile)
-        self.assertEqual('''
-        ''', markdown)
+        story.document(outfile)
+        self.assertEqual(
+            '# Quickstart!\n'
+            '', outfile.getvalue().decode())
 
 
 if __name__ == '__main__':
