@@ -13,7 +13,8 @@ from .exceptions import InvalidUrlParametersError, CallVerifyError
 
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 URL_PARAMETER_VALUE_PATTERN = '[\w\d_-]+'
-URL_PARAMETER_PATTERN = re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
+URL_PARAMETER_PATTERN = \
+    re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
 
 
 # FIXME: Implement it!
@@ -217,7 +218,7 @@ class Call(metaclass=ABCMeta):
     @abstractmethod
     def url(self, value):
         pass
-    
+
     @property
     @abstractmethod
     def url_parameters(self) -> dict:
@@ -227,7 +228,7 @@ class Call(metaclass=ABCMeta):
     @abstractmethod
     def url_parameters(self, value):
         pass
-    
+
     @property
     @abstractmethod
     def headers(self) -> Iterable:
@@ -237,12 +238,12 @@ class Call(metaclass=ABCMeta):
     @abstractmethod
     def headers(self, value: Iterable):
         pass
-   
+
     @property
     @abstractmethod
     def form(self) -> dict:
         pass
-    
+
     @form.setter
     @abstractmethod
     def form(self, value):
@@ -257,7 +258,7 @@ class Call(metaclass=ABCMeta):
     @abstractmethod
     def query(self, value):
         pass
- 
+
     @property
     @abstractmethod
     def content_type(self) -> str:
@@ -267,7 +268,7 @@ class Call(metaclass=ABCMeta):
     @abstractmethod
     def content_type(self, value):
         pass
-    
+
     @property
     @abstractmethod
     def as_(self) -> str:
@@ -488,52 +489,3 @@ class When(Call):
     def form(self, value):
         self.diff['form'] = value
 
-
-class Story:
-    _yaml_options = dict(default_style=False, default_flow_style=False)
-
-    def __init__(self, base_call, calls=None):
-        self.base_call = base_call
-        self.calls = calls or []
-
-    def to_dict(self):
-        return dict(
-            base_call=self.base_call.to_dict(),
-            calls=[c.to_dict() for c in self.calls]
-        )
-
-    @classmethod
-    def from_dict(cls, data):
-        base_call = Given(**data['base_call'])
-        return cls(
-            base_call,
-            calls=[When(base_call, **d) for d in data['calls']] if data.get('calls') else None
-        )
-
-    def dump(self, file):
-        data = self.to_dict()
-        yaml.dump(data, file, **self._yaml_options)
-
-    def dumps(self):
-        data = self.to_dict()
-        return yaml.dump(data, **self._yaml_options)
-
-    def verify(self, application):
-        self.base_call.verify(application)
-        for c in self.calls:
-            c.verify(application)
-
-    @classmethod
-    def load(cls, file):
-        data = yaml.load(file)
-        return cls.from_dict(data)
-
-    @classmethod
-    def loads(cls, string):
-        data = yaml.load(string)
-        return cls.from_dict(data)
-
-    def validate(self):
-        self.base_call.validate()
-        for call in self.calls:
-            call.validate()

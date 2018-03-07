@@ -4,8 +4,9 @@ import cgi
 import functools
 import tempfile
 
-from bddrest.specification import Call, Story, When, Given
-from bddrest.authoring import given, when, then, composer, response, and_ 
+from bddrest.story import Story
+from bddrest.specification import Call, When, Given
+from bddrest.authoring import given, when, then, composer, response, and_
 from bddrest.exceptions import InvalidUrlParametersError, CallVerifyError
 
 
@@ -113,7 +114,7 @@ class StoryTestCase(unittest.TestCase):
             with self.assertRaises(InvalidUrlParametersError):
                 when(
                     title='Without url parameters',
-                    url_parameters=None                
+                    url_parameters=None
                 )
 
         call = dict(

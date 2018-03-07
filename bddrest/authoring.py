@@ -1,10 +1,10 @@
-from .specification import Given, When, Story, Call
+from .story import Story
+from .specification import Given, When, Call
 from .helpers import Context, ObjectProxy
-from .types import WsgiApp
 
 
 class Composer(Story, Context):
-    def __init__(self, application: WsgiApp, *args, **kwargs):
+    def __init__(self, application, *args, **kwargs):
         self.application = application
         base_call = Given(*args, **kwargs)
         base_call.conclude(application)
