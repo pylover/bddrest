@@ -1,6 +1,7 @@
 import yaml
 
 from .specification import Given, When
+from .documentary import Documenter, MarkdownFormatter
 
 
 class Story:
@@ -51,4 +52,8 @@ class Story:
         self.base_call.validate()
         for call in self.calls:
             call.validate()
+
+    def document(self, outfile, formatter_factory=MarkdownFormatter):
+        documenter = Documenter(formatter_factory)
+        documenter.document(self, outfile)
 

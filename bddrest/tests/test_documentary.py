@@ -1,6 +1,7 @@
 import unittest
+import io
 
-from bddrest.specification import Story
+from bddrest.story import Story
 
 
 class DocumentaryTestCase(unittest.TestCase):
@@ -29,7 +30,8 @@ class DocumentaryTestCase(unittest.TestCase):
     '''
     def test_markdown(self):
         story = Story.loads(self.sample_yaml)
-        markdown = story.document(format='markdown')
+        outfile = io.BytesIO()
+        markdown = story.document(outfile)
         self.assertEqual('''
         ''', markdown)
 
