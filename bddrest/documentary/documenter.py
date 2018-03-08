@@ -15,3 +15,7 @@ class Documenter:
             formatter.write_header3('Query Strings')
             formatter.write_table(basecall.query.items(), headers=('Name', 'Example'))
 
+        if basecall.form:
+            formatter.write_header3('Form')
+            formatter.write_table(basecall.form.items(), headers=('Name', 'Example'))
+

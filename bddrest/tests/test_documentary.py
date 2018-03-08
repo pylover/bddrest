@@ -8,12 +8,6 @@ class DocumentaryTestCase(unittest.TestCase):
     sample_yaml = '''
         base_call:
           as_: visitor
-          response:
-            headers:
-            - 'Content-Type: application/json;charset=utf-8'
-            json:
-              foo: bar
-            status: 200 OK
           title: Quickstart!
           description: Awesome API!
           url: /books/:id
@@ -23,6 +17,15 @@ class DocumentaryTestCase(unittest.TestCase):
             a: 1
             b: '2'
           verb: PUT
+          form:
+            f1: abc
+            f2: 123
+          response:
+            headers:
+            - 'Content-Type: application/json;charset=utf-8'
+            json:
+              foo: bar
+            status: 200 OK
         calls:
         - response:
             headers:
@@ -46,6 +49,12 @@ class DocumentaryTestCase(unittest.TestCase):
             '--- | ---\n'
             'a | 1\n'
             'b | 2\n'
+            '### Form\n'
+            'Name | Example\n'
+            '--- | ---\n'
+            'f1 | abc\n'
+            'f2 | 123\n'
+            #'### Request Headers'
             '',
             outputstring
         )
