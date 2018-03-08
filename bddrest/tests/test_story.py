@@ -41,7 +41,8 @@ class StoryTestCase(unittest.TestCase):
     def test_given_when_then(self):
         call = dict(
             title='Binding and registering the device after verifying the activation code',
-            description='As a new visitor I have to bind my device with activation code and phone number',
+            description=\
+                'As a new visitor I have to bind my device with activation code and phone number',
             url='/apiv1/devices/name: SM-12345678',
             verb='POST',
             as_='visitor',
@@ -279,7 +280,10 @@ class StoryTestCase(unittest.TestCase):
         loaded_story.verify(wsgi_application)
 
         loaded_story.base_call.response.body = '{"a": 1}'
-        self.assertRaises(CallVerifyError, functools.partial(loaded_story.verify, wsgi_application))
+        self.assertRaises(
+            CallVerifyError,
+            functools.partial(loaded_story.verify, wsgi_application)
+        )
 
     def test_dump_load_file(self):
         with tempfile.TemporaryFile(mode='w+', encoding='utf-8') as temp_file:

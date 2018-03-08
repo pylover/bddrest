@@ -21,7 +21,7 @@ if __name__ == '__main__':
             wsgi_application,
             title='Quickstart!',
             url='/books/id: 1',
-            as_='visitor'):
+            as_='visitor') as story:
 
         then(response.status == '200 OK')
         and_('foo' in response.json)
@@ -34,5 +34,6 @@ if __name__ == '__main__':
 
         then(response.status_code == 404)
 
-        composer.dump(sys.stdout)
+    story.dump(sys.stdout)
+    story.document(sys.stdout)
 
