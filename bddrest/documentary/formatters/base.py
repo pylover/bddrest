@@ -8,7 +8,7 @@ class Formatter(metaclass=ABCMeta):
     def write(self, text):
         self.file.write(text.encode())
 
-    def writeline(self, text):
+    def writeline(self, text=''):
         self.write(f'{text}\n')
 
     @abstractmethod
@@ -41,5 +41,9 @@ class Formatter(metaclass=ABCMeta):
 
     @abstractmethod
     def write_table(self, array2d, headers=None):
+        pass
+
+    @abstractmethod
+    def write_list(self, listkind):
         pass
 

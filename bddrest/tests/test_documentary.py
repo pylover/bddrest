@@ -20,6 +20,8 @@ class DocumentaryTestCase(unittest.TestCase):
           form:
             f1: abc
             f2: 123
+          headers:
+            - 'Content-Type: application/json;charset=utf-8'
           response:
             headers:
             - 'Content-Type: application/json;charset=utf-8'
@@ -54,7 +56,9 @@ class DocumentaryTestCase(unittest.TestCase):
             '--- | ---\n'
             'f1 | abc\n'
             'f2 | 123\n'
-            #'### Request Headers'
+            '### Request Headers\n'
+            '\n'
+            '* Content-Type: application/json;charset=utf-8\n'
             '',
             outputstring
         )

@@ -19,3 +19,7 @@ class Documenter:
             formatter.write_header3('Form')
             formatter.write_table(basecall.form.items(), headers=('Name', 'Example'))
 
+        if basecall.headers:
+            formatter.write_header3('Request Headers')
+            formatter.write_list(f'{k}: {v}' for k, v in basecall.headers)
+

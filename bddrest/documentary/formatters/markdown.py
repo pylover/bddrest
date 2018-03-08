@@ -37,3 +37,8 @@ class MarkdownFormatter(Formatter):
         for row in array2d:
             self._write_table_row(row)
 
+    def write_list(self, listkind):
+        self.writeline()
+        for l in listkind:
+            self.writeline(f'* {l}')
+
