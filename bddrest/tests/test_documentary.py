@@ -43,37 +43,49 @@ class DocumentaryTestCase(unittest.TestCase):
         story.document(outfile)
         outputstring = outfile.getvalue().decode()
         print(outputstring)
-        self.assertEqual('''## Quickstart!
+        self.assertEqual('''\
+## Quickstart!
+
 ### PUT /books/:id
+
 Awesome API!
+
 ### Query Strings
+
 Name | Example
 --- | ---
 a | 1
 b | 2
+
 ### Form
+
 Name | Example
 --- | ---
 f1 | abc
 f2 | 123
+
 ### Request Headers
 
 * Content-Type: application/json;charset=utf-8
 
 ### Response: 200 OK
+
 #### Headers
 
 * Content-Type: application/json;charset=utf-8
 
 #### Body
+
 ```json
 {"foo": "bar"}
 ```
+
 ''',
             outputstring
         )
 
     maxDiff = None
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -8,8 +8,9 @@ class Formatter(metaclass=ABCMeta):
     def write(self, text):
         self.file.write(text.encode())
 
+    @abstractmethod
     def writeline(self, text=''):
-        self.write(f'{text}\n')
+        pass
 
     @abstractmethod
     def write_header1(self, text):
