@@ -42,7 +42,6 @@ class DocumentaryTestCase(unittest.TestCase):
         outfile = io.BytesIO()
         story.document(outfile)
         outputstring = outfile.getvalue().decode()
-        print(outputstring)
         self.assertEqual('''\
 ## Quickstart!
 
@@ -79,6 +78,14 @@ f2 | 123
 ```json
 {"foo": "bar"}
 ```
+
+## WHEN: Trying invalid book id
+
+### Response: 404 Not Found
+
+#### Headers
+
+* Content-Type: text/plain;charset=utf-8
 
 ''',
             outputstring
