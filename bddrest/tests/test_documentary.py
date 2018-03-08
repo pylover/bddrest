@@ -42,28 +42,38 @@ class DocumentaryTestCase(unittest.TestCase):
         outfile = io.BytesIO()
         story.document(outfile)
         outputstring = outfile.getvalue().decode()
-        self.assertEqual(
-            '## Quickstart!\n'
-            '### PUT /books/:id\n'
-            'Awesome API!\n'
-            '### Query Strings\n'
-            'Name | Example\n'
-            '--- | ---\n'
-            'a | 1\n'
-            'b | 2\n'
-            '### Form\n'
-            'Name | Example\n'
-            '--- | ---\n'
-            'f1 | abc\n'
-            'f2 | 123\n'
-            '### Request Headers\n'
-            '\n'
-            '* Content-Type: application/json;charset=utf-8\n'
-            '',
+        print(outputstring)
+        self.assertEqual('''## Quickstart!
+### PUT /books/:id
+Awesome API!
+### Query Strings
+Name | Example
+--- | ---
+a | 1
+b | 2
+### Form
+Name | Example
+--- | ---
+f1 | abc
+f2 | 123
+### Request Headers
+
+* Content-Type: application/json;charset=utf-8
+
+### Response: 200 OK
+#### Headers
+
+* Content-Type: application/json;charset=utf-8
+
+#### Body
+```json
+{"foo": "bar"}
+```
+''',
             outputstring
         )
-        print(outputstring)
 
+    maxDiff = None
 
 if __name__ == '__main__':
     unittest.main()

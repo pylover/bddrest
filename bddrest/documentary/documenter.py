@@ -23,3 +23,15 @@ class Documenter:
             formatter.write_header3('Request Headers')
             formatter.write_list(f'{k}: {v}' for k, v in basecall.headers)
 
+        if basecall.response:
+            formatter.write_header3(f'Response: {basecall.response.status}')
+
+            if basecall.response.headers:
+                formatter.write_header4('Headers')
+                formatter.write_list(f'{k}: {v}' for k, v in basecall.response.headers)
+
+            if basecall.response.body:
+                formatter.write_header4('Body')
+                mime = 'json' if 'json' in basecall.response.content_type else ''
+                formatter.write_paragraph(f'```{mime}\n{basecall.response.text}\n```')
+

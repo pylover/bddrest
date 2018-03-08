@@ -43,7 +43,7 @@ class Response:
         self.status = status
         self.headers = normalize_headers(headers)
         if json:
-            self.body = jsonlib.dumps(json)
+            self.body = jsonlib.dumps(json).encode()
             # FIXME: enable it after HeaderSet is implemented.
             # self.headers.append('Content-Type: application/json;charset=utf-8')
         elif body:

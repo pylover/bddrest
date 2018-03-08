@@ -41,4 +41,5 @@ class MarkdownFormatter(Formatter):
         self.writeline()
         for l in listkind:
             self.writeline(f'* {l}')
+        self.writeline()
 
