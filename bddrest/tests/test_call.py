@@ -32,7 +32,11 @@ class CallTestCase(unittest.TestCase):
         self.assertEqual(call.url, '/:id')
         self.assertDictEqual(call.url_parameters, dict(id='1'))
 
-        call = Given('Testing Call contractor', url='/id: 1/:name', url_parameters=dict(name='foo', id=2))
+        call = Given(
+            'Testing Call contractor',
+            url='/id: 1/:name',
+            url_parameters=dict(name='foo', id=2)
+        )
         call.validate()
         self.assertEqual(call.url, '/:id/:name')
         self.assertDictEqual(call.url_parameters, dict(id='2', name='foo'))
@@ -56,7 +60,10 @@ class CallTestCase(unittest.TestCase):
         self.assertEqual(call.response.content_type, 'application/json')
         self.assertIsNotNone(call.response.text)
         self.assertDictEqual(call.response.json, {'query': 'a=1', 'url': '/1'})
-        self.assertListEqual(call.response.headers, [('Content-Type', 'application/json;charset=utf-8')])
+        self.assertListEqual(
+            call.response.headers,
+            [('Content-Type', 'application/json;charset=utf-8')]
+        )
 
     def test_call_to_dict(self):
         call = Given('Testing Call to_dict', url='/id: 1', query='a=1')
@@ -107,7 +114,10 @@ class CallTestCase(unittest.TestCase):
         altered_call.verify(wsgi_application)
 
         altered_call.response.body = '{"a": 1}'
-        self.assertRaises(CallVerifyError, functools.partial(altered_call.verify, wsgi_application))
+        self.assertRaises(
+            CallVerifyError,
+            functools.partial(altered_call.verify, wsgi_application)
+        )
 
 
 if __name__ == '__main__':
