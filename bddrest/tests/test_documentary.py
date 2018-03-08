@@ -19,6 +19,9 @@ class DocumentaryTestCase(unittest.TestCase):
           url: /books/:id
           url_parameters:
             id: '1'
+          query:
+            a: 1
+            b: '2'
           verb: PUT
         calls:
         - response:
@@ -35,12 +38,18 @@ class DocumentaryTestCase(unittest.TestCase):
         story.document(outfile)
         outputstring = outfile.getvalue().decode()
         self.assertEqual(
-            '# Quickstart!\n'
-            '## PUT /books/:id\n'
+            '## Quickstart!\n'
+            '### PUT /books/:id\n'
             'Awesome API!\n'
+            '### Query Strings\n'
+            'Name | Example\n'
+            '--- | ---\n'
+            'a | 1\n'
+            'b | 2\n'
             '',
             outputstring
         )
+        print(outputstring)
 
 
 if __name__ == '__main__':

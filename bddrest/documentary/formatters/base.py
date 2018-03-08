@@ -39,3 +39,7 @@ class Formatter(metaclass=ABCMeta):
     def write_paragraph(self, text):
         pass
 
+    @abstractmethod
+    def write_table(self, array2d, headers=None):
+        pass
+

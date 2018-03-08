@@ -6,8 +6,12 @@ class Documenter:
     def document(self, story, outfile):
         basecall = story.base_call
         formatter = self.formatter_factory(outfile)
-        formatter.write_header1(basecall.title)
-        formatter.write_header2(f'{basecall.verb} {basecall.url}')
+        formatter.write_header2(basecall.title)
+        formatter.write_header3(f'{basecall.verb} {basecall.url}')
         if basecall.description:
             formatter.write_paragraph(basecall.description)
+
+        if basecall.query:
+            formatter.write_header3('Query Strings')
+            formatter.write_table(basecall.query.items(), headers=('Name', 'Example'))
 
