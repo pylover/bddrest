@@ -8,7 +8,7 @@ from .story import Story
 from .cli import Launcher
 
 
-__version__ = '0.7.0b'
+__version__ = '0.8.0a'
 
 
 class MainLauncher(Launcher):
