@@ -1,7 +1,7 @@
 import re
 import json as jsonlib
 from abc import ABCMeta, abstractmethod
-from urllib.parse import urlencode, urlparse, parse_qs
+from urllib.parse import urlencode, urlparse
 from typing import Iterable
 
 import yaml
