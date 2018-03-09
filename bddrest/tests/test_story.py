@@ -253,6 +253,7 @@ class StoryTestCase(unittest.TestCase):
             dumped_story = composer.dumps()
             loaded_story = Story.loads(dumped_story)
             self.assertDictEqual(composer.to_dict(), loaded_story.to_dict())
+            loaded_story.validate()
 
     def test_verify(self):
         call = dict(
