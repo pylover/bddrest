@@ -198,6 +198,13 @@ bddrest document < story.yml > story.md
 
 ## Command Line Interface
 
+After installing hte project a command named `bddrest` will be available.
+
+```bash
+bddrest -h
+```
+
+
 ### Enabling the bash autocompletion for bddrest 
 
 Add this into your `.bashrc` and or `$VIRTUAL_ENV/bin/postactivate`.
