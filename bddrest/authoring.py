@@ -49,7 +49,7 @@ class Composer(Story, Context):
             self.dump(self.autodump)
         else:
             filename = self.autodump(self) if callable(self.autodump) else self.autodump
-            with open(filename, mode='w') as f:
+            with open(filename, mode='w', encoding='utf-8') as f:
                 self.dump(f)
 
 

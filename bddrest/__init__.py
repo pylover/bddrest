@@ -35,7 +35,6 @@ class MainLauncher(Launcher):
             cli_args.func(cli_args)
         else:
             self.parser.print_help()
-        sys.exit(0)
 
     @classmethod
     def create_parser(cls, subparsers):
@@ -44,5 +43,8 @@ class MainLauncher(Launcher):
         """
         pass
 
-main = MainLauncher()
+
+def main(argv=None):
+    return MainLauncher()(argv=argv)
+
 

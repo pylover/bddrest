@@ -6,9 +6,6 @@ class Formatter(metaclass=ABCMeta):
         self.file = outfile
 
     def write(self, text):
-        if not hasattr(self.file, 'encoding') or self.file.encoding.lower() != 'utf-8':
-            text = text.encode()
-
         self.file.write(text)
 
     @abstractmethod

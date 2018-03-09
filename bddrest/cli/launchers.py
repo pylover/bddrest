@@ -17,9 +17,12 @@ class Launcher:
             parser.set_defaults(func=instance)
         return instance
 
-    def __call__(self, *args):
+    def __call__(self, *args, argv=None):
         self.args = args[0] if len(args) else None
-        self.launch()
+        if argv:
+            self.launch(args=argv)
+        else:
+            self.launch()
 
     def launch(self):
         if self.parser:

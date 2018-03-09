@@ -39,9 +39,9 @@ class DocumentaryTestCase(unittest.TestCase):
     '''
     def test_markdown(self):
         story = Story.loads(self.sample_yaml)
-        outfile = io.BytesIO()
+        outfile = io.StringIO()
         story.document(outfile)
-        outputstring = outfile.getvalue().decode()
+        outputstring = outfile.getvalue()
         self.maxDiff = None
         self.assertEqual('''\
 ## Quickstart!
