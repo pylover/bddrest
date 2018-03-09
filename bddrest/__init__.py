@@ -24,8 +24,8 @@ class MainLauncher(Launcher):
             dest="command"
         )
 
-#         from restfulpy.mockupservers import SimpleMockupServerLauncher
-#         SimpleMockupServerLauncher.register(subparsers)
+        from .documentary import DocumentaryLauncher
+        DocumentaryLauncher.register(subparsers)
 
         argcomplete.autocomplete(parser)
 

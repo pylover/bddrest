@@ -137,6 +137,11 @@ You may pass the `autodump` argument of the `given` function to coonfigure the a
 You can use `story.document([formatter_factory=MarkdownFormatter])` to generate documentation 
 in arbitrary format for example: `Markdown`.
 
+There is also a CLI to do this: 
+
+```bash
+bddrest document < story.yml > story.md
+```
 
     ## Posting a book
     

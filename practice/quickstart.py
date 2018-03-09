@@ -39,5 +39,5 @@ if __name__ == '__main__':
         then(response.status_code == 404)
 
     story.dump(sys.stdout)
-    story.document(sys.stdout)
+#    story.document(sys.stdout)
 
