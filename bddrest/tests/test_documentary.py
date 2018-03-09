@@ -34,8 +34,16 @@ class DocumentaryTestCase(unittest.TestCase):
             - 'Content-Type: text/plain;charset=utf-8'
             status: 404 Not Found
           title: Trying invalid book id
+          description: trying an invalid book id.
           url_parameters:
             id: None
+          query:
+            a: 2
+            b: 4
+          headers:
+          - 'A: B'
+          form:
+            f1: cba
     '''
     def test_markdown(self):
         story = Story.loads(self.sample_yaml)
@@ -88,11 +96,30 @@ f2 | 123
 
 ## WHEN: Trying invalid book id
 
+trying an invalid book id.
+
 ### Url Parameters
 
 Name | Example
 --- | ---
 id | None
+
+### Query Strings
+
+Name | Example
+--- | ---
+a | 2
+b | 4
+
+### Form
+
+Name | Example
+--- | ---
+f1 | cba
+
+### Request Headers
+
+* A: B
 
 ### Response: 404 Not Found
 

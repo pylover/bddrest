@@ -55,12 +55,13 @@ class Response:
         else:
             self.status_code = int(status)
 
-        for k, v in self.headers:
-            if k == 'Content-Type':
-                match = CONTENT_TYPE_PATTERN.match(v)
-                if match:
-                    self.content_type, self.encoding = match.groups()
-                break
+        if headers:
+            for k, v in self.headers:
+                if k == 'Content-Type':
+                    match = CONTENT_TYPE_PATTERN.match(v)
+                    if match:
+                        self.content_type, self.encoding = match.groups()
+                    break
 
     @property
     def text(self):
@@ -406,7 +407,8 @@ class Given(Call):
 
 
 class When(Call):
-    def __init__(self, base_call: Given, title: str, description=None, response=None, **diff):
+    def __init__(self, base_call: Given, title: str, description=None, response=None,
+                 headers=None, **diff):
         self.base_call = base_call
         super().__init__(title, description=description, response=response)
 
@@ -416,9 +418,10 @@ class When(Call):
                 diff['url_parameters'] = url_parameters
 
             if 'query' not in diff:
-                diff['query'] = query
+                diff['query'] = normalize_query_string(query)
 
         self.diff = diff
+        self.headers = headers
 
     def to_dict(self):
         result = dict(title=self.title)
@@ -432,13 +435,23 @@ class When(Call):
 
         return result
 
+    def update_diff(self, key, value):
+        if not value:
+            self.diff.pop(key, None)
+        else:
+            self.diff[key] = value
+
     @property
     def url(self):
         return self.diff.get('url', self.base_call.url)
 
     @url.setter
     def url(self, value):
-        self.diff['url'], self.url_parameters, self.query = self.extract_url_parameters(value)
+        url, self.url_parameters, self.query = self.extract_url_parameters(value)
+        if url:
+            self.diff['url']
+        else:
+            self.diff.pop('url', None)
 
     @property
     def url_parameters(self):
@@ -446,7 +459,7 @@ class When(Call):
 
     @url_parameters.setter
     def url_parameters(self, value):
-        self.diff['url_parameters'] = value
+        self.update_diff('url_parameters', value)
 
     @property
     def verb(self):
@@ -454,7 +467,7 @@ class When(Call):
 
     @verb.setter
     def verb(self, value):
-        self.diff['verb'] = value
+        self.update_diff('verb', value)
 
     @property
     def headers(self):
@@ -462,7 +475,7 @@ class When(Call):
 
     @headers.setter
     def headers(self, value):
-        self.diff['headers'] = value
+        self.update_diff('headers', normalize_headers(value))
 
     @property
     def query(self):
@@ -470,7 +483,7 @@ class When(Call):
 
     @query.setter
     def query(self, value):
-        self.diff['query'] = value
+        self.update_diff('query', normalize_query_string(value))
 
     @property
     def content_type(self):
@@ -478,7 +491,7 @@ class When(Call):
 
     @content_type.setter
     def content_type(self, value):
-        self.diif['content_type'] = value
+        self.update_diff('content_type', value)
 
     @property
     def as_(self):
@@ -486,7 +499,7 @@ class When(Call):
 
     @as_.setter
     def as_(self, value):
-        self.diff['as_'] = value
+        self.update_diff('as_', value)
 
     @property
     def extra_environ(self):
@@ -494,7 +507,7 @@ class When(Call):
 
     @extra_environ.setter
     def extra_environ(self, value):
-        self.diff['extra_environ'] = value
+        self.update_diff('extra_environ', value)
 
     @property
     def form(self):
@@ -502,5 +515,5 @@ class When(Call):
 
     @form.setter
     def form(self, value):
-        self.diff['form'] = value
+        self.update_diff('form', value)
 
