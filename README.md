@@ -128,45 +128,42 @@ and from a file: `story.load(file)` and `story.dump(file)`
 You can use `story.document([formatter_factory=MarkdownFormatter])` to generate documentation 
 in arbitrary format for example: `Markdown`
 
-```markdown
 
+    ## Posting a book
+    
+    ### GET /books/:id
+    
+    As a member I have to POST a book to the library.
+    
+    ### Query Strings
+    
+    Name | Example
+    --- | ---
+    a | b
+    
+    ### Form
+    
+    Name | Example
+    --- | ---
+    name | BDD Book
+    
+    ### Response: 200 OK
+    
+    #### Headers
+    
+    * Content-Type: application/json;charset=utf-8
+    
+    #### Body
+    
+    ```json
+    {"foo": "bar"}
+    ```
+    
+    ## WHEN: Trying invalid book id
+    
+    ### Response: 404 Not Found
+    
+    #### Headers
+    
+    * Content-Type: text/plain;charset=utf-8
 
-## Posting a book
-
-### GET /books/:id
-
-As a member I have to POST a book to the library.
-
-### Query Strings
-
-Name | Example
---- | ---
-a | b
-
-### Form
-
-Name | Example
---- | ---
-name | BDD Book
-
-### Response: 200 OK
-
-#### Headers
-
-* Content-Type: application/json;charset=utf-8
-
-#### Body
-
-```json
-{"foo": "bar"}
-```
-
-## WHEN: Trying invalid book id
-
-### Response: 404 Not Found
-
-#### Headers
-
-* Content-Type: text/plain;charset=utf-8
-
-```
