@@ -13,9 +13,6 @@ Table of Contents
          * [Writing tests](#writing-tests)
          * [Dumping a Story](#dumping-a-story)
          * [Markdown](#markdown)
-      * [WHEN: Trying invalid book id](#when-trying-invalid-book-id)
-         * [Response: 404 Not Found](#response-404-not-found)
-            * [Headers](#headers)
 
 
 [![Build Status](http://img.shields.io/pypi/v/bddrest.svg)](https://pypi.python.org/pypi/bddrest)
@@ -92,16 +89,20 @@ story.dumps()
 Produces:
 
 ```yaml
-
 base_call:
   as_: visitor
+  description: As a member I have to POST a book to the library.
+  form:
+    name: BDD Book
+  query:
+    a: b
   response:
     headers:
     - 'Content-Type: application/json;charset=utf-8'
     json:
       foo: bar
     status: 200 OK
-  title: Quickstart!
+  title: Posting a book
   url: /books/:id
   url_parameters:
     id: '1'
@@ -114,12 +115,11 @@ calls:
   title: Trying invalid book id
   url_parameters:
     id: None
-
 ```
 
-You may load the story again from this yaml with `story.loads`.
+You may load the story again from this yaml with `Story.loads(yaml)`.
 
-There two additional methods are available to dump and load to 
+There is two additional methods are available to dump and load to 
 and from a file: `story.load(file)` and `story.dump(file)`
 
 ### Markdown
@@ -129,9 +129,24 @@ in arbitrary format for example: `Markdown`
 
 ```markdown
 
-## Quickstart!
+
+## Posting a book
 
 ### GET /books/:id
+
+As a member I have to POST a book to the library.
+
+### Query Strings
+
+Name | Example
+--- | ---
+a | b
+
+### Form
+
+Name | Example
+--- | ---
+name | BDD Book
 
 ### Response: 200 OK
 

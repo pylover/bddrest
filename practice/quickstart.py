@@ -20,8 +20,11 @@ def wsgi_application(environ, start_response):
 if __name__ == '__main__':
     with given(
             wsgi_application,
-            title='Quickstart!',
+            title='Posting a book',
+            description="As a member I have to POST a book to the library.",
             url='/books/id: 1',
+            query={'a': 'b'},
+            form={'name': 'BDD Book'},
             as_='visitor') as story:
 
         then(response.status == '200 OK')
