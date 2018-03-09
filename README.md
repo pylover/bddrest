@@ -116,7 +116,7 @@ calls:
   title: Trying invalid book id
   url_parameters:
     id: None
-``
+```
 
 You may load the story again from this yaml with `Story.loads(yaml)`.
 
