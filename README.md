@@ -13,10 +13,12 @@ Table of Contents
  * [Quick start](#quick-start)
     * [Writing tests](#writing-tests)
     * [Dumping a Story](#dumping-a-story)
+       * [Auto Dumping](#auto-dumping)
     * [Markdown](#markdown)
+ * [Command Line Interface](#command-line-interface)
+    * [Enabling the bash autocompletion for bddrest](#enabling-the-bash-autocompletion-for-bddrest)
 
 
-     
 ## Branches
 
 ### master
@@ -194,55 +196,14 @@ bddrest document < story.yml > story.md
     * Content-Type: text/plain;charset=utf-8
 
 
-Which renders as:
+## Command Line Interface
 
-## Posting a book
+### Enabling the bash autocompletion for bddrest 
 
-### GET /books/:id
+Add this into your `.bashrc` and or `$VIRTUAL_ENV/bin/postactivate`.
 
-As a member I have to POST a book to the library.
-
-### Url Parameters
-
-Name | Example
---- | ---
-id | 1
-
-### Query Strings
-
-Name | Example
---- | ---
-a | b
-
-### Form
-
-Name | Example
---- | ---
-name | BDD Book
-
-### Response: 200 OK
-
-#### Headers
-
-* Content-Type: application/json;charset=utf-8
-
-#### Body
-
-```json
-{"foo": "bar"}
+```bash
+eval "$(register-python-argcomplete bddrest)"
 ```
 
-## WHEN: Trying invalid book id
-
-### Url Parameters
-
-Name | Example
---- | ---
-id | None
-
-### Response: 404 Not Found
-
-#### Headers
-
-* Content-Type: text/plain;charset=utf-8
 
