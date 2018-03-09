@@ -208,92 +208,92 @@ class Call(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def verb(self) -> str:
+    def verb(self) -> str:  # pragma: no cover
         pass
 
     @verb.setter
     @abstractmethod
-    def verb(self, value):
+    def verb(self, value):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def url(self) -> str:
+    def url(self) -> str:  # pragma: no cover
         pass
 
     @url.setter
     @abstractmethod
-    def url(self, value):
+    def url(self, value):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def url_parameters(self) -> dict:
+    def url_parameters(self) -> dict:  # pragma: no cover
         pass
 
     @url_parameters.setter
     @abstractmethod
-    def url_parameters(self, value):
+    def url_parameters(self, value):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def headers(self) -> Iterable:
+    def headers(self) -> Iterable:  # pragma: no cover
         pass
 
     @headers.setter
     @abstractmethod
-    def headers(self, value: Iterable):
+    def headers(self, value: Iterable):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def form(self) -> dict:
+    def form(self) -> dict:  # pragma: no cover
         pass
 
     @form.setter
     @abstractmethod
-    def form(self, value):
+    def form(self, value):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def query(self) -> dict:
+    def query(self) -> dict:  # pragma: no cover
         pass
 
     @query.setter
     @abstractmethod
-    def query(self, value):
+    def query(self, value):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def content_type(self) -> str:
+    def content_type(self) -> str:  # pragma: no cover
         pass
 
     @content_type.setter
     @abstractmethod
-    def content_type(self, value):
+    def content_type(self, value):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def as_(self) -> str:
+    def as_(self) -> str:  # pragma: no cover
         pass
 
     @as_.setter
     @abstractmethod
-    def as_(self, value):
+    def as_(self, value):  # pragma: no cover
         pass
 
     @property
     @abstractmethod
-    def extra_environ(self) -> dict:
+    def extra_environ(self) -> dict:  # pragma: no cover
         pass
 
     @extra_environ.setter
     @abstractmethod
-    def extra_environ(self, value):
+    def extra_environ(self, value):  # pragma: no cover
         pass
 
 
