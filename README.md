@@ -2,6 +2,8 @@
 
 Toolchain to define and verify REST API in BDD.
 
+[![Build Status](http://img.shields.io/pypi/v/bddrest.svg)](https://pypi.python.org/pypi/bddrest)
+
 Table of Contents
 =================
 
@@ -15,7 +17,6 @@ Table of Contents
          * [Markdown](#markdown)
 
 
-[![Build Status](http://img.shields.io/pypi/v/bddrest.svg)](https://pypi.python.org/pypi/bddrest)
      
 ## Branches
 
