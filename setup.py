@@ -11,7 +11,8 @@ with open(join(dirname(__file__), 'bddrest', '__init__.py')) as v_file:
 
 dependencies = [
     'webtest',
-    'pyyaml'
+    'pyyaml',
+    'argcomplete'
 ]
 
 
@@ -26,7 +27,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'bddrest = restfulpy:main'
+            'bddrest = bddrest:main'
         ]
     },
     test_suite='bddrest.tests',

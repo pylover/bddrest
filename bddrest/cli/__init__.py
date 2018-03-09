@@ -1,26 +1,19 @@
 import sys
-import argparse
-from os import path
 
-import argcomplete
-
-from .story import Story
-from .cli import Launcher
-
-
-__version__ = '0.7.0b'
+from .launchers import Launcher, RequireSubCommand
 
 
 class MainLauncher(Launcher):
 
     def __init__(self):
         self.parser = parser = argparse.ArgumentParser(
-            prog=path.basename(sys.argv[0]),
+            prog=sys.argv[0],
             description='bddrest command line interface.'
         )
 
         subparsers = parser.add_subparsers(
             title="Sub Commands",
+            prog=basename(sys.argv[0]),
             dest="command"
         )
 
@@ -43,6 +36,4 @@ class MainLauncher(Launcher):
         Do nothing here
         """
         pass
-
-main = MainLauncher()
 
