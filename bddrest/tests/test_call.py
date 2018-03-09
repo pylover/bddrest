@@ -119,6 +119,13 @@ class CallTestCase(unittest.TestCase):
             functools.partial(altered_call.verify, wsgi_application)
         )
 
+        altered_call.response.status = '400 Bad Request'
+        self.assertRaises(
+            CallVerifyError,
+            functools.partial(altered_call.verify, wsgi_application)
+        )
+
+
     def test_querystring_parser(self):
         call = Given('Testing querystring parsing', url='/id: 1?a=1')
         self.assertEqual('/:id', call.url)

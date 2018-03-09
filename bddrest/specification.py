@@ -17,21 +17,21 @@ URL_PARAMETER_PATTERN = \
     re.compile(f'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
 
 
-# FIXME: Implement it!
-class HeaderSet(set):
-
-    def __init(self, headers):
-        # TODO: normalize
-        raise NotImplementedError()
-
-    def add(self, item, overwrite=False):
-        """
-        Error if header exists and overwrite is False.
-        :param item:
-        :param overwrite:
-        :return:
-        """
-        raise NotImplementedError()
+## FIXME: Implement it!
+#class HeaderSet(set):
+#
+#    def __init(self, headers):
+#        # TODO: normalize
+#        raise NotImplementedError()
+#
+#    def add(self, item, overwrite=False):
+#        """
+#        Error if header exists and overwrite is False.
+#        :param item:
+#        :param overwrite:
+#        :return:
+#        """
+#        raise NotImplementedError()
 
 
 class Response:
@@ -49,11 +49,9 @@ class Response:
         elif body:
             self.body = body.encode() if not isinstance(body, bytes) else body
 
-        if ' ' in status:
-            parts = status.split(' ')
-            self.status_code, self.status_text = int(parts[0]), ' '.join(parts[1:])
-        else:
-            self.status_code = int(status)
+        status_parts = status.split(' ')
+        self.status_code, self.status_text = \
+            int(status_parts[0]), ' '.join(status_parts[1:])
 
         if headers:
             for k, v in self.headers:
@@ -86,8 +84,7 @@ class Response:
         return result
 
     def __eq__(self, other: 'Response'):
-        if self.status != other.status \
-                or self.headers != other.headers:
+        if self.status != other.status or self.headers != other.headers:
             return False
 
         if self.content_type == 'application/json':
