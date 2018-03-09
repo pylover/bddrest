@@ -101,7 +101,7 @@ class CallTestCase(unittest.TestCase):
         ))
 
     def test_call_verify(self):
-        call = Given('Testing When contractor', url='/id: 1', query=dict(a=1))
+        call = Given('Testing Given contractor', url='/id: 1', query=dict(a=1))
         call.conclude(wsgi_application)
         call.verify(wsgi_application)
 
@@ -118,6 +118,11 @@ class CallTestCase(unittest.TestCase):
             CallVerifyError,
             functools.partial(altered_call.verify, wsgi_application)
         )
+
+    def test_querystring_parser(self):
+        call = Given('Testing querystring parsing', url='/id: 1?a=1')
+        self.assertEqual('/:id', call.url)
+        self.assertDictEqual(dict(a='1'), call.query)
 
 
 if __name__ == '__main__':

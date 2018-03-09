@@ -1,7 +1,7 @@
 import re
 import json as jsonlib
 from abc import ABCMeta, abstractmethod
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse, parse_qs
 from typing import Iterable
 
 import yaml
@@ -156,11 +156,20 @@ class Call(metaclass=ABCMeta):
     @staticmethod
     def extract_url_parameters(url):
         url_parameters = {}
+        query = None
+        parsedurl = urlparse(url)
+
+        # Parsing the querystrings if available
+        if parsedurl.query:
+            query = normalize_query_string(parsedurl.query)
+
+        url = parsedurl.path
         if URL_PARAMETER_PATTERN.search(url):
             for k, v in URL_PARAMETER_PATTERN.findall(url):
                 url_parameters[k] = v
                 url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
-        return url, url_parameters if url_parameters else None
+
+        return url, url_parameters if url_parameters else None, query
 
     def invoke(self, application) -> Response:
         url = self.url
@@ -308,16 +317,19 @@ class Given(Call):
         super().__init__(title, description=description, response=response)
 
         self.url = url
-        # the `url_parameters` attribute may be set by the url setter. so we're
-        # not going to override it anyway.
+        # the `url_parameters` and `query` attributes may be set by the url setter. so we're
+        # not going to override them anyway.
         if url_parameters is not None:
             self.url_parameters = url_parameters
+
+        if query is not None:
+            self.query = query
+
         self.verb = verb
         self.form = form
         self.content_type = content_type
         self.headers = headers
         self.as_ = as_
-        self.query = query
         self.extra_environ = extra_environ
 
     @property
@@ -326,7 +338,7 @@ class Given(Call):
 
     @url.setter
     def url(self, value):
-        self._url, self.url_parameters = self.extract_url_parameters(value)
+        self._url, self.url_parameters, self.query = self.extract_url_parameters(value)
 
     @property
     def url_parameters(self):
@@ -399,9 +411,12 @@ class When(Call):
         super().__init__(title, description=description, response=response)
 
         if 'url' in diff:
-            diff['url'], url_parameters = self.extract_url_parameters(diff['url'])
+            diff['url'], url_parameters, query = self.extract_url_parameters(diff['url'])
             if 'url_parameters' not in diff:
                 diff['url_parameters'] = url_parameters
+
+            if 'query' not in diff:
+                diff['query'] = query
 
         self.diff = diff
 
@@ -423,7 +438,7 @@ class When(Call):
 
     @url.setter
     def url(self, value):
-        self.diff['url'], self.url_parameters = self.extract_url_parameters(value)
+        self.diff['url'], self.url_parameters, self.query = self.extract_url_parameters(value)
 
     @property
     def url_parameters(self):
