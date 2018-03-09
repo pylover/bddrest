@@ -167,3 +167,43 @@ in arbitrary format for example: `Markdown`
     
     * Content-Type: text/plain;charset=utf-8
 
+Which renders as:
+
+## Posting a book
+
+### GET /books/:id
+
+As a member I have to POST a book to the library.
+
+### Query Strings
+
+Name | Example
+--- | ---
+a | b
+
+### Form
+
+Name | Example
+--- | ---
+name | BDD Book
+
+### Response: 200 OK
+
+#### Headers
+
+* Content-Type: application/json;charset=utf-8
+
+#### Body
+
+```json
+{"foo": "bar"}
+```
+
+## WHEN: Trying invalid book id
+
+### Response: 404 Not Found
+
+#### Headers
+
+* Content-Type: text/plain;charset=utf-8
+
