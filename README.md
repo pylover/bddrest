@@ -116,7 +116,7 @@ calls:
   title: Trying invalid book id
   url_parameters:
     id: None
-```
+``
 
 You may load the story again from this yaml with `Story.loads(yaml)`.
 
@@ -126,7 +126,7 @@ and from a file: `story.load(file)` and `story.dump(file)`
 ### Markdown
 
 You can use `story.document([formatter_factory=MarkdownFormatter])` to generate documentation 
-in arbitrary format for example: `Markdown`
+in arbitrary format for example: `Markdown`.
 
 
     ## Posting a book
@@ -134,6 +134,12 @@ in arbitrary format for example: `Markdown`
     ### GET /books/:id
     
     As a member I have to POST a book to the library.
+    
+    ### Url Parameters
+    
+    Name | Example
+    --- | ---
+    id | 1
     
     ### Query Strings
     
@@ -161,11 +167,18 @@ in arbitrary format for example: `Markdown`
     
     ## WHEN: Trying invalid book id
     
+    ### Url Parameters
+    
+    Name | Example
+    --- | ---
+    id | None
+    
     ### Response: 404 Not Found
     
     #### Headers
     
     * Content-Type: text/plain;charset=utf-8
+
 
 Which renders as:
 
@@ -174,6 +187,12 @@ Which renders as:
 ### GET /books/:id
 
 As a member I have to POST a book to the library.
+
+### Url Parameters
+
+Name | Example
+--- | ---
+id | 1
 
 ### Query Strings
 
@@ -200,6 +219,12 @@ name | BDD Book
 ```
 
 ## WHEN: Trying invalid book id
+
+### Url Parameters
+
+Name | Example
+--- | ---
+id | None
 
 ### Response: 404 Not Found
 

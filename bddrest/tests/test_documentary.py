@@ -42,12 +42,19 @@ class DocumentaryTestCase(unittest.TestCase):
         outfile = io.BytesIO()
         story.document(outfile)
         outputstring = outfile.getvalue().decode()
+        self.maxDiff = None
         self.assertEqual('''\
 ## Quickstart!
 
 ### PUT /books/:id
 
 Awesome API!
+
+### Url Parameters
+
+Name | Example
+--- | ---
+id | 1
 
 ### Query Strings
 
@@ -80,6 +87,12 @@ f2 | 123
 ```
 
 ## WHEN: Trying invalid book id
+
+### Url Parameters
+
+Name | Example
+--- | ---
+id | None
 
 ### Response: 404 Not Found
 

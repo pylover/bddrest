@@ -24,6 +24,10 @@ class Documenter:
         if basecall.description:
             formatter.write_paragraph(basecall.description)
 
+        if basecall.url_parameters:
+            formatter.write_header3('Url Parameters')
+            formatter.write_table(basecall.url_parameters.items(), headers=('Name', 'Example'))
+
         if basecall.query:
             formatter.write_header3('Query Strings')
             formatter.write_table(basecall.query.items(), headers=('Name', 'Example'))
@@ -44,6 +48,10 @@ class Documenter:
 
             if call.description:
                 formatter.write_paragraph(call.description)
+
+            if call.url_parameters and call.url_parameters != basecall.url_parameters:
+                formatter.write_header3('Url Parameters')
+                formatter.write_table(call.url_parameters.items(), headers=('Name', 'Example'))
 
             if call.query and call.query != basecall.query:
                 formatter.write_header3('Query Strings')
