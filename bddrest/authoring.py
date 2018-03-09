@@ -1,11 +1,22 @@
+from os import path
+
 from .story import Story
 from .specification import Given, When, Call
 from .helpers import Context, ObjectProxy
 
 
 class Composer(Story, Context):
-    def __init__(self, application, *args, **kwargs):
+    """
+    :param application: A WSGI Application to examine
+    :param autodump: A string which indicates the filename to dump the story, or
+                     a `callable(story) -> filename` to determine the filename.
+                     A file-like object is also accepted.
+                     Default is `None`, meana autodumping is disabled by default.
+    """
+
+    def __init__(self, application, *args, autodump=None, **kwargs):
         self.application = application
+        self.autodump = autodump
         base_call = Given(*args, **kwargs)
         base_call.conclude(application)
         super().__init__(base_call)
@@ -29,13 +40,22 @@ class Composer(Story, Context):
             assert passed is not False
         return self.current_call
 
+    def __exit__(self, *args, **kwargs):
+        super().__exit__(*args, **kwargs)
+        if not self.autodump:
+            return
+
+        if hasattr(self.autodump, 'wrtie'):
+            self.dump(self.autodump)
+        else:
+            filename = self.autodump(self) if callable(self.autodump) else self.autodump
+            with open(filename, mode='w') as f:
+                self.dump(f)
+
 
 composer = ObjectProxy(Composer.get_current)
 response = ObjectProxy(lambda: composer.current_call.response)
-
-
-def given(application, *args, **kwargs):
-    return Composer(application, *args, **kwargs)
+given = Composer
 
 
 def when(*args, **kwargs):

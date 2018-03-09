@@ -123,6 +123,16 @@ You may load the story again from this yaml with `Story.loads(yaml)`.
 There is two additional methods are available to dump and load to 
 and from a file: `story.load(file)` and `story.dump(file)`
 
+#### Auto Dumping
+
+You may pass the `autodump` argument of the `given` function to coonfigure the autodumping:
+
+    :param autodump: A string which indicates the filename to dump the story, or
+                     a `callable(story) -> filename` to determine the filename.
+                     A file-like object is also accepted.
+                     Default is `None`, meana autodumping is disabled by default.
+ 
+
 ### Markdown
 
 You can use `story.document([formatter_factory=MarkdownFormatter])` to generate documentation 
