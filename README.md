@@ -2,6 +2,22 @@
 
 Toolchain to define and verify REST API in BDD.
 
+Table of Contents
+=================
+
+   * [bddrest](#bddrest)
+      * [Branches](#branches)
+         * [master](#master)
+         * [develop](#develop)
+      * [Quick start](#quick-start)
+         * [Writing tests](#writing-tests)
+         * [Dumping a Story](#dumping-a-story)
+         * [Markdown](#markdown)
+      * [WHEN: Trying invalid book id](#when-trying-invalid-book-id)
+         * [Response: 404 Not Found](#response-404-not-found)
+            * [Headers](#headers)
+
+
 [![Build Status](http://img.shields.io/pypi/v/bddrest.svg)](https://pypi.python.org/pypi/bddrest)
      
 ## Branches
@@ -21,6 +37,12 @@ Toolchain to define and verify REST API in BDD.
 
 ### Writing tests
 
+Using `given`, `when`, `then` and `and_` functions as you see in the example below, you can determine and assert 
+the behaviour of yout `REST API`.
+
+The `composer` and `response` objects are two proxies for currently writing story(*inside the with given( ... ): context*) 
+and the last response after a `given` and or `when`.
+
 ```python
 
 import sys
@@ -33,19 +55,20 @@ def wsgi_application(environ, start_response):
     path = environ['PATH_INFO']
     if path.endswith('/None'):
         start_response('404 Not Found', [('Content-Type', 'text/plain;charset=utf-8')])
-        return ''
-    start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
-    result = json.dumps(dict(
-        foo='bar'
-    ))
-    yield result.encode()
+        yield b''
+    else:
+        start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
+        result = json.dumps(dict(
+            foo='bar'
+        ))
+        yield result.encode()
 
 
 with given(
         wsgi_application,
         title='Quickstart!',
         url='/books/id: 1',
-        as_='visitor'):
+        as_='visitor') as story:
 
     then(response.status == '200 OK')
     and_('foo' in response.json)
@@ -58,11 +81,15 @@ with given(
 
     then(response.status_code == 404)
 
-    composer.dump(sys.stdout)
-
 ```
 
-Will produce:
+### Dumping a `Story`
+
+```python
+story.dumps()
+```
+
+Produces:
 
 ```yaml
 
@@ -90,3 +117,40 @@ calls:
 
 ```
 
+You may load the story again from this yaml with `story.loads`.
+
+There two additional methods are available to dump and load to 
+and from a file: `story.load(file)` and `story.dump(file)`
+
+### Markdown
+
+You can use `story.document([formatter_factory=MarkdownFormatter])` to generate documentation 
+in arbitrary format for example: `Markdown`
+
+```markdown
+
+## Quickstart!
+
+### GET /books/:id
+
+### Response: 200 OK
+
+#### Headers
+
+* Content-Type: application/json;charset=utf-8
+
+#### Body
+
+```json
+{"foo": "bar"}
+```
+
+## WHEN: Trying invalid book id
+
+### Response: 404 Not Found
+
+#### Headers
+
+* Content-Type: text/plain;charset=utf-8
+
+```

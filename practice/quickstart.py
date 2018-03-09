@@ -8,12 +8,13 @@ def wsgi_application(environ, start_response):
     path = environ['PATH_INFO']
     if path.endswith('/None'):
         start_response('404 Not Found', [('Content-Type', 'text/plain;charset=utf-8')])
-        return ''
-    start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
-    result = json.dumps(dict(
-        foo='bar'
-    ))
-    yield result.encode()
+        yield b''
+    else:
+        start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
+        result = json.dumps(dict(
+            foo='bar'
+        ))
+        yield result.encode()
 
 
 if __name__ == '__main__':
