@@ -4,7 +4,7 @@ import contextlib
 
 
 @contextlib.contextmanager
-def standard_files_mockup(stdin):
+def standard_files_mockup(stdin, argv=None):
 
     class StandardFile:
         encoding = 'UTF-8'
@@ -41,16 +41,21 @@ def standard_files_mockup(stdin):
     stdinbackup = sys.stdin
     stdoutbackup = sys.stdout
     stderrbackup = sys.stderr
+    argvbackup = sys.argv
 
     sys.stdin = stdinfile
     sys.stdout = stdoutfile
     sys.stderr = stderrfile
+    if argv:
+        sys.argv = argv
 
     yield stdoutfile, stderrfile
 
     sys.stdin = stdinbackup
     sys.stdout = stdoutbackup
     sys.stderr = stderrbackup
+    if argv:
+        sys.argv = argvbackup
 
     stdoutfile.seek(0)
     stderrfile.seek(0)

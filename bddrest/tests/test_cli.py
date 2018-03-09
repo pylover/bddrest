@@ -4,6 +4,22 @@ from bddrest import main
 from bddrest.tests.helpers import standard_files_mockup
 
 
+class CliTestCase(unittest.TestCase):
+    def test_document_cli(self):
+        with standard_files_mockup(yamlstory, argv=['bddrest', 'document']) as (stdout, stderr):
+            main()
+
+        self.maxDiff = None
+        self.assertEqual(expected_markdown, stdout.getvalue().decode())
+
+    def test_help(self):
+        with standard_files_mockup(yamlstory, argv=['bddrest']) as (stdout, stderr):
+            main()
+
+        self.maxDiff = None
+        self.assertEqual(expected_help, stdout.getvalue().decode())
+
+
 yamlstory = '''
 base_call:
   as_: visitor
@@ -87,13 +103,19 @@ id | None
 '''
 
 
-class CliTestCase(unittest.TestCase):
-    def test_document_cli(self):
-        with standard_files_mockup(yamlstory) as (stdout, stderr):
-            main(['document'])
+expected_help = '''\
+usage: bddrest [-h] {document} ...
 
-        self.maxDiff = None
-        self.assertEqual(expected_markdown, stdout.getvalue().decode())
+bddrest command line interface.
+
+optional arguments:
+  -h, --help  show this help message and exit
+
+Sub Commands:
+  {document}
+    document  Generates REST API Documentation from standard input to standard
+              output.
+'''
 
 
 if __name__ == '__main__':

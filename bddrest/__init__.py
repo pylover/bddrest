@@ -34,7 +34,7 @@ class MainLauncher(Launcher):
         if hasattr(cli_args, 'func'):
             cli_args.func(cli_args)
         else:
-            self.parser.print_help()
+            super().launch()
 
     @classmethod
     def create_parser(cls, subparsers):
@@ -44,7 +44,7 @@ class MainLauncher(Launcher):
         pass
 
 
-def main(argv=None):
-    return MainLauncher()(argv=argv)
+def main():
+    return MainLauncher()()
 
 

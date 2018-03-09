@@ -5,7 +5,7 @@ class Launcher:
     parser = None
 
     @classmethod
-    def create_parser(cls, subparsers):
+    def create_parser(cls, subparsers):  # pragma: no cover
         raise NotImplementedError
 
     @classmethod
@@ -17,12 +17,9 @@ class Launcher:
             parser.set_defaults(func=instance)
         return instance
 
-    def __call__(self, *args, argv=None):
+    def __call__(self, *args):
         self.args = args[0] if len(args) else None
-        if argv:
-            self.launch(args=argv)
-        else:
-            self.launch()
+        self.launch()
 
     def launch(self):
         if self.parser:
