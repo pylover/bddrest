@@ -7,14 +7,13 @@ Toolchain to define and verify REST API in BDD.
 Table of Contents
 =================
 
-   * [bddrest](#bddrest)
-      * [Branches](#branches)
-         * [master](#master)
-         * [develop](#develop)
-      * [Quick start](#quick-start)
-         * [Writing tests](#writing-tests)
-         * [Dumping a Story](#dumping-a-story)
-         * [Markdown](#markdown)
+ * [Branches](#branches)
+    * [master](#master)
+    * [develop](#develop)
+ * [Quick start](#quick-start)
+    * [Writing tests](#writing-tests)
+    * [Dumping a Story](#dumping-a-story)
+    * [Markdown](#markdown)
 
 
      
