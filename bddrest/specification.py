@@ -1,14 +1,13 @@
-import re
 import json as jsonlib
+import re
 from abc import ABCMeta, abstractmethod
-from urllib.parse import urlencode, urlparse
 from typing import Iterable
+from urllib.parse import urlencode, urlparse
 
-import yaml
 from webtest import TestApp
 
-from .helpers import normalize_headers, normalize_query_string
 from .exceptions import InvalidUrlParametersError, CallVerifyError
+from .http import normalize_headers, normalize_query_string
 
 
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')

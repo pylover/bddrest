@@ -1,7 +1,7 @@
 import yaml
 
-from .specification import Given, When
 from .documentary import Documenter, MarkdownFormatter
+from .specification import Given, When
 
 
 class Story:

@@ -1,8 +1,6 @@
-from os import path
-
-from .story import Story
-from .specification import Given, When, Call
 from .helpers import Context, ObjectProxy
+from .specification import Given, When, Call
+from .story import Story
 
 
 class Composer(Story, Context):

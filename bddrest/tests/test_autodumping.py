@@ -1,14 +1,8 @@
-import unittest
-import json
-import cgi
-import functools
 import tempfile
+import unittest
 from os import path
 
-from bddrest.story import Story
-from bddrest.specification import Call, When, Given
-from bddrest.authoring import given, when, then, composer, response, and_
-from bddrest.exceptions import InvalidUrlParametersError, CallVerifyError
+from bddrest.authoring import given, then, response
 
 
 def wsgi_application(environ, start_response):

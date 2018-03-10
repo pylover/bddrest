@@ -1,10 +1,10 @@
-import unittest
 import cgi
-import json
 import functools
+import json
+import unittest
 
-from bddrest.specification import Given, When
 from bddrest.exceptions import CallVerifyError
+from bddrest.specification import Given, When
 
 
 def wsgi_application(environ, start_response):

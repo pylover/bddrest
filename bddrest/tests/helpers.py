@@ -1,6 +1,6 @@
-import sys
-import io
 import contextlib
+import io
+import sys
 
 
 @contextlib.contextmanager
