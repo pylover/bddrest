@@ -65,6 +65,12 @@ class HeaderSetTestCase(unittest.TestCase):
         del headers['C']
         self.assertListEqual([], headers)
 
+    def test_hasitem(self):
+        headers = HeaderSet(['A: F'])
+        self.assertTrue('A' in headers)
+        self.assertTrue('a' in headers)
+        self.assertTrue('A: F' in headers)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -52,3 +52,15 @@ class HeaderSet(list):
         else:
             super().__delitem__(key)
 
+    def __contains__(self, key):
+        if isinstance(key, str):
+            try:
+                if ':' in key:
+                    return super().__contains__(self._normalize_item(key))
+                self._get_item_by_key(key)
+                return True
+            except KeyError:
+                return False
+        else:
+            return super().__contains__(key)
+
