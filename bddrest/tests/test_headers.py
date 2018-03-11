@@ -71,6 +71,13 @@ class HeaderSetTestCase(unittest.TestCase):
         self.assertTrue('a' in headers)
         self.assertTrue('A: F' in headers)
 
+    def test_extend(self):
+        expected_headers = [('A', 'B'), ('C', 'D')]
+
+        headers = HeaderSet(['A: B'])
+        headers.extend(['C: D'])
+        self.assertListEqual(expected_headers, headers)
+
 
 if __name__ == '__main__':
     unittest.main()

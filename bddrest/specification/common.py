@@ -11,7 +11,8 @@ class HeaderSet(list):
         else:
             super().__init__()
 
-    def _normalize_item(self, h):
+    @staticmethod
+    def _normalize_item(h):
         k, v = h.split(':', 1) if isinstance(h, str) else h
         return k, v.strip()
 
@@ -63,4 +64,7 @@ class HeaderSet(list):
                 return False
         else:
             return super().__contains__(key)
+
+    def extend(self, other):
+        super().extend(self._normalize_item(i) for i in other)
 
