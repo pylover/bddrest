@@ -17,7 +17,3 @@ def normalize_query_string(query):
         k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()
     } if isinstance(query, str) else query
 
-
-class Headers(list):
-    pass
-
