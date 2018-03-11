@@ -50,8 +50,9 @@ class HeaderSetTestCase(unittest.TestCase):
     def test_setitem_getitem_delitem(self):
         expected_headers = [('A', 'B'), ('C', 'D')]
         # setitem
-        headers = HeaderSet(['A: F', 'C: D'])
+        headers = HeaderSet(['A: F'])
         headers[0] = 'A: B'
+        headers['C'] = 'D'
         self.assertListEqual(expected_headers, headers)
 
         # getitem
