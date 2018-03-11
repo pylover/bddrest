@@ -30,9 +30,24 @@ class HeaderSetTestCase(unittest.TestCase):
         headers.append('C', 'D')
         self.assertListEqual(expected_headers, headers)
 
+    def test_insert(self):
+        expected_headers = [('A', 'B'), ('C', 'D')]
+        headers = HeaderSet()
+        headers.insert(0, ('C', 'D'))
+        headers.insert(0, ('A', 'B'))
+        self.assertListEqual(expected_headers, headers)
+
+        headers = HeaderSet()
+        headers.insert(0, 'C: D')
+        headers.insert(0, 'A: B')
+        self.assertListEqual(expected_headers, headers)
+
+        headers = HeaderSet()
+        headers.insert(0, 'C', 'D')
+        headers.insert(0, 'A', 'B')
+        self.assertListEqual(expected_headers, headers)
 
 
-        #    def test_insert(self):
 if __name__ == '__main__':
     unittest.main()
 

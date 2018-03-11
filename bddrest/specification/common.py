@@ -21,4 +21,10 @@ class HeaderSet(list):
         else:
             return super().append(self._normalize_item(k))
 
+    def insert(self, i, k, v=None):
+        if v:
+            return super().insert(i, (k, v))
+        else:
+            return super().insert(i, self._normalize_item(k))
+
 
