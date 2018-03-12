@@ -9,16 +9,10 @@ class When(Call):
         self.base_call = base_call
         super().__init__(title, description=description, response=response)
 
-        if 'url' in diff:
-            diff['url'], url_parameters, query = self.extract_url_parameters(diff['url'])
-            if 'url_parameters' not in diff:
-                diff['url_parameters'] = url_parameters
-
-            if 'query' not in diff:
-                diff['query'] = normalize_query_string(query)
-
         self.diff = diff
         self.headers = headers
+        if 'url' in diff:
+            self.url = diff['url']
 
     def to_dict(self):
         result = dict(title=self.title)
@@ -44,9 +38,11 @@ class When(Call):
 
     @url.setter
     def url(self, value):
-        url, self.url_parameters, self.query = self.extract_url_parameters(value)
-        if url:
-            self.diff['url']
+        url, url_parameters, query = self.extract_url_parameters(value)
+        if url and url != self.base_call.url:
+            self.diff['url'] = url
+            self.diff['url_parameters'] = url_parameters
+            self.diff['query'] = query
         else:
             self.diff.pop('url', None)
 

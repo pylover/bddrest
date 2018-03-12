@@ -134,6 +134,7 @@ class StoryTestCase(unittest.TestCase):
     def test_to_dict(self):
         call = dict(
             title='Binding',
+            description='Awesome given description',
             url='/apiv1/devices/name: SM-12345678',
             verb='POST',
             as_='visitor',
@@ -147,6 +148,7 @@ class StoryTestCase(unittest.TestCase):
             then(response.status == '200 OK')
             when(
                 'Trying invalid code',
+                description='Awesome invalid code description',
                 form=dict(
                     activationCode='badCode'
                 )
@@ -156,6 +158,7 @@ class StoryTestCase(unittest.TestCase):
             story_dict = composer.to_dict()
             self.assertDictEqual(story_dict['base_call'], dict(
                 title='Binding',
+                description='Awesome given description',
                 url='/apiv1/devices/:name',
                 verb='POST',
                 as_='visitor',
@@ -176,6 +179,7 @@ class StoryTestCase(unittest.TestCase):
             ))
             self.assertDictEqual(story_dict['calls'][0], dict(
                 title='Trying invalid code',
+                description='Awesome invalid code description',
                 form=dict(
                     activationCode='badCode'
                 ),
@@ -341,3 +345,4 @@ class StoryTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
