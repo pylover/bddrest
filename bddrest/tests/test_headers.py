@@ -1,4 +1,5 @@
 import unittest
+import re
 
 from bddrest.specification.common import HeaderSet
 
@@ -65,11 +66,11 @@ class HeaderSetTestCase(unittest.TestCase):
         del headers['C']
         self.assertListEqual([], headers)
 
-    def test_hasitem(self):
+    def test_in_operator(self):
         headers = HeaderSet(['A: F'])
-        self.assertTrue('A' in headers)
-        self.assertTrue('a' in headers)
-        self.assertTrue('A: F' in headers)
+        self.assertIn('A', headers)
+        self.assertIn('a', headers)
+        self.assertIn('A: F', headers)
 
     def test_extend(self):
         expected_headers = [('A', 'B'), ('C', 'D')]
@@ -77,6 +78,10 @@ class HeaderSetTestCase(unittest.TestCase):
         headers = HeaderSet(['A: B'])
         headers.extend(['C: D'])
         self.assertListEqual(expected_headers, headers)
+
+    def test_regex_match(self):
+        headers = HeaderSet(['Content-Type: application/json;utf-8'])
+        self.assertIn(re.compile('^content-type: .*', re.I), headers)
 
 
 if __name__ == '__main__':

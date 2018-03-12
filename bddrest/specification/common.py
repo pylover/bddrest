@@ -1,3 +1,6 @@
+import re
+from typing.re import Pattern
+
 from collections import Iterable
 
 
@@ -62,6 +65,11 @@ class HeaderSet(list):
                 return True
             except KeyError:
                 return False
+        elif isinstance(key, Pattern):
+            for k, v in self:
+                if key.match(f'{k}: {v}'):
+                    return True
+            return False
         else:
             return super().__contains__(key)
 
