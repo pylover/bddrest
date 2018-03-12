@@ -19,11 +19,22 @@ class HeaderSet(list):
         k, v = h.split(':', 1) if isinstance(h, str) else h
         return k, v.strip()
 
+    @property
+    def simple(self):
+        return [f'{k}: {v}' for k, v in self]
+
     def _get_item_by_key(self, key):
         testkey = key.casefold()
-        for i, (k, v) in enumerate(self):
-            if k.casefold() == testkey:
-                return i, k, v
+        if ':' in key:
+            for i, h in enumerate(self.simple):
+                if testkey == h.casefold():
+                    k, v = self[i]
+                    return i, k, v
+        else:
+            for i, (k, v) in enumerate(self):
+                if k.casefold() == testkey:
+                    return i, k, v
+
         raise KeyError(key)
 
     def append(self, k, v=None):
@@ -59,15 +70,13 @@ class HeaderSet(list):
     def __contains__(self, key):
         if isinstance(key, str):
             try:
-                if ':' in key:
-                    return super().__contains__(self._normalize_item(key))
                 self._get_item_by_key(key)
                 return True
             except KeyError:
                 return False
         elif isinstance(key, Pattern):
-            for k, v in self:
-                if key.match(f'{k}: {v}'):
+            for i in self.simple:
+                if key.match(i):
                     return True
             return False
         else:
@@ -75,4 +84,9 @@ class HeaderSet(list):
 
     def extend(self, other):
         super().extend(self._normalize_item(i) for i in other)
+
+    def remove(self, key):
+        if isinstance(key, str):
+            key = self._get_item_by_key(key)[1:]
+        super().remove(key)
 

@@ -83,6 +83,12 @@ class HeaderSetTestCase(unittest.TestCase):
         headers = HeaderSet(['Content-Type: application/json;utf-8'])
         self.assertIn(re.compile('^content-type: .*', re.I), headers)
 
+    def test_remove(self):
+        headers = HeaderSet([('A', 'B'), ('C', 'D')])
+        headers.remove('A')
+        headers.remove('C: D')
+        self.assertListEqual([], headers)
+
 
 if __name__ == '__main__':
     unittest.main()
