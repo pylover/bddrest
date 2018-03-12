@@ -313,6 +313,31 @@ class StoryTestCase(unittest.TestCase):
             loaded_story = Story.load(temp_file)
             self.assertIsNone(loaded_story.verify(wsgi_application))
 
+    def test_url_overriding(self):
+        call = dict(
+            title='Multiple url parameters',
+            url='/apiv1/devices/name: SM-12345678/id: 1',
+            verb='POST',
+            form=dict(
+                activationCode='746727',
+                phone='+9897654321'
+            ),
+        )
+
+        with given(wsgi_application, **call):
+            then(response.status == '200 OK')
+
+            modified_call = when(
+                'Trying different url!',
+                url='/apiv1/devices?a=b&c=d'
+            )
+            self.assertIsNone(modified_call.url_parameters)
+
+            then(
+                response.status_code == 200,
+                response.json['query'] == 'a=b&c=d'
+            )
+
 
 if __name__ == '__main__':
     unittest.main()

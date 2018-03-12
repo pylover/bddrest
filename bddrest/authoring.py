@@ -57,11 +57,11 @@ given = Composer
 
 
 def when(*args, **kwargs):
-    composer.when(*args, **kwargs)
+    return composer.when(*args, **kwargs)
 
 
 def then(*args, **kwargs):
-    composer.then(*args, **kwargs)
+    return composer.then(*args, **kwargs)
 
 
 and_ = then
