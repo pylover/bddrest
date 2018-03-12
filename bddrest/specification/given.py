@@ -1,6 +1,7 @@
 from .call import Call
 from .response import Response
-from ..http import normalize_query_string, normalize_headers
+from ..helpers import normalize_query_string
+from .headerset import HeaderSet
 
 
 class Given(Call):
@@ -66,7 +67,7 @@ class Given(Call):
 
     @headers.setter
     def headers(self, value):
-        self._headers = normalize_headers(value)
+        self._headers = HeaderSet(value) if value is not None else None
 
     @property
     def query(self):

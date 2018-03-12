@@ -1,7 +1,7 @@
 import unittest
 import re
 
-from bddrest.specification.common import HeaderSet
+from bddrest.specification.headerset import HeaderSet
 
 
 class HeaderSetTestCase(unittest.TestCase):

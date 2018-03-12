@@ -1,5 +1,5 @@
 from .call import Call
-from ..http import normalize_headers
+from .headerset import HeaderSet
 
 
 class When(Call):
@@ -71,7 +71,7 @@ class When(Call):
 
     @headers.setter
     def headers(self, value):
-        self.update_diff('headers', normalize_headers(value))
+        self.update_diff('headers', HeaderSet(value) if value is not None else None)
 
     @property
     def query(self):

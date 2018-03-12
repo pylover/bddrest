@@ -1,7 +1,7 @@
 import re
 import json as jsonlib
 
-from ..http import normalize_headers
+from .headerset import HeaderSet
 
 
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
@@ -14,7 +14,7 @@ class Response:
 
     def __init__(self, status, headers, body=None, json=None):
         self.status = status
-        self.headers = normalize_headers(headers)
+        self.headers = HeaderSet(headers) if headers is not None else None
         if json:
             self.body = jsonlib.dumps(json).encode()
             # FIXME: enable it after HeaderSet is implemented.
@@ -47,7 +47,7 @@ class Response:
             status=self.status
         )
         if self.headers:
-            result['headers'] = [': '.join(h) for h in self.headers]
+            result['headers'] = self.headers.simple
 
         if self.body:
             if self.content_type == 'application/json':

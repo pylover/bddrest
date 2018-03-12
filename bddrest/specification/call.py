@@ -4,7 +4,7 @@ from urllib.parse import urlparse, urlencode
 
 from webtest import TestApp
 
-from ..http import normalize_query_string
+from ..helpers import normalize_query_string
 from ..exceptions import CallVerifyError, InvalidUrlParametersError
 from .response import Response
 
