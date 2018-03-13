@@ -4,13 +4,13 @@ from .headerset import HeaderSet
 
 
 class When(Call):
-    def __init__(self, base_call, title: str, description=None, response=None,
-                 headers=None, **diff):
+    def __init__(self, base_call, title: str, description=None, response=None, **diff):
         self.base_call = base_call
         super().__init__(title, description=description, response=response)
 
         self.diff = diff
-        self.headers = headers
+        if 'headers' in diff:
+            self.headers = diff.pop('headers')
         if 'url' in diff:
             self.url = diff.pop('url')
 
