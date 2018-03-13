@@ -12,7 +12,7 @@ class When(Call):
         self.diff = diff
         self.headers = headers
         if 'url' in diff:
-            self.url = diff['url']
+            self.url = diff.pop('url')
 
     def to_dict(self):
         result = dict(title=self.title)
@@ -25,12 +25,6 @@ class When(Call):
             result['response'] = self.response.to_dict()
 
         return result
-
-    def update_diff(self, key, value):
-        if not value:
-            self.diff.pop(key, None)
-        else:
-            self.diff[key] = value
 
     @property
     def url(self):
@@ -52,7 +46,11 @@ class When(Call):
 
     @url_parameters.setter
     def url_parameters(self, value):
-        self.update_diff('url_parameters', value)
+        self.diff['url_parameters'] = value
+
+    @url_parameters.deleter
+    def url_parameters(self):
+        del self.diff['url_parameters']
 
     @property
     def verb(self):
@@ -60,7 +58,11 @@ class When(Call):
 
     @verb.setter
     def verb(self, value):
-        self.update_diff('verb', value)
+        self.diff['verb'] = value
+
+    @verb.deleter
+    def verb(self):
+        del self.diff['verb']
 
     @property
     def headers(self):
@@ -68,7 +70,11 @@ class When(Call):
 
     @headers.setter
     def headers(self, value):
-        self.update_diff('headers', HeaderSet(value) if value is not None else None)
+        self.diff['headers'] = HeaderSet(value) if value is not None else None
+
+    @headers.deleter
+    def headers(self):
+        del self.diff['headers']
 
     @property
     def query(self):
@@ -76,7 +82,11 @@ class When(Call):
 
     @query.setter
     def query(self, value):
-        self.update_diff('query', normalize_query_string(value))
+        self.diff['query'] = normalize_query_string(value)
+
+    @query.deleter
+    def query(self):
+        del self.diff['query']
 
     @property
     def content_type(self):
@@ -84,7 +94,11 @@ class When(Call):
 
     @content_type.setter
     def content_type(self, value):
-        self.update_diff('content_type', value)
+        self.diff['content_type'] = value
+
+    @content_type.deleter
+    def content_type(self):
+        del self.diff['content_type']
 
     @property
     def as_(self):
@@ -92,7 +106,11 @@ class When(Call):
 
     @as_.setter
     def as_(self, value):
-        self.update_diff('as_', value)
+        self.diff['as_'] = value
+
+    @as_.deleter
+    def as_(self):
+        del self.diff['as_']
 
     @property
     def extra_environ(self):
@@ -100,7 +118,11 @@ class When(Call):
 
     @extra_environ.setter
     def extra_environ(self, value):
-        self.update_diff('extra_environ', value)
+        self.diff['extra_environ'] = value
+
+    @extra_environ.deleter
+    def extra_environ(self):
+        del self.diff['extra_environ']
 
     @property
     def form(self):
@@ -108,5 +130,9 @@ class When(Call):
 
     @form.setter
     def form(self, value):
-        self.update_diff('form', value)
+        self.diff['form'] = value
+
+    @form.deleter
+    def form(self):
+        del self.diff['form']
 
