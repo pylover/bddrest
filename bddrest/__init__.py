@@ -4,7 +4,6 @@ from os import path
 
 import argcomplete
 
-from .story import Story
 from .cli import Launcher
 
 
@@ -35,13 +34,6 @@ class MainLauncher(Launcher):
             cli_args.func(cli_args)
         else:
             super().launch()
-
-    @classmethod
-    def create_parser(cls, subparsers):
-        """
-        Do nothing here
-        """
-        pass
 
 
 def main():

@@ -43,7 +43,7 @@ class Composer(Story, Context):
         if not self.autodump:
             return
 
-        if hasattr(self.autodump, 'wrtie'):
+        if hasattr(self.autodump, 'write'):
             self.dump(self.autodump)
         else:
             filename = self.autodump(self) if callable(self.autodump) else self.autodump
