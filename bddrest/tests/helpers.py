@@ -8,15 +8,11 @@ def standard_files_mockup(stdin, argv=None):
 
     class StandardFile:
         encoding = 'UTF-8'
-        def __init__(self, file=None):
-            if file is None:
+        def __init__(self, content=None):
+            if content is None:
                 self.buffer = io.BytesIO()
-            elif isinstance(file, str):
-                self.buffer = io.BytesIO(file.encode())
-            elif isinstance(file, bytes):
-                self.buffer = io.BytesIO(file)
             else:
-                self.buffer = file
+                self.buffer = io.BytesIO(content.encode() if isinstance(content, str) else content)
 
         def write(self, d):
             self.buffer.write(d.encode())
@@ -30,11 +26,7 @@ def standard_files_mockup(stdin, argv=None):
         def getvalue(self):
             return self.buffer.getvalue()
 
-    if isinstance(stdin, (str, bytes)):
-        stdinfile = StandardFile(stdin)
-    else:
-        stdinfile = stdin
-
+    stdinfile = StandardFile(stdin)
     stdoutfile = StandardFile()
     stderrfile = StandardFile()
 
