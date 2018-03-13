@@ -5,26 +5,8 @@ class MarkdownFormatter(Formatter):
     def writeline(self, text=''):
         self.write(f'{text}\n')
 
-    def _write_header(self, n, text):
-        self.writeline(f'{"#" * n} {text}\n')
-
-    def write_header1(self, text):
-        self._write_header(1, text)
-
-    def write_header2(self, text):
-        self._write_header(2, text)
-
-    def write_header3(self, text):
-        self._write_header(3, text)
-
-    def write_header4(self, text):
-        self._write_header(4, text)
-
-    def write_header5(self, text):
-        self._write_header(5, text)
-
-    def write_header6(self, text):
-        self._write_header(6, text)
+    def write_header(self, text, level=1):
+        self.writeline(f'{"#" * level} {text}\n')
 
     def write_paragraph(self, text):
         self.writeline(text)

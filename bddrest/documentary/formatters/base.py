@@ -13,27 +13,7 @@ class Formatter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def write_header1(self, text):  # pragma: no cover
-        pass
-
-    @abstractmethod
-    def write_header2(self, text):  # pragma: no cover
-        pass
-
-    @abstractmethod
-    def write_header3(self, text):  # pragma: no cover
-        pass
-
-    @abstractmethod
-    def write_header4(self, text):  # pragma: no cover
-        pass
-
-    @abstractmethod
-    def write_header5(self, text):  # pragma: no cover
-        pass
-
-    @abstractmethod
-    def write_header6(self, text):  # pragma: no cover
+    def write_header(self, text, level=1):  # pragma: no cover
         pass
 
     @abstractmethod
