@@ -132,5 +132,5 @@ class CallTestCase(unittest.TestCase):
         self.assertDictEqual(dict(a='1'), call.query)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     unittest.main()

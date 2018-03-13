@@ -90,6 +90,6 @@ class HeaderSetTestCase(unittest.TestCase):
         self.assertListEqual([], headers)
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     unittest.main()
 
