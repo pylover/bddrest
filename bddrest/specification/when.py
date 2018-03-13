@@ -1,18 +1,37 @@
 from ..helpers import normalize_query_string
 from .call import Call
 from .headerset import HeaderSet
+from .response import Response
+
+
+class Unchanged:
+    pass
+
+UNCHANGED = Unchanged()
 
 
 class When(Call):
-    def __init__(self, base_call, title: str, description=None, response=None, **diff):
+    def __init__(self, base_call, title, url=UNCHANGED, verb=UNCHANGED, url_parameters=UNCHANGED,
+                 form=UNCHANGED, content_type=UNCHANGED, headers=UNCHANGED,
+                 as_=UNCHANGED, query=UNCHANGED, description=None,
+                 extra_environ=UNCHANGED, response: Response=None):
         self.base_call = base_call
+        self.diff = {}
         super().__init__(title, description=description, response=response)
 
-        self.diff = diff
-        if 'headers' in diff:
-            self.headers = diff.pop('headers')
-        if 'url' in diff:
-            self.url = diff.pop('url')
+        self.url = url
+        if url_parameters is not UNCHANGED:
+            self.url_parameters = url_parameters
+
+        if query is not UNCHANGED:
+            self.query = query
+
+        self.extra_environ = extra_environ
+        self.verb = verb
+        self.form = form
+        self.content_type = content_type
+        self.headers = headers
+        self.as_ = as_
 
     def to_dict(self):
         result = dict(title=self.title)
@@ -26,19 +45,28 @@ class When(Call):
 
         return result
 
+    def update_diff(self, key, value):
+        if value is UNCHANGED:
+            self.diff.pop(key, None)
+            return
+
+        self.diff[key] = value
+
     @property
     def url(self):
         return self.diff.get('url', self.base_call.url)
 
     @url.setter
     def url(self, value):
+        if value is UNCHANGED:
+            self.diff.pop('url', None)
+            return
+
         url, url_parameters, query = self.extract_url_parameters(value)
         if url and url != self.base_call.url:
             self.diff['url'] = url
-            self.diff['url_parameters'] = url_parameters
-            self.diff['query'] = query
-        else:
-            self.diff.pop('url', None)
+            self.url_parameters = url_parameters
+            self.query = query
 
     @property
     def url_parameters(self):
@@ -46,7 +74,7 @@ class When(Call):
 
     @url_parameters.setter
     def url_parameters(self, value):
-        self.diff['url_parameters'] = value
+        self.update_diff('url_parameters', value)
 
     @url_parameters.deleter
     def url_parameters(self):
@@ -58,7 +86,7 @@ class When(Call):
 
     @verb.setter
     def verb(self, value):
-        self.diff['verb'] = value
+        self.update_diff('verb', value)
 
     @verb.deleter
     def verb(self):
@@ -70,7 +98,7 @@ class When(Call):
 
     @headers.setter
     def headers(self, value):
-        self.diff['headers'] = HeaderSet(value) if value is not None else None
+        self.update_diff('headers', value if value is UNCHANGED else HeaderSet(value))
 
     @headers.deleter
     def headers(self):
@@ -82,7 +110,7 @@ class When(Call):
 
     @query.setter
     def query(self, value):
-        self.diff['query'] = normalize_query_string(value)
+        self.update_diff('query', value if value is UNCHANGED else normalize_query_string(value))
 
     @query.deleter
     def query(self):
@@ -94,7 +122,7 @@ class When(Call):
 
     @content_type.setter
     def content_type(self, value):
-        self.diff['content_type'] = value
+        self.update_diff('content_type', value)
 
     @content_type.deleter
     def content_type(self):
@@ -106,7 +134,7 @@ class When(Call):
 
     @as_.setter
     def as_(self, value):
-        self.diff['as_'] = value
+        self.update_diff('as_', value)
 
     @as_.deleter
     def as_(self):
@@ -118,7 +146,7 @@ class When(Call):
 
     @extra_environ.setter
     def extra_environ(self, value):
-        self.diff['extra_environ'] = value
+        self.update_diff('extra_environ', value)
 
     @extra_environ.deleter
     def extra_environ(self):
@@ -130,7 +158,7 @@ class When(Call):
 
     @form.setter
     def form(self, value):
-        self.diff['form'] = value
+        self.update_diff('form', value)
 
     @form.deleter
     def form(self):

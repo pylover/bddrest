@@ -26,6 +26,6 @@ class StoryTestCase(unittest.TestCase):
         self.assertTrue(path.exists(filename))
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     unittest.main()
 
