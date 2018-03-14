@@ -7,7 +7,7 @@ import argcomplete
 from .cli import Launcher
 
 
-__version__ = '0.10.0b1'
+__version__ = '0.10.1b1'
 
 
 class MainLauncher(Launcher):

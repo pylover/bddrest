@@ -1,3 +1,4 @@
+import re
 import sys
 import json
 
@@ -37,6 +38,7 @@ if __name__ == '__main__':
         )
 
         then(response.status_code == 404)
+        and_(re.compile('^content-type: text/plain;.*$', re.I) in response.headers)
 
     story.dump(sys.stdout)
 #    story.document(sys.stdout)

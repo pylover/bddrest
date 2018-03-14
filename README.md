@@ -7,10 +7,7 @@ Toolchain to define and verify REST API in BDD.
 Table of Contents
 =================
 
- * [Branches](#branches)
-    * [master](#master)
-    * [develop](#develop)
- * [Quick start](#quick-start)
+* [Quick start](#quick-start)
     * [Writing tests](#writing-tests)
     * [Dumping a Story](#dumping-a-story)
        * [Auto Dumping](#auto-dumping)
@@ -79,7 +76,9 @@ with given(
     )
 
     then(response.status_code == 404)
-
+    and_(
+        re.compile('^content-type: text/plain;.*$', re.I) in response.headers
+    )
 ```
 
 ### Dumping a `Story`
