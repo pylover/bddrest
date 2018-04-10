@@ -130,7 +130,7 @@ You may pass the `autodump` argument of the `given` function to coonfigure the a
     :param autodump: A string which indicates the filename to dump the story, or
                      a `callable(story) -> filename` to determine the filename.
                      A file-like object is also accepted.
-                     Default is `None`, meana autodumping is disabled by default.
+                     Default is `None`, mean autodumping is disabled by default.
  
 
 ### Markdown
