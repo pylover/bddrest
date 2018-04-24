@@ -11,27 +11,27 @@ def wsgi_application(environ, start_response):
     yield b'Nothing'
 
 
-class AutoDumpingTestCase(unittest.TestCase):
+class AutoDocumentationTestCase(unittest.TestCase):
 
-    def test_autodump_filename(self):
+    def test_autodoc_filename(self):
         filename = tempfile.mktemp()
         with given(
             wsgi_application,
-            title='Testing auto dump',
+            title='Testing auto documentation',
             url='/apiv1/devices/name: SM-12345678',
-            autodump=filename,
+            autodoc=filename,
         ):
             then(response.status_code == 200)
 
         self.assertTrue(path.exists(filename))
 
-    def test_autodump_file_object(self):
+    def test_autodoc_file_object(self):
         file = io.StringIO()
         with given(
             wsgi_application,
-            title='Testing auto dump',
+            title='Testing auto documentation',
             url='/apiv1/devices/name: SM-12345678',
-            autodump=file,
+            autodoc=file,
         ):
             then(response.status_code == 200)
 

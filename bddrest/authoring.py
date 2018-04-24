@@ -9,12 +9,18 @@ class Composer(Story, Context):
     :param autodump: A string which indicates the filename to dump the story, or
                      a `callable(story) -> filename` to determine the filename.
                      A file-like object is also accepted.
-                     Default is `None`, meana autodumping is disabled by default.
+                     Default is `None`, means autodump is disabled by default.
+    :param autodoc: A string which indicates the name of documentation file, or
+                     a `callable(story) -> filename` to determine the filename.
+                     A file-like object is also accepted.
+                     Default is `None`, meana autodoc is disabled by default.
+                     Currently only markdown is supprted.
     """
 
-    def __init__(self, application, *args, autodump=None, **kwargs):
+    def __init__(self, application, *args, autodump=None, autodoc=None, **kwargs):
         self.application = application
         self.autodump = autodump
+        self.autodoc = autodoc
         base_call = Given(*args, **kwargs)
         base_call.conclude(application)
         super().__init__(base_call)
@@ -40,15 +46,21 @@ class Composer(Story, Context):
 
     def __exit__(self, *args, **kwargs):
         super().__exit__(*args, **kwargs)
-        if not self.autodump:
-            return
+        if self.autodump:
+            if hasattr(self.autodump, 'write'):
+                self.dump(self.autodump)
+            else:
+                filename = self.autodump(self) if callable(self.autodump) else self.autodump
+                with open(filename, mode='w', encoding='utf-8') as f:
+                    self.dump(f)
 
-        if hasattr(self.autodump, 'write'):
-            self.dump(self.autodump)
-        else:
-            filename = self.autodump(self) if callable(self.autodump) else self.autodump
-            with open(filename, mode='w', encoding='utf-8') as f:
-                self.dump(f)
+        if self.autodoc:
+            if hasattr(self.autodoc, 'write'):
+                self.dump(self.autodoc)
+            else:
+                filename = self.autodoc(self) if callable(self.autodoc) else self.autodoc
+                with open(filename, mode='w', encoding='utf-8') as f:
+                    self.document(f)
 
 
 composer = ObjectProxy(Composer.get_current)

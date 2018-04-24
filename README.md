@@ -125,13 +125,23 @@ and from a file: `story.load(file)` and `story.dump(file)`
 
 #### Auto Dumping
 
-You may pass the `autodump` argument of the `given` function to coonfigure the autodumping:
+You may pass the `autodump` argument of the `given` function to configure the auto-dumping:
 
     :param autodump: A string which indicates the filename to dump the story, or
                      a `callable(story) -> filename` to determine the filename.
                      A file-like object is also accepted.
                      Default is `None`, meana autodumping is disabled by default.
  
+
+#### Auto Documentation
+
+You may pass the `autodoc` argument of the `given` function to configure the auto-documentation:
+
+    :param autodoc: A string which indicates the name of documentation file, or
+                     a `callable(story) -> filename` to determine the filename.
+                     A file-like object is also accepted.
+                     Default is `None`, meana autodoc is disabled by default.
+                     Currently only markdown is supprted.
 
 ### Markdown
 
