@@ -12,11 +12,10 @@ class Documenter:
 
         if response.body:
             formatter.write_header('Body', 4)
-            if response.content_type:
-                mime = 'json' if 'json' in response.content_type else ''
-                formatter.write_paragraph(f'```{mime}\n```')
-
-            formatter.write_paragraph(f'```{response.text}\n```')
+            mime = ''
+            if response.content_type and 'json' in response.content_type:
+                mime = 'json'
+            formatter.write_paragraph(f'```{mime}\n{response.text}\n```')
 
     def document(self, story, outfile):
         basecall = story.base_call
