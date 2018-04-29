@@ -120,7 +120,7 @@ calls:
 
 You may load the story again from this yaml with `Story.loads(yaml)`.
 
-There is two additional methods are available to dump and load to 
+There are two additional methods available to dump and load to 
 and from a file: `story.load(file)` and `story.dump(file)`
 
 #### Auto Dumping
@@ -207,7 +207,7 @@ bddrest document < story.yml > story.md
 
 ## Command Line Interface
 
-After installing hte project a command named `bddrest` will be available.
+After installing the project a command named `bddrest` will be available.
 
 ```bash
 bddrest -h
