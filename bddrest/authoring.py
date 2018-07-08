@@ -38,14 +38,8 @@ class Composer(Story, Context):
         self.calls.append(new_call)
         return new_call
 
-    def then(self, *asserts):
-        self.current_call.conclude(self.application)
-        for passed in asserts:
-            assert passed is not False
-        return self.current_call
-
-    def __exit__(self, *args, **kwargs):
-        super().__exit__(*args, **kwargs)
+    def __exit__(self, exc_type, exc_value, traceback):
+        super().__exit__(exc_type, exc_value, traceback)
         if self.autodump:
             if hasattr(self.autodump, 'write'):
                 self.dump(self.autodump)
@@ -70,11 +64,4 @@ given = Composer
 
 def when(*args, **kwargs):
     return composer.when(*args, **kwargs)
-
-
-def then(*args, **kwargs):
-    return composer.then(*args, **kwargs)
-
-
-and_ = then
 

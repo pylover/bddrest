@@ -4,7 +4,7 @@ import json
 import tempfile
 import unittest
 
-from bddrest.authoring import given, when, then, composer, response, and_
+from bddrest.authoring import given, when, composer, response
 from bddrest.exceptions import InvalidUrlParametersError, CallVerifyError
 from bddrest.specification import Call, When
 from bddrest.story import Story
@@ -56,10 +56,8 @@ class StoryTestCase(unittest.TestCase):
             )
         )
         with given(wsgi_application, **call):
-            then(
-                response.status == '200 OK',
-                response.status_code == 200
-            )
+            assert response.status == '200 OK',
+            assert response.status_code == 200
             and_('secret' in response.json)
             and_(response.json['secret'] == 'ABCDEF')
             and_('Bad Header' not in response.headers)

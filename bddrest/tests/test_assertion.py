@@ -4,7 +4,7 @@ import json
 import tempfile
 import unittest
 
-from bddrest.authoring import given, when, then, composer, response, and_
+from bddrest.authoring import given, when, composer, response
 from bddrest.exceptions import InvalidUrlParametersError, CallVerifyError
 from bddrest.specification import Call, When
 from bddrest.story import Story
@@ -36,41 +36,36 @@ def wsgi_application(environ, start_response):
     yield result.encode()
 
 
-class AssertionTestCase(unittest.TestCase):
+def test_equality():
 
-    def test_equality(self):
+    call = dict(
+        title=\
+            'Binding and registering the device after verifying the '
+            'activation code',
+        description=\
+            'As a new visitor I have to bind my device with activation '
+            'code and phone number',
+        url='/apiv1/devices/name: SM-12345678',
+        verb='POST',
+        as_='visitor',
+        query=dict(
+            a=1,
+            b=2
+        ),
+        form=dict(
+            activationCode='746727',
+            phone='+9897654321'
+        )
+    )
+    with given(wsgi_application, **call):
+        assert response.status == '200 OK'
+        assert response.status_code == 200
 
-        call = dict(
-            title='Binding and registering the device after verifying the activation code',
-            description=\
-                'As a new visitor I have to bind my device with activation code and phone number',
-            url='/apiv1/devices/name: SM-12345678',
-            verb='POST',
-            as_='visitor',
-            query=dict(
-                a=1,
-                b=2
-            ),
+        when(
+            'Trying invalid code',
             form=dict(
-                activationCode='746727',
-                phone='+9897654321'
+                activationCode='badCode'
             )
         )
-        with given(wsgi_application, **call):
-            then(
-                response.status == '200 OK',
-                response.status_code == 200
-            )
-            when(
-                'Trying invalid code',
-                form=dict(
-                    activationCode='badCode'
-                )
-            )
-
-            then(response.status_code == 400)
-
-
-if __name__ == '__main__':  # pragma: no cover
-    unittest.main()
+        assert response.status_code == 400
 

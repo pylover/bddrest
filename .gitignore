@@ -107,4 +107,6 @@ ENV/
 .vimtags
 .*.swp
 
+# pytest
+.pytest_cache
 
