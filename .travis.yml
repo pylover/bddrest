@@ -13,7 +13,7 @@ before_install:
   - pip install -r requirements-dev.txt
 
 install: pip install -ve .
-script: coverage run --source bddrest $(which nosetests)
+script: coverage run --source bddrest setup.py test
 after_success: travis_retry coveralls
 deploy:
   provider: pypi
