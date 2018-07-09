@@ -3,7 +3,7 @@ import unittest
 from os import path
 import io
 
-from bddrest.authoring import given, then, response
+from bddrest.authoring import given, response
 
 
 def wsgi_application(environ, start_response):
@@ -11,33 +11,28 @@ def wsgi_application(environ, start_response):
     yield b'Nothing'
 
 
-class AutoDumpingTestCase(unittest.TestCase):
+def test_autodump_filename():
+    filename = tempfile.mktemp()
+    with given(
+        wsgi_application,
+        title='Testing auto dump',
+        url='/apiv1/devices/name: SM-12345678',
+        autodump=filename,
+    ):
+        assert response.status_code == 200
 
-    def test_autodump_filename(self):
-        filename = tempfile.mktemp()
-        with given(
-            wsgi_application,
-            title='Testing auto dump',
-            url='/apiv1/devices/name: SM-12345678',
-            autodump=filename,
-        ):
-            then(response.status_code == 200)
-
-        self.assertTrue(path.exists(filename))
-
-    def test_autodump_file_object(self):
-        file = io.StringIO()
-        with given(
-            wsgi_application,
-            title='Testing auto dump',
-            url='/apiv1/devices/name: SM-12345678',
-            autodump=file,
-        ):
-            then(response.status_code == 200)
-
-        self.assertTrue(len(file.getvalue()) > 0)
+    assert path.exists(filename)
 
 
-if __name__ == '__main__':  # pragma: no cover
-    unittest.main()
+def test_autodump_file_object():
+    file = io.StringIO()
+    with given(
+        wsgi_application,
+        title='Testing auto dump',
+        url='/apiv1/devices/name: SM-12345678',
+        autodump=file,
+    ):
+        assert response.status_code == 200
+
+    assert len(file.getvalue()) > 0
 
