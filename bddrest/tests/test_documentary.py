@@ -3,7 +3,7 @@ import io
 from bddrest.story import Story
 
 
-def test_markdown(self):
+def test_markdown():
     story = Story.loads(provided_story)
     outfile = io.StringIO()
     story.document(outfile)
@@ -52,7 +52,7 @@ provided_story = '''
         f1: cba
 '''
 
-expected_markdown = '''
+expected_markdown = '''\
 ## Quickstart!
 
 ### PUT /books/:id
