@@ -5,6 +5,7 @@ from bddrest.specification import Given, When
 
 class WhenTestCase(unittest.TestCase):
 
+
     def test_when_setters_deleters(self):
         basecall = Given(
             'Base call for testing When class',

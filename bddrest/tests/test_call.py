@@ -16,7 +16,10 @@ def wsgi_application(environ, start_response):
         keep_blank_values=True
     )
 
-    start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
+    start_response(
+        '200 OK',
+        [('Content-Type', 'application/json;charset=utf-8')]
+    )
     result = dict(
         query=environ['QUERY_STRING'],
         url=environ['PATH_INFO']

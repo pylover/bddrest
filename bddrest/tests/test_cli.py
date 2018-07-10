@@ -4,20 +4,19 @@ from bddrest import main
 from bddrest.tests.helpers import standard_files_mockup
 
 
-class CliTestCase(unittest.TestCase):
-    def test_document_cli(self):
-        with standard_files_mockup(yamlstory, argv=['bddrest', 'document']) as (stdout, stderr):
-            main()
+def test_document_cli():
+    with standard_files_mockup(yamlstory, argv=['bddrest', 'document']) as (stdout, stderr):
+        main()
 
-        self.maxDiff = None
-        self.assertEqual(expected_markdown, stdout.getvalue().decode())
+    assert expected_markdown == stdout.getvalue().decode()
 
-    def test_help(self):
-        with standard_files_mockup(yamlstory, argv=['bddrest']) as (stdout, stderr):
-            main()
 
-        self.maxDiff = None
-        self.assertEqual(expected_help, stdout.getvalue().decode())
+def test_help():
+    with standard_files_mockup(yamlstory, argv=['bddrest']) \
+            as (stdout, stderr):
+        main()
+
+    assert expected_help == stdout.getvalue().decode()
 
 
 yamlstory = '''
