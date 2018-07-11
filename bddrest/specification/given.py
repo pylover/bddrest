@@ -12,13 +12,21 @@ class Given(Call):
     _verb = None
     _query = None
     _form = None
-    _content_type = None  # FIXME: remove it and use header set to store it.
     _as = None
     _extra_environ = None
 
-    def __init__(self, title: str, url='/', verb='GET', url_parameters: dict = None, form: dict = None,
-                 content_type: str = None, headers: list = None, as_: str = None, query: dict = None,
-                 description: str = None, extra_environ: dict = None, response: Response=None):
+    # FIXME: remove them  and use header set to store it.
+    _content_type = None
+    _authorization = None
+
+
+    def __init__(self, title: str, url='/', verb='GET',
+                 url_parameters: dict = None, form: dict = None,
+                 content_type: str = None, headers: list = None,
+                 as_: str = None, query: dict = None, description: str = None,
+                 extra_environ: dict = None, response: Response=None,
+                 authorization: str = None):
+
         super().__init__(title, description=description, response=response)
 
         self.url = url
@@ -33,6 +41,7 @@ class Given(Call):
         self.verb = verb
         self.form = form
         self.content_type = content_type
+        self.authorization = authorization
         self.headers = headers
         self.as_ = as_
         self.extra_environ = extra_environ
@@ -84,6 +93,14 @@ class Given(Call):
     @content_type.setter
     def content_type(self, value):
         self._content_type = value
+
+    @property
+    def authorization(self):
+        return self._authorization
+
+    @authorization.setter
+    def authorization(self, value):
+        self._authorization = value
 
     @property
     def as_(self):

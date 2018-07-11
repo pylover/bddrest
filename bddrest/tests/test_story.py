@@ -19,6 +19,7 @@ def wsgi_application(environ, start_response):
     )
 
     try:
+        # FIXME: Why x ^ 1234
         code = int(form['activationCode'].value) ^ 1234
     except ValueError:
         start_response('400 Bad Request', [('Content-Type', 'text/plain;utf-8')])
@@ -28,12 +29,16 @@ def wsgi_application(environ, start_response):
         ('Content-Type', 'application/json;charset=utf-8'),
         ('X-Pagination-Count', '10')
     ])
-    result = json.dumps(dict(
+    result = dict(
         secret='ABCDEF',
         code=code,
-        query=environ['QUERY_STRING']
-    ))
-    yield result.encode()
+        query=environ['QUERY_STRING'],
+    )
+
+    identity = environ.get('HTTP_AUTHORIZATION')
+    if identity:
+        result['identity'] = identity
+    yield json.dumps(result).encode()
 
 
 def test_given_when():
@@ -338,4 +343,25 @@ def test_url_overriding():
         assert modified_call.url_parameters is None
         assert response.status_code == 200
         assert response.json['query'] == 'a=b&c=d'
+
+
+def test_authorization():
+    def wsgi_application(environ, start_response):
+        result = {}
+        identity = environ.get('HTTP_AUTHORIZATION')
+        if identity:
+            result['identity'] = identity
+        start_response('200 OK', [
+            ('Content-Type', 'application/json;charset=utf-8'),
+        ])
+
+        yield json.dumps(result).encode()
+
+
+    with given(
+        wsgi_application, title='Testing authorization header',
+        url='/',
+        authorization='testuser'
+    ):
+        assert response.json['identity'] == 'testuser'
 

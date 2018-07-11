@@ -11,10 +11,12 @@ UNCHANGED = Unchanged()
 
 
 class When(Call):
-    def __init__(self, base_call, title, url=UNCHANGED, verb=UNCHANGED, url_parameters=UNCHANGED,
-                 form=UNCHANGED, content_type=UNCHANGED, headers=UNCHANGED,
-                 as_=UNCHANGED, query=UNCHANGED, description=None,
-                 extra_environ=UNCHANGED, response: Response=None):
+    def __init__(self, base_call, title, url=UNCHANGED, verb=UNCHANGED,
+                 url_parameters=UNCHANGED, form=UNCHANGED,
+                 content_type=UNCHANGED, headers=UNCHANGED, as_=UNCHANGED,
+                 query=UNCHANGED, description=None, extra_environ=UNCHANGED,
+                 response: Response=None, authorization=UNCHANGED):
+
         self.base_call = base_call
         self.diff = {}
         super().__init__(title, description=description, response=response)
@@ -30,6 +32,7 @@ class When(Call):
         self.verb = verb
         self.form = form
         self.content_type = content_type
+        self.authorization = authorization
         self.headers = headers
         self.as_ = as_
 
@@ -127,6 +130,18 @@ class When(Call):
     @content_type.deleter
     def content_type(self):
         del self.diff['content_type']
+
+    @property
+    def authorization(self):
+        return self.diff.get('authorization', self.base_call.authorization)
+
+    @authorization.setter
+    def authorization(self, value):
+        self.update_diff('authorization', value)
+
+    @authorization.deleter
+    def authorization(self):
+        del self.diff['authorization']
 
     @property
     def as_(self):

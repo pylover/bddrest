@@ -91,6 +91,12 @@ class Call(metaclass=ABCMeta):
 
         return url, url_parameters if url_parameters else None, query
 
+    def add_header_if_not_exists(self, headers, key, value):
+        for k, v in headers:
+            if k.lower() == key.lower():
+                headers.remove((k, v))
+        headers.append((key, value))
+
     def invoke(self, application) -> Response:
         url = self.url
         if self.url_parameters:
@@ -101,8 +107,18 @@ class Call(metaclass=ABCMeta):
 
         headers = self.headers or []
         if self.content_type:
-            headers = [h for h in headers if h[0].lower() != 'content-type']
-            headers.append(('Content-Type', self.content_type))
+            self.add_header_if_not_exists(
+                headers,
+                'Content-Type',
+                self.content_type
+            )
+
+        if self.authorization:
+            self.add_header_if_not_exists(
+                headers,
+                'authorization',
+                self.authorization
+            )
 
         request_params = dict(
             expect_errors=True,
@@ -211,6 +227,16 @@ class Call(metaclass=ABCMeta):
     @content_type.setter
     @abstractmethod
     def content_type(self, value):  # pragma: no cover
+        pass
+
+    @property
+    @abstractmethod
+    def authorization(self) -> str:  # pragma: no cover
+        pass
+
+    @content_type.setter
+    @abstractmethod
+    def authorization(self, value):  # pragma: no cover
         pass
 
     @property
