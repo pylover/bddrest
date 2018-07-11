@@ -1,4 +1,5 @@
 import re
+import sys
 from abc import ABCMeta, abstractmethod
 from urllib.parse import urlparse, urlencode
 
@@ -113,9 +114,25 @@ class Call(metaclass=ABCMeta):
         if self.form:
             request_params['params'] = self.form
 
+        import pudb; pudb.set_trace()  # XXX BREAKPOINT
         # noinspection PyProtectedMember
-        response = TestApp(application)._gen_request(self.verb, url, **request_params)
-        return Response(response.status, [(k, v) for k, v in response.headers.items()], body=response.body)
+        web_test_response = TestApp(application)._gen_request(
+            self.verb, 
+            url, 
+            **request_params
+        )
+      
+        response = Response(
+            web_test_response.status,
+            [(k, v) for k, v in web_test_response.headers.items()],
+            body=web_test_response.body
+        )
+       
+        if re.match('^5\d{2}\s', response.status):
+            print(response.json['stackTrace'], file=sys.stderr)
+
+        return response
+
 
     def verify(self, application):
         response = self.invoke(application)
