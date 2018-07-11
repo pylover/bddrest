@@ -114,20 +114,19 @@ class Call(metaclass=ABCMeta):
         if self.form:
             request_params['params'] = self.form
 
-        import pudb; pudb.set_trace()  # XXX BREAKPOINT
         # noinspection PyProtectedMember
         web_test_response = TestApp(application)._gen_request(
-            self.verb, 
-            url, 
+            self.verb,
+            url,
             **request_params
         )
-      
+
         response = Response(
             web_test_response.status,
             [(k, v) for k, v in web_test_response.headers.items()],
             body=web_test_response.body
         )
-       
+
         if re.match('^5\d{2}\s', response.status):
             print(response.json['stackTrace'], file=sys.stderr)
 
