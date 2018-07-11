@@ -58,7 +58,8 @@ def test_given_when():
             phone='+9897654321'
         )
     )
-    with given(wsgi_application, **call):
+    with given(wsgi_application, **call) as r:
+        assert r is response
         assert response.status == '200 OK'
         assert response.status_code == 200
         assert 'secret' in response.json

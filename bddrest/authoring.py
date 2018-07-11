@@ -38,6 +38,10 @@ class Composer(Story, Context):
         self.calls.append(new_call)
         return new_call
 
+    def __enter__(self):
+        super().__enter__()
+        return response
+
     def __exit__(self, exc_type, exc_value, traceback):
         super().__exit__(exc_type, exc_value, traceback)
         if self.autodump:
