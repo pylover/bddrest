@@ -1,3 +1,4 @@
+import re
 import threading
 from urllib.parse import parse_qs
 
@@ -99,4 +100,41 @@ def normalize_query_string(query):
     return {
         k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()
     } if isinstance(query, str) else query
+
+
+
+class Status:
+
+    def __init__(self, code):
+        self.code = int(code.split(' ', 1)[0])
+        self.text = code.lower()
+
+    def __eq__(self, other):
+        if isinstance(other, int):
+            return self.code == other
+        return self.text == other.lower()
+
+    def raise_value_error(self):
+        raise ValueError('Cannot compare with string, Use integer instead for\
+                          all comparisons except equality')
+
+    def __gt__(self, other):
+        if isinstance(other, int):
+            return self.code > other
+        self.raise_value_error
+
+    def __ge__(self, other):
+        if isinstance(other, int):
+            return self.code >= other
+        self.raise_value_error
+
+    def __lt__(self, other):
+        if isinstance(other, int):
+            return self.code < other
+        self.raise_value_error
+
+    def __le__(self, other):
+        if isinstance(other, int):
+            return self.code <= other
+        self.raise_value_error
 
