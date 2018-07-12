@@ -19,7 +19,7 @@ def test_autodoc_filename():
         url='/apiv1/devices/name: SM-12345678',
         autodoc=filename,
     ):
-        assert response.status_code == 200
+        assert response.status == 200
 
     assert path.exists(filename)
 
@@ -32,7 +32,7 @@ def test_autodoc_file_object():
         url='/apiv1/devices/name: SM-12345678',
         autodoc=file,
     ):
-        assert response.status_code == 200
+        assert response.status == 200
 
     assert len(file.getvalue()) > 0
 

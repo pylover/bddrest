@@ -7,13 +7,58 @@ from .headerset import HeaderSet
 CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 
 
+class HTTPStatus:
+
+    def __init__(self, code):
+        self.code = int(code.split(' ', 1)[0])
+        self.text = code
+
+    def __eq__(self, other):
+        if isinstance(other, int):
+            return self.code == other
+
+        if isinstance(other, self.__class__):
+            other = other.text
+
+        return self.text.casefold() == other.casefold()
+
+    def raise_value_error(self):
+        raise ValueError(
+            'Cannot compare with string, Use integer instead for all '
+            'comparison types except equality'
+        )
+
+    def __gt__(self, other):
+        if isinstance(other, int):
+            return self.code > other
+        self.raise_value_error()
+
+    def __ge__(self, other):
+        if isinstance(other, int):
+            return self.code >= other
+        self.raise_value_error()
+
+    def __lt__(self, other):
+        if isinstance(other, int):
+            return self.code < other
+        self.raise_value_error()
+
+    def __le__(self, other):
+        if isinstance(other, int):
+            return self.code <= other
+        self.raise_value_error()
+
+    def __str__(self):
+        return self.text
+
+
 class Response:
     content_type = None
     encoding = None
     body = None
 
     def __init__(self, status, headers, body=None, json=None):
-        self.status = status
+        self.status = HTTPStatus(status)
         self.headers = HeaderSet(headers) if headers is not None else None
         if json:
             self.body = jsonlib.dumps(json).encode()
@@ -21,10 +66,6 @@ class Response:
             # self.headers.append('Content-Type: application/json;charset=utf-8')
         elif body:
             self.body = body.encode() if not isinstance(body, bytes) else body
-
-        status_parts = status.split(' ')
-        self.status_code, self.status_text = \
-            int(status_parts[0]), ' '.join(status_parts[1:])
 
         if headers:
             for k, v in self.headers:
@@ -44,7 +85,7 @@ class Response:
 
     def to_dict(self):
         result = dict(
-            status=self.status
+            status=str(self.status)
         )
         if self.headers:
             result['headers'] = self.headers.simple
@@ -64,5 +105,4 @@ class Response:
             return self.json == other.json
 
         return self.body == other.body
-
 

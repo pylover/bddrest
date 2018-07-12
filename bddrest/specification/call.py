@@ -143,7 +143,7 @@ class Call(metaclass=ABCMeta):
             body=web_test_response.body
         )
 
-        if re.match('^5\d{2}\s', response.status):
+        if 500 <= response.status < 600:
             print(response.json['stackTrace'], file=sys.stderr)
 
         return response

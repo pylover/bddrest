@@ -59,7 +59,7 @@ def test_equality():
     )
     with given(wsgi_application, **call):
         assert response.status == '200 OK'
-        assert response.status_code == 200
+        assert response.status == 200
 
         when(
             'Trying invalid code',
@@ -67,5 +67,5 @@ def test_equality():
                 activationCode='badCode'
             )
         )
-        assert response.status_code == 400
+        assert response.status == 400
 

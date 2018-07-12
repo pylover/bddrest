@@ -58,8 +58,7 @@ def test_call_response():
     assert call.response is not None
     assert call.response.body is not None
     assert call.response.status == '200 OK'
-    assert call.response.status_code == 200
-    assert call.response.status_text == 'OK'
+    assert call.response.status == 200
     assert call.response.encoding == 'utf-8'
     assert call.response.content_type == 'application/json'
     assert call.response.text is not None
