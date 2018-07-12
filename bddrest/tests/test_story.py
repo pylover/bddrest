@@ -61,7 +61,7 @@ def test_given_when():
     with given(wsgi_application, **call) as r:
         assert r is response
         assert response.status == '200 OK'
-        assert response.status_code == 200
+        assert response.status == 200
         assert 'secret' in response.json
         assert response.json['secret'] == 'ABCDEF'
         assert 'Bad Header' not in response.headers
@@ -80,7 +80,7 @@ def test_given_when():
             )
         )
 
-        assert response.status_code == 400
+        assert response.status == 400
 
 
 def test_url_parameters():
@@ -156,7 +156,7 @@ def test_to_dict():
                 activationCode='badCode'
             )
         )
-        assert response.status_code == 400
+        assert response.status == 400
 
         story_dict = composer.to_dict()
         assert story_dict['base_call'] == dict(
@@ -232,7 +232,7 @@ def test_from_dict():
     assert loaded_story is not None
     assert isinstance(loaded_story.base_call, Call)
     assert isinstance(loaded_story.calls[0], When)
-    assert loaded_story.base_call.response.status_code == 200
+    assert loaded_story.base_call.response.status == 200
     assert data == loaded_story.to_dict()
 
 
@@ -256,7 +256,7 @@ def test_dump_load():
                 activationCode='badCode'
             )
         )
-        assert response.status_code == 400
+        assert response.status == 400
 
         dumped_story = composer.dumps()
         loaded_story = Story.loads(dumped_story)
@@ -342,7 +342,7 @@ def test_url_overriding():
             url='/apiv1/devices?a=b&c=d'
         )
         assert modified_call.url_parameters is None
-        assert response.status_code == 200
+        assert response.status == 200
         assert response.json['query'] == 'a=b&c=d'
 
 
