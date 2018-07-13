@@ -96,8 +96,8 @@ class Given(Story, Context):
         else:
             return self.base_call
 
-    def when(self, title, **kwargs):
-        new_call = AlteredCall(self.base_call, title, **kwargs)
+    def when(self, *args, **kwargs):
+        new_call = AlteredCall(self.base_call, *args, **kwargs)
         new_call.conclude(self.application)
         self.calls.append(new_call)
         return new_call
