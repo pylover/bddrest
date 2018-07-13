@@ -3,7 +3,7 @@ import unittest
 from os import path
 import io
 
-from bddrest.authoring import given, response
+from bddrest import Given, when, response
 
 
 def wsgi_application(environ, start_response):
@@ -13,7 +13,7 @@ def wsgi_application(environ, start_response):
 
 def test_autodoc_filename():
     filename = tempfile.mktemp()
-    with given(
+    with Given(
         wsgi_application,
         title='Testing auto documentation',
         url='/apiv1/devices/name: SM-12345678',
@@ -26,7 +26,7 @@ def test_autodoc_filename():
 
 def test_autodoc_file_object():
     file = io.StringIO()
-    with given(
+    with Given(
         wsgi_application,
         title='Testing auto documentation',
         url='/apiv1/devices/name: SM-12345678',
