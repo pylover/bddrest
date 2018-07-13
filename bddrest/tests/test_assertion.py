@@ -4,10 +4,9 @@ import json
 import tempfile
 import unittest
 
-from bddrest.authoring import given, when, composer, response
+from bddrest.authoring import Given, when, story, response, Story
 from bddrest.exceptions import InvalidUrlParametersError, CallVerifyError
-from bddrest.specification import Call, When
-from bddrest.story import Story
+from bddrest.specification import AlteredCall
 
 
 def wsgi_application(environ, start_response):
@@ -57,7 +56,7 @@ def test_equality():
             phone='+9897654321'
         )
     )
-    with given(wsgi_application, **call):
+    with Given(wsgi_application, **call):
         assert response.status == '200 OK'
         assert response.status == 200
 

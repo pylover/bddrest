@@ -4,7 +4,7 @@ from ..helpers import normalize_query_string
 from .headerset import HeaderSet
 
 
-class BaseCall(Call):
+class FirstCall(Call):
 
     _headers = None
     _url = None

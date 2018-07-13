@@ -11,7 +11,7 @@ class Unchanged:
 UNCHANGED = Unchanged()
 
 
-class When(Call):
+class AlteredCall(Call):
     def __init__(self, base_call, title, url=UNCHANGED, verb=UNCHANGED,
                  url_parameters=UNCHANGED, form=UNCHANGED,
                  content_type=UNCHANGED, headers=UNCHANGED, as_=UNCHANGED,

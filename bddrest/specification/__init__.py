@@ -1,5 +1,5 @@
 from .call import Call
-from .given import Given
+from .firstcall import FirstCall
+from .alteredcall import AlteredCall
 from .response import Response, HTTPStatus
-from .when import When
 from .headerset import HeaderSet
