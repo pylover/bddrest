@@ -1,5 +1,7 @@
-'''
-from bddrest import Given, Add, when
+import cgi
+import json
+
+from bddrest import Given, Add, when, response
 
 
 def wsgi_application(environ, start_response):
@@ -13,10 +15,10 @@ def wsgi_application(environ, start_response):
     start_response('200 OK', [
         ('Content-Type', 'application/json;charset=utf-8'),
     ])
-    yield json.dumps(form).encode()
+    yield json.dumps({k: form[k].value for k in form.keys()}).encode()
 
 
-def baghali_test_add_form_field():
+def test_add_form_field():
     call = dict(
         title='test add form field',
         url='/apiv1/devices/name: SM-12345678/id: 1',
@@ -39,4 +41,3 @@ def baghali_test_add_form_field():
             phone='+9897654321',
             email='user@example.com'
         )
-'''
