@@ -34,6 +34,12 @@ class MainLauncher(Launcher):
             super().launch()
 
 
+root_launcher = None
+
+
 def main():
-    return MainLauncher()
+    global root_launcher
+    if root_launcher is None:
+        root_launcher = MainLauncher()
+    return root_launcher()
 

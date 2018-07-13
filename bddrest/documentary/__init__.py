@@ -27,7 +27,7 @@ class DocumentaryLauncher(Launcher):
         return parser
 
     def convert_file(self, source, destination):
-        from ..story import Story
+        from ..authoring import Story
         story = Story.load(source)
         story.document(destination, formatter_factory=self.formatters[self.args.format])
 

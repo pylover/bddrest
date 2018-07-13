@@ -1,6 +1,6 @@
 import io
 
-from bddrest.story import Story
+from bddrest import Story
 
 
 def test_markdown():

@@ -1,7 +1,7 @@
 import unittest
 import re
 
-from bddrest.specification.headerset import HeaderSet
+from bddrest import HeaderSet
 
 
 def test_constructor():

@@ -1,6 +1,6 @@
 import unittest
 
-from bddrest import main
+from bddrest.cli import main
 from bddrest.tests.helpers import standard_files_mockup
 
 
@@ -115,4 +115,3 @@ Sub Commands:
     document  Generates REST API Documentation from standard input to standard
               output.
 '''
-

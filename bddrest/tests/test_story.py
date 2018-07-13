@@ -4,10 +4,8 @@ import tempfile
 
 import pytest
 
-from bddrest.authoring import given, when, composer, response
-from bddrest.exceptions import InvalidUrlParametersError, CallVerifyError
-from bddrest.specification import Call, When
-from bddrest.story import Story
+from bddrest import Given, when, story, response, InvalidUrlParametersError, \
+    CallVerifyError, Call, AlteredCall, Story
 
 
 def wsgi_application(environ, start_response):
@@ -58,8 +56,8 @@ def test_given_when():
             phone='+9897654321'
         )
     )
-    with given(wsgi_application, **call) as r:
-        assert r is response
+    with Given(wsgi_application, **call) as s:
+        assert s.response is response._resolver()
         assert response.status == '200 OK'
         assert response.status == 200
         assert 'secret' in response.json
@@ -94,7 +92,7 @@ def test_url_parameters():
         ),
     )
 
-    with given(wsgi_application, **call):
+    with Given(wsgi_application, **call):
         assert response.status == '200 OK'
 
         with pytest.raises(InvalidUrlParametersError):
@@ -131,7 +129,7 @@ def test_url_parameters():
         ),
     )
 
-    with given(wsgi_application, **call):
+    with Given(wsgi_application, **call):
         assert response.status == '200 OK'
 
 def test_to_dict():
@@ -147,7 +145,7 @@ def test_to_dict():
         ),
         headers=[('X-H1', 'Header Value')]
     )
-    with given(wsgi_application, **call):
+    with Given(wsgi_application, **call):
         assert response.status == '200 OK'
         when(
             'Trying invalid code',
@@ -158,7 +156,7 @@ def test_to_dict():
         )
         assert response.status == 400
 
-        story_dict = composer.to_dict()
+        story_dict = story.to_dict()
         assert story_dict['base_call'] == dict(
             title='Binding',
             description='Awesome given description',
@@ -231,7 +229,7 @@ def test_from_dict():
     loaded_story = Story.from_dict(data)
     assert loaded_story is not None
     assert isinstance(loaded_story.base_call, Call)
-    assert isinstance(loaded_story.calls[0], When)
+    assert isinstance(loaded_story.calls[0], AlteredCall)
     assert loaded_story.base_call.response.status == 200
     assert data == loaded_story.to_dict()
 
@@ -248,7 +246,7 @@ def test_dump_load():
         ),
         headers=[('X-H1', 'Header Value')]
     )
-    with given(wsgi_application, **call):
+    with Given(wsgi_application, **call):
         assert response.status == '200 OK'
         when(
             'Trying invalid code',
@@ -258,9 +256,9 @@ def test_dump_load():
         )
         assert response.status == 400
 
-        dumped_story = composer.dumps()
+        dumped_story = story.dumps()
         loaded_story = Story.loads(dumped_story)
-        assert composer.to_dict() == loaded_story.to_dict()
+        assert story.to_dict() == loaded_story.to_dict()
         loaded_story.validate()
 
 
@@ -276,7 +274,7 @@ def test_verify():
         ),
         headers=[('X-H1', 'Header Value')]
     )
-    with given(wsgi_application, **call):
+    with Given(wsgi_application, **call):
         assert response.status == '200 OK'
         when(
             'Trying invalid code',
@@ -284,7 +282,7 @@ def test_verify():
                 activationCode='badCode'
             )
         )
-        dumped_story = composer.dumps()
+        dumped_story = story.dumps()
 
     loaded_story = Story.loads(dumped_story)
     loaded_story.verify(wsgi_application)
@@ -308,7 +306,7 @@ def test_dump_load_file():
             ),
             headers=[('X-H1', 'Header Value')]
         )
-        with given(wsgi_application, **call):
+        with Given(wsgi_application, **call):
             assert response.status == '200 OK'
             when(
                 'Trying invalid code',
@@ -316,7 +314,7 @@ def test_dump_load_file():
                     activationCode='badCode'
                 )
             )
-            composer.dump(temp_file)
+            story.dump(temp_file)
 
         temp_file.seek(0)
         loaded_story = Story.load(temp_file)
@@ -334,7 +332,7 @@ def test_url_overriding():
         ),
     )
 
-    with given(wsgi_application, **call):
+    with Given(wsgi_application, **call):
         assert response.status == '200 OK'
 
         modified_call = when(
@@ -359,7 +357,7 @@ def test_authorization():
         yield json.dumps(result).encode()
 
 
-    with given(
+    with Given(
         wsgi_application, title='Testing authorization header',
         url='/',
         authorization='testuser'
