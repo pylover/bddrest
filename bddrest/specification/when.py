@@ -7,6 +7,7 @@ from .response import Response
 class Unchanged:
     pass
 
+
 UNCHANGED = Unchanged()
 
 
