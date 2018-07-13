@@ -4,8 +4,7 @@ import json
 import unittest
 
 import pytest
-from bddrest.exceptions import CallVerifyError
-from bddrest.specification import Given, When
+from bddrest import CallVerifyError, FirstCall, AlteredCall
 
 
 def wsgi_application(environ, start_response):
@@ -30,11 +29,11 @@ def wsgi_application(environ, start_response):
 
 
 def test_call_constructor():
-    call = Given('Testing Call contractor', url='/id: 1')
+    call = FirstCall('Testing Call contractor', url='/id: 1')
     assert call.url == '/:id'
     assert call.url_parameters == dict(id='1')
 
-    call = Given(
+    call = FirstCall(
         'Testing Call contractor',
         url='/id: 1/:name',
         url_parameters=dict(name='foo', id=2)
@@ -47,13 +46,13 @@ def test_call_constructor():
 
 
 def test_call_invoke():
-    call = Given('Testing Call contractor', url='/id: 1')
+    call = FirstCall('Testing Call contractor', url='/id: 1')
     call.conclude(wsgi_application)
     assert call.response is not None
 
 
 def test_call_response():
-    call = Given('Testing Call contractor', url='/id: 1', query='a=1')
+    call = FirstCall('Testing Call contractor', url='/id: 1', query='a=1')
     call.conclude(wsgi_application)
     assert call.response is not None
     assert call.response.body is not None
@@ -69,7 +68,7 @@ def test_call_response():
 
 
 def test_call_to_dict():
-    call = Given('Testing Call to_dict', url='/id: 1', query='a=1')
+    call = FirstCall('Testing Call to_dict', url='/id: 1', query='a=1')
     call.conclude(wsgi_application)
     call_dict = call.to_dict()
     assert call_dict == dict(
@@ -87,8 +86,8 @@ def test_call_to_dict():
 
 
 def test_altered_call():
-    call = Given('Testing When contractor', url='/id: 1', query=dict(a=1))
-    altered_call = When(
+    call = FirstCall('Testing AlteredCall contractor', url='/id: 1', query=dict(a=1))
+    altered_call = AlteredCall(
         call,
         'Altering a call',
         query=dict(b=2)
@@ -106,11 +105,11 @@ def test_altered_call():
 
 
 def test_call_verify():
-    call = Given('Testing Given contractor', url='/id: 1', query=dict(a=1))
+    call = FirstCall('Testing FirstCall contractor', url='/id: 1', query=dict(a=1))
     call.conclude(wsgi_application)
     call.verify(wsgi_application)
 
-    altered_call = When(
+    altered_call = AlteredCall(
         call,
         'Altering a call',
         query=dict(b=2)
@@ -128,7 +127,7 @@ def test_call_verify():
 
 
 def test_querystring_parser():
-    call = Given('Testing querystring parsing', url='/id: 1?a=1')
+    call = FirstCall('Testing querystring parsing', url='/id: 1?a=1')
     assert '/:id' == call.url
     assert dict(a='1') == call.query
 

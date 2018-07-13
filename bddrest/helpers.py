@@ -1,3 +1,4 @@
+from urllib.parse import parse_qs
 
 
 def normalize_query_string(query):
