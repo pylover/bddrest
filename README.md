@@ -35,18 +35,18 @@ Table of Contents
 
 ### Writing tests
 
-Using `given`, `when`, `then` and `and_` functions as you see in the example below, you can determine and assert 
+Using `Given`, `when`, `then` and `and_` functions as you see in the example below, you can determine and assert 
 the behaviour of yout `REST API`.
 
-The `composer` and `response` objects are two proxies for currently writing story(*inside the with given( ... ): context*) 
-and the last response after a `given` and or `when`.
+The `composer` and `response` objects are two proxies for currently writing story(*inside the with Given( ... ): context*) 
+and the last response after a `Given` and or `when`.
 
 ```python
 
 import sys
 import json
 
-from bddrest.authoring import given, when, then, and_, response, composer
+from bddrest.authoring import Given, when, then, and_, response, composer
 
 
 def wsgi_application(environ, start_response):
@@ -62,7 +62,7 @@ def wsgi_application(environ, start_response):
         yield result.encode()
 
 
-with given(
+with Given(
         wsgi_application,
         title='Quickstart!',
         url='/books/id: 1',
@@ -127,7 +127,7 @@ and from a file: `story.load(file)` and `story.dump(file)`
 
 #### Auto Dumping
 
-You may pass the `autodump` argument of the `given` function to configure the auto-dumping:
+You may pass the `autodump` argument of the `Given` function to configure the auto-dumping:
 
     :param autodump: A string which indicates the filename to dump the story, or
                      a `callable(story) -> filename` to determine the filename.
@@ -137,7 +137,7 @@ You may pass the `autodump` argument of the `given` function to configure the au
 
 #### Auto Documentation
 
-You may pass the `autodoc` argument of the `given` function to configure the auto-documentation:
+You may pass the `autodoc` argument of the `Given` function to configure the auto-documentation:
 
     :param autodoc: A string which indicates the name of documentation file, or
                      a `callable(story) -> filename` to determine the filename.

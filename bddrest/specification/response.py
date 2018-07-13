@@ -51,6 +51,9 @@ class HTTPStatus:
     def __str__(self):
         return self.text
 
+    def __repr__(self):
+        return f'\'{str(self)}\''
+
 
 class Response:
     content_type = None

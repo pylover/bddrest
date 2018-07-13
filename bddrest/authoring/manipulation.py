@@ -16,29 +16,36 @@ class Manipulator(metaclass=abc.ABCMeta):
         pass
 
 
-class Add(Manipulator):
+class Append(Manipulator):
     def apply(self, container):
-        clone = container.copy()
-        if isinstance(clone, dict):
-            clone.update(self.dict_diff)
+        if isinstance(container, dict):
+            for k, v in self.dict_diff.items():
+                if k in container:
+                    raise ValueError(
+                        f'The key: {k} is already exists in the target '
+                        f'container. You may use the bddrest.Update object.'
+                    )
+            container.update(self.dict_diff)
         else:
-            clone += self.list_diff
-        return clone
+            container += self.list_diff
+
+
+class Update(Manipulator):
+    def apply(self, container):
+        if isinstance(container, dict):
+            container.update(self.dict_diff)
+        else:
+            raise ValueError('Only dict is supported for Update manipulator')
 
 
 def when(*args, **kwargs):
     story = Given.get_current()
 
-    args = [
-        a.apply(story.base_call) if isinstance(a, Manipulator) else a
-        for a in args
-    ]
-
-    kwargs = {
-        k: a.apply(getattr(story.base_call, k)) if isinstance(a, Manipulator) else a
-        for k, a in kwargs.items()
-    }
+    for k, v in kwargs.items():
+        if isinstance(v, Manipulator):
+            clone = getattr(story.base_call,k)
+            v.apply(clone)
+            kwargs[k] = clone
 
     return story.when(*args, **kwargs)
-
 
