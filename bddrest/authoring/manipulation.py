@@ -32,10 +32,28 @@ class Append(Manipulator):
 
 class Update(Manipulator):
     def apply(self, container):
-        if isinstance(container, dict):
-            container.update(self.dict_diff)
-        else:
+        if not isinstance(container, dict):
             raise ValueError('Only dict is supported for Update manipulator')
+
+        container.update(self.dict_diff)
+
+
+class Remove(Manipulator):
+    def __init__(self, *args):
+        super().__init__(*args)
+
+    def apply(self, container):
+        if not isinstance(self.list_diff, list):
+            raise ValueError('Only list is supported for Remove manipulator')
+
+        for k in self.list_diff:
+            if k not in container:
+                raise ValueError(f'The key: {k} is not exist in the target')
+
+            if isinstance(container, dict):
+                del container[k]
+            else:
+                container.remove(k)
 
 
 def when(*args, **kwargs):

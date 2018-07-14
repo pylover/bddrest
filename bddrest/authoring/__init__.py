@@ -4,7 +4,7 @@ from ..specification import FirstCall, AlteredCall, Call
 
 from .story import Story
 from .given import Given
-from .manipulation import Manipulator, Append, Update, when
+from .manipulation import Manipulator, Append, Remove, Update, when
 
 
 story = ObjectProxy(Given.get_current)
