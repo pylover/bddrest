@@ -13,6 +13,12 @@ class HTTPStatus:
         self.code = int(code.split(' ', 1)[0])
         self.text = code
 
+    def raise_value_error(self):
+        raise ValueError(
+            'Cannot compare with string, Use integer instead for all '
+            'comparison types except equality'
+        )
+
     def __eq__(self, other):
         if isinstance(other, int):
             return self.code == other
@@ -21,12 +27,6 @@ class HTTPStatus:
             other = other.text
 
         return self.text.casefold() == other.casefold()
-
-    def raise_value_error(self):
-        raise ValueError(
-            'Cannot compare with string, Use integer instead for all '
-            'comparison types except equality'
-        )
 
     def __gt__(self, other):
         if isinstance(other, int):

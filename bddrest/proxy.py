@@ -42,4 +42,24 @@ class ObjectProxy:
     def __setattr__(self, key, value):
         setattr(object.__getattribute__(self, 'proxied_object'), key, value)
 
+    def __eq__(self, other):
+        return self.proxied_object.__eq__(other)
+
+    def __gt__(self, other):
+        return self.proxied_object.__gt__(other)
+
+    def __ge__(self, other):
+        return self.proxied_object.__ge__(other)
+
+    def __lt__(self, other):
+        return self.proxied_object.__lt__(other)
+
+    def __le__(self, other):
+        return self.proxied_object.__le__(other)
+
+    def __str__(self):
+        return self.proxied_object.__str__()
+
+    def __repr__(self):
+        return self.proxied_object.__repr__()
 
