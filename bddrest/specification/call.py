@@ -1,5 +1,6 @@
 import re
 import sys
+import json
 from abc import ABCMeta, abstractmethod
 from urllib.parse import urlparse, urlencode
 
@@ -128,7 +129,10 @@ class Call(metaclass=ABCMeta):
             # upload_files=upload_files,
         )
         if self.form:
-            request_params['params'] = self.form
+            request_params['params'] = json.dumps(self.form) \
+                if self.content_type and \
+                self.content_type.startswith('application/json') \
+                else self.form
 
         # noinspection PyProtectedMember
         web_test_response = TestApp(application)._gen_request(

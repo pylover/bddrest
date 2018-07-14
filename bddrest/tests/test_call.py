@@ -86,7 +86,12 @@ def test_call_to_dict():
 
 
 def test_altered_call():
-    call = FirstCall('Testing AlteredCall contractor', url='/id: 1', query=dict(a=1))
+    call = FirstCall(
+        'Testing AlteredCall contractor',
+        url='/id: 1',
+        query=dict(a=1)
+    )
+
     altered_call = AlteredCall(
         call,
         'Altering a call',
@@ -149,7 +154,12 @@ def test_alteredcall_setters_deleters():
 
 
 def test_call_verify():
-    call = FirstCall('Testing FirstCall contractor', url='/id: 1', query=dict(a=1))
+    call = FirstCall(
+        'Testing FirstCall contractor',
+        url='/id: 1',
+        query=dict(a=1)
+    )
+
     call.conclude(wsgi_application)
     call.verify(wsgi_application)
 
@@ -174,4 +184,10 @@ def test_querystring_parser():
     call = FirstCall('Testing querystring parsing', url='/id: 1?a=1')
     assert '/:id' == call.url
     assert dict(a='1') == call.query
+
+
+def test_form_parser():
+    pyload = dict(a=1, b=2)
+    call = FirstCall('Testing form parsing', form=pyload)
+    assert call.form == pyload
 
