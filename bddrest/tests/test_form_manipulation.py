@@ -1,7 +1,7 @@
 import cgi
 import json
 
-from bddrest import Given, Add, when, response
+from bddrest import Given, Append, when, response
 
 
 def wsgi_application(environ, start_response):
@@ -34,7 +34,7 @@ def test_add_form_field():
 
         modified_call = when(
             'Adding another field',
-            form=Add(email='user@example.com')
+            form=Append(email='user@example.com')
         )
         assert response.json == dict(
             activationCode='746727',
