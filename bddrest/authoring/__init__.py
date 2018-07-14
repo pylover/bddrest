@@ -9,4 +9,5 @@ from .manipulation import Manipulator, Append, Remove, Update, when
 
 story = ObjectProxy(Given.get_current)
 response = ObjectProxy(lambda: story.response)
+status = ObjectProxy(lambda: response.status)
 
