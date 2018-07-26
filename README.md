@@ -35,27 +35,35 @@ Table of Contents
 
 ### Writing tests
 
-Using `Given`, `when`, `then` and `and_` functions as you see in the example below, you can determine and assert 
-the behaviour of yout `REST API`.
+Using `Given`, `when`, functions as you see in the example below, you can 
+determine and assert the behaviour of your `REST API`.
 
-The `composer` and `response` objects are two proxies for currently writing story(*inside the with Given( ... ): context*) 
+The `story`, `response`, `status` objects are some proxies for currently 
+writing story(*inside the with Given( ... ): context*) and it's response.
 and the last response after a `Given` and or `when`.
 
 ```python
 
+import re
 import sys
 import json
 
-from bddrest.authoring import Given, when, then, and_, response, composer
+from bddrest.authoring import Given, when, response, status
 
 
 def wsgi_application(environ, start_response):
     path = environ['PATH_INFO']
     if path.endswith('/None'):
-        start_response('404 Not Found', [('Content-Type', 'text/plain;charset=utf-8')])
+        start_response(
+            '404 Not Found',
+            [('Content-Type', 'text/plain;charset=utf-8')]
+        )
         yield b''
     else:
-        start_response('200 OK', [('Content-Type', 'application/json;charset=utf-8')])
+        start_response(
+            '200 OK',
+            [('Content-Type', 'application/json;charset=utf-8')]
+        )
         result = json.dumps(dict(
             foo='bar'
         ))
@@ -68,19 +76,18 @@ with Given(
         url='/books/id: 1',
         as_='visitor') as story:
 
-    then(response.status == '200 OK')
-    and_('foo' in response.json)
-    and_(response.json['foo'] == 'bar')
+    assert status == 200
+    assert status == '200 OK'
+    assert 'foo' in response.json
+    assert response.json['foo'] == 'bar'
 
     when(
         'Trying invalid book id',
         url_parameters={'id': None}
     )
 
-    then(response.status_code == 404)
-    and_(
-        re.compile('^content-type: text/plain;.*$', re.I) in response.headers
-    )
+    assert response.status == 404
+
 ```
 
 ### Dumping a `Story`
