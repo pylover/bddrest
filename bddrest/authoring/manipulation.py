@@ -61,7 +61,7 @@ def when(*args, **kwargs):
 
     for k, v in kwargs.items():
         if isinstance(v, Manipulator):
-            clone = getattr(story.base_call,k)
+            clone = getattr(story.base_call, k).copy()
             v.apply(clone)
             kwargs[k] = clone
 

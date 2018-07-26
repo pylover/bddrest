@@ -46,14 +46,14 @@ def test_append_form_field():
 
 def test_remove_from_fields():
     call = dict(
-            title='test remove form fields',
-            url='/apiv1/devices/name: SM-12345678/id: 1',
-            verb='POST',
-            form=dict(
-                activationCode='746727',
-                phone='+9897654321',
-                email='user@example.com'
-            )
+        title='test remove form fields',
+        url='/apiv1/devices/name: SM-12345678/id: 1',
+        verb='POST',
+        form=dict(
+            activationCode='746727',
+            phone='+9897654321',
+            email='user@example.com'
+        )
     )
 
     with Given(wsgi_application, **call):
@@ -71,25 +71,45 @@ def test_remove_from_fields():
 
 def test_update_from_fields():
     call = dict(
-            title='test remove form fields',
-            url='/apiv1/devices/name: SM-12345678/id: 1',
-            verb='POST',
-            form=dict(
-                activationCode='746727',
-                email='user@example.com'
-            )
+        title='test remove form fields',
+        url='/apiv1/devices/name: SM-12345678/id: 1',
+        verb='POST',
+        form=dict(
+            activationCode='746727',
+            email='user@example.com'
+        )
     )
 
     with Given(wsgi_application, **call):
         assert response.status =='200 OK'
+        assert response.json == dict(
+            activationCode='746727',
+            email='user@example.com'
+        )
+
 
         when(
-            'Updating fields',
+            'Updating email and phone fields',
             form=Update(email='test@example.com', phone='+98123456789')
         )
         assert response.json == dict(
             activationCode='746727',
             phone='+98123456789',
             email='test@example.com'
+        )
+
+        when(
+            'Updating only acitvation code',
+            form=Update(activationCode='666')
+        )
+        assert response.json == dict(
+            activationCode='666',
+            email='user@example.com'
+        )
+
+        when('Not updating at all')
+        assert response.json == dict(
+            activationCode='746727',
+            email='user@example.com'
         )
 
