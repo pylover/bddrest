@@ -10,8 +10,12 @@ CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
 class HTTPStatus:
 
     def __init__(self, code):
-        self.code = int(code.split(' ', 1)[0])
-        self.text = code
+        self.code, self.text = code.split(' ', 1)
+        self.code = int(self.code)
+
+    @property
+    def fulltext(self):
+        return f'{self.code} {self.text}'
 
     def raise_value_error(self):
         raise ValueError(
@@ -24,9 +28,9 @@ class HTTPStatus:
             return self.code == other
 
         if isinstance(other, self.__class__):
-            other = other.text
+            other = other.fulltext
 
-        return self.text.casefold() == other.casefold()
+        return self.fulltext.casefold() == other.casefold()
 
     def __gt__(self, other):
         if isinstance(other, int):
@@ -49,7 +53,7 @@ class HTTPStatus:
         self.raise_value_error()
 
     def __str__(self):
-        return self.text
+        return self.fulltext
 
     def __repr__(self):
         return f'\'{str(self)}\''
