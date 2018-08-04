@@ -6,18 +6,11 @@ from bddrest import Given, Append, Remove, Update, when, response, status
 
 
 def wsgi_application(environ, start_response):
-    form = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        strict_parsing=False,
-        keep_blank_values=True
-    )
-
+    result = {}
     start_response('200 OK', [
         ('Content-Type', 'application/json;charset=utf-8'),
     ])
 
-    result = {k: form[k].value for k in form.keys()}
     for key in  [h for h in environ if h.startswith('HTTP')]:
         result[key[5:].lower()] = environ[key]
 
@@ -30,15 +23,33 @@ def test_append_headers_field():
         title='test add header field',
         url='/apiv1/devices/name: SM-12345678/id: 1',
         verb='POST',
-        form=dict(activationCode='746727'),
-        headers={'token': '123456'}
+        headers={'header1': '1'}
     ):
         assert status == '200 OK'
-        assert response.json['token'] == '123456'
+        assert response.json['header1'] == '1'
 
-        when('Adding new field to headers', headers=Append(new_token='654321'))
-        assert response.json['new_token'] == '654321'
+        # Using dictionary to manipulate lists, expecting error.
+        with pytest.raises(ValueError):
+            when('Adding new field to headers', headers=Append(header2='2'))
 
+        when(
+            'Adding new header: 2-tuple',
+            headers=Append(('header2', '2'))
+        )
+        assert response.json['header1'] == '1'
+        assert response.json['header2'] == '2'
+
+        when(
+            'Adding new header: single string',
+            headers=Append('header3: 3')
+        )
+        assert response.json['header1'] == '1'
+        assert response.json['header3'] == '3'
+        assert 'header2' not in response.json
+
+
+
+"""
 def test_remove_headers_field():
      with Given(
         wsgi_application,
@@ -54,21 +65,4 @@ def test_remove_headers_field():
         when('Token field has removed from headers', headers=Remove('token'))
         assert 'token' not in response.json
 
-def test_update_headers_field():
-    with Given(
-        wsgi_application,
-        title='test update header fields',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
-        verb='POST',
-        form=dict(activationCode='746727'),
-        headers={'token': '123456'}
-    ):
-        assert status == '200 OK'
-        assert response.json['token'] == '123456'
-
-        when(
-            'Token has been updated in heardes fields',
-            headers=Update(token='654321')
-        )
-        assert response.json['token'] == '654321'
-
+"""

@@ -6,6 +6,7 @@ from .given import Given
 class Manipulator(metaclass=abc.ABCMeta):
     def __init__(self, *args, **kwargs):
         self.list_diff = args
+
         if not isinstance(self.list_diff, list):
             self.list_diff = list(self.list_diff)
 
@@ -26,8 +27,14 @@ class Append(Manipulator):
                         f'container. You may use the bddrest.Update object.'
                     )
             container.update(self.dict_diff)
-        else:
-            container += self.list_diff
+            return
+
+        if not self.list_diff:
+            raise ValueError(
+                'Invalid list manipulation value, Use positional argument '
+                'instead of keyword arguments'
+            )
+        container.extend(self.list_diff)
 
 
 class Update(Manipulator):
@@ -59,6 +66,8 @@ class Remove(Manipulator):
 def when(*args, **kwargs):
     story = Given.get_current()
 
+    # Checking for list manipulators if any
+    # Checking for dictionary manipulators if any
     for k, v in kwargs.items():
         if isinstance(v, Manipulator):
             clone = getattr(story.base_call, k).copy()
