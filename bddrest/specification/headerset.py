@@ -90,3 +90,6 @@ class HeaderSet(list):
             key = self._get_item_by_key(key)[1:]
         super().remove(key)
 
+    def copy(self):
+        return self.__class__(super().copy())
+

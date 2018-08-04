@@ -87,3 +87,13 @@ def test_remove():
     headers.remove('C: D')
     assert [] == headers
 
+def test_copy():
+    headers = HeaderSet([('A', 'B'), ('C', 'D')])
+    headers_copy = headers.copy()
+    assert isinstance(headers_copy, HeaderSet)
+
+    headers_copy.remove('A')
+    assert headers is not headers_copy
+    assert 'A' in headers
+    assert 'A' not in headers_copy
+

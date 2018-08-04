@@ -20,9 +20,7 @@ def wsgi_application(environ, start_response):
 def test_append_headers_field():
     with Given(
         wsgi_application,
-        title='test add header field',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
-        verb='POST',
+        'test add header field',
         headers={'header1': '1'}
     ):
         assert status == '200 OK'
@@ -30,7 +28,7 @@ def test_append_headers_field():
 
         # Using dictionary to manipulate lists, expecting error.
         with pytest.raises(ValueError):
-            when('Adding new field to headers', headers=Append(header2='2'))
+            when('Abusing', headers=Append(header2='2'))
 
         when(
             'Adding new header: 2-tuple',
@@ -48,21 +46,25 @@ def test_append_headers_field():
         assert 'header2' not in response.json
 
 
-
-"""
 def test_remove_headers_field():
-     with Given(
+    with Given(
         wsgi_application,
-        title='test remove header fields',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
-        verb='POST',
-        form=dict(activationCode='746727'),
-        headers={'token': '123456'}
-     ):
+        'test remove  header field',
+        headers={'header1': '1'}
+    ):
         assert status == '200 OK'
-        assert response.json['token'] == '123456'
+        assert response.json['header1'] == '1'
 
-        when('Token field has removed from headers', headers=Remove('token'))
-        assert 'token' not in response.json
+        when(
+            'Removing an existing header: 2-tuple',
+            headers=Remove(('header1', '1'))
+        )
+        assert 'header1' not in response.json
 
-"""
+
+        when('Remove header by key', headers=Remove('header1'))
+
+        # Remove an invalid header(Not exists)
+        with pytest.raises(ValueError):
+            when('Invalid  key', headers=Remove('invalid header'))
+
