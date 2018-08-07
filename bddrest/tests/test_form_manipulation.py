@@ -113,3 +113,24 @@ def test_update_from_fields():
             email='user@example.com'
         )
 
+
+def test_overriden_and():
+    call = dict(
+        title='Test composite manipulation, the & operator.',
+        verb='POST',
+        form=dict(
+            a=1,
+            b=2,
+            c=3
+        )
+    )
+
+    with Given(wsgi_application, **call):
+        assert status == 200
+
+        when(
+            'Remove and append simultaneously',
+            form=GivenForm + dict(b=20) - 'a'
+        )
+
+

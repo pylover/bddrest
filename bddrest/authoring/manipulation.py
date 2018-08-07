@@ -17,6 +17,10 @@ class Manipulator(metaclass=abc.ABCMeta):
         pass
 
 
+    def __add__(self, other):
+        pass
+
+
 class Append(Manipulator):
     def apply(self, container):
         if isinstance(container, dict):
