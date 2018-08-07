@@ -1,4 +1,5 @@
 import abc
+from collections import Iterable
 
 from .given import Given
 
@@ -15,6 +16,16 @@ class Manipulator(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def apply(self):
         pass
+
+    def __add__(self, other):
+        return CompositeManipulator(self) + other
+
+    def __sub__(self, other):
+        return CompositeManipulator(self) - other
+
+    def __or__(self, other):
+        return CompositeManipulator(self) | other
+
 
 
 class Append(Manipulator):
@@ -46,9 +57,6 @@ class Update(Manipulator):
 
 
 class Remove(Manipulator):
-    def __init__(self, *args):
-        super().__init__(*args)
-
     def apply(self, container):
         if not isinstance(self.list_diff, list):
             raise ValueError('Only list is supported for Remove manipulator')
@@ -61,6 +69,65 @@ class Remove(Manipulator):
                 del container[k]
             else:
                 container.remove(k)
+
+
+class CompositeManipulator(Manipulator):
+    def __init__(self, *args):
+        super().__init__()
+        self.rules = list(args)
+
+    def apply(self, container):
+        for rule in self.rules:
+            rule.apply(container)
+
+    def __add__(self, other):
+        if isinstance(other, dict):
+            manipulator = Append(**other)
+        elif isinstance(other, Manipulator):
+            manipulator = other
+        else:
+            raise TypeError('Only dict or Manipulator will be accepted')
+
+        self.rules.append(manipulator)
+        return self
+
+    def __sub__(self, other):
+        if isinstance(other, str):
+            manipulator = Remove(other)
+        if isinstance(other, Iterable):
+            manipulator = Remove(*other)
+        elif isinstance(other, Manipulator):
+            manipulator = other
+        else:
+            raise TypeError('Only str or an iterable of str will be accepted')
+
+        self.rules.append(manipulator)
+        return self
+
+    def __or__(self, other):
+        if isinstance(other, dict):
+            manipulator = Update(**other)
+        elif isinstance(other, Manipulator):
+            manipulator = other
+        else:
+            raise TypeError('Only dict or Manipulator will be accepted')
+
+        self.rules.append(manipulator)
+        return self
+
+
+class CompositeManipulatorInitializer(CompositeManipulator):
+    def __add__(self, other):
+        return CompositeManipulator() + other
+
+    def __sub__(self, other):
+        return CompositeManipulator() - other
+
+    def __or__(self, other):
+        return CompositeManipulator() | other
+
+
+given_form = CompositeManipulatorInitializer()
 
 
 def when(*args, **kwargs):

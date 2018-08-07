@@ -2,7 +2,7 @@ import cgi
 import json
 import pytest
 
-from bddrest import Given, Append, Remove, Update, when, response
+from bddrest import Given, Append, Remove, Update, when, response, given_form
 
 
 def wsgi_application(environ, start_response):
@@ -112,4 +112,54 @@ def test_update_from_fields():
             activationCode='746727',
             email='user@example.com'
         )
+
+
+def test_form_operators():
+    call = dict(
+        title='test form fields operators: + and -',
+        verb='POST',
+        form=dict(
+            a='1',
+            b='2'
+        )
+    )
+
+    with Given(wsgi_application, **call):
+        assert response.status =='200 OK'
+        assert response.json == dict(
+            a='1',
+            b='2'
+        )
+
+        when('Removing an item', form=given_form - 'a')
+        assert response.json == dict(
+            b='2'
+        )
+
+
+        when('Appending an item', form=given_form + dict(c=3))
+        assert response.json == dict(
+            a='1',
+            b='2',
+            c='3'
+        )
+
+        when('Updating some items', form=given_form | dict(c=3, b=4))
+        assert response.json == dict(
+            a='1',
+            b='4',
+            c='3',
+        )
+
+        when(
+            'Combining with the other manipulation types',
+            form=Append(d=4) - 'b' + dict(c=3) | dict(z=1, a=2)
+        )
+        assert response.json == dict(
+            a='2',
+            c='3',
+            d='4',
+            z='1',
+        )
+
 
