@@ -18,7 +18,7 @@ class Manipulator(metaclass=abc.ABCMeta):
 
 
     def __add__(self, other):
-
+        pass
 
 
 class Append(Manipulator):
