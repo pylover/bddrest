@@ -11,7 +11,7 @@ def wsgi_application(environ, start_response):
         ('Content-Type', 'application/json;charset=utf-8'),
     ])
 
-    for key in  [h for h in environ if h.startswith('HTTP')]:
+    for key in [h for h in environ if h.startswith('HTTP')]:
         result[key[5:].lower()] = environ[key]
 
     yield json.dumps(result).encode()
@@ -61,10 +61,8 @@ def test_remove_headers_field():
         )
         assert 'header1' not in response.json
 
-
         when('Remove header by key', headers=Remove('header1'))
 
         # Remove an invalid header(Not exists)
         with pytest.raises(ValueError):
             when('Invalid  key', headers=Remove('invalid header'))
-
