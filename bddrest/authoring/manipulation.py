@@ -94,7 +94,7 @@ class CompositeManipulator(Manipulator):
     def __sub__(self, other):
         if isinstance(other, str):
             manipulator = Remove(other)
-        if isinstance(other, Iterable):
+        elif isinstance(other, Iterable):
             manipulator = Remove(*other)
         elif isinstance(other, Manipulator):
             manipulator = other

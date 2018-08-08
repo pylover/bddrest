@@ -136,6 +136,8 @@ def test_form_operators():
             b='2'
         )
 
+        when('Removing multiple items', form=given_form - ['a', 'b'])
+        assert response.json == dict()
 
         when('Appending an item', form=given_form + dict(c=3))
         assert response.json == dict(
@@ -167,8 +169,6 @@ def test_form_operators():
             form=given_form + dict(word='alphabet') - 'word'
         )
         assert response.json == dict(
-            a='2',
-            c='3',
-            d='4',
-            z='1',
+            a='1',
+            b='2',
         )
