@@ -162,4 +162,13 @@ def test_form_operators():
             z='1',
         )
 
-
+        when(
+            'Remove an item with more than one character',
+            form=given_form + dict(word='alphabet') - 'word'
+        )
+        assert response.json == dict(
+            a='2',
+            c='3',
+            d='4',
+            z='1',
+        )
