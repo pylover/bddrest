@@ -134,7 +134,6 @@ class Call(metaclass=ABCMeta):
                 self.content_type.startswith('application/json') \
                 else self.form
 
-        # noinspection PyProtectedMember
         web_test_response = TestApp(application)._gen_request(
             self.verb,
             url,
