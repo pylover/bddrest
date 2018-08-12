@@ -71,7 +71,7 @@ class Response:
             self.body = jsonlib.dumps(json).encode()
             # FIXME: enable it after HeaderSet is implemented.
             # self.headers.append('Content-Type: application/json;charset=utf-8')
-        elif body:
+        elif body is not None:
             self.body = body.encode() if not isinstance(body, bytes) else body
 
         if headers:
