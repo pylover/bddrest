@@ -1,5 +1,6 @@
 import abc
 import io
+import json as libjson
 from urllib.parse import urlencode
 
 from .response import Response
@@ -7,10 +8,10 @@ from .helpers import encode_multipart_data
 
 
 class WSGIResponse(Response):
-    def __init__(self, status, headers):
-        super().__init__(status, headers, body=b'')
-
     def write(self, data):
+        if self.body is None:
+            self.body = b''
+
         if isinstance(data, str):
             self.body += data.encode()
         else:
@@ -28,14 +29,16 @@ class WSGIConnector(Connector):
         self.application = application
         self.environ = environ
 
-    def _prepare_environ(self, verb, headers, form=None, extra_environ=None):
+    def _prepare_environ(self, verb, url, headers, form=None,
+                         extra_environ=None):
         if isinstance(form, io.BytesIO):
             input_file = form
         elif form:
             input_file = io.BytesIO(form)
             input_file.seek(0)
         else:
-            input_file = None
+            input_file = io.BytesIO()
+
         error_file = io.StringIO()
         environ = self.environ.copy() if self.environ else {}
         environ['wsgi.input'] = input_file
@@ -46,6 +49,13 @@ class WSGIConnector(Connector):
         environ['wsgi.run_once'] = True
         environ['wsgi.url_scheme'] = 'http'
         environ['REQUEST_METHOD'] = verb
+
+        if '?' in url:
+            url, query = url.split('?', 1)
+        else:
+            query = ''
+        environ['QUERY_STRING'] = query
+        environ['PATH_INFO'] = url
 
         if extra_environ:
             environ.update(extra_environ)
@@ -70,7 +80,7 @@ class WSGIConnector(Connector):
             headers.append(('Content-Length', content_length))
 
         elif json:
-            form = json.dump(form)
+            form = libjson.dumps(json)
             headers.append(('Content-Type', 'application/json;charset:utf-8'))
             headers.append(('Content-Length', len(form)))
 
@@ -84,7 +94,7 @@ class WSGIConnector(Connector):
             form = form.encode()
 
         # Create the environ dicitonary
-        environ_ = self._prepare_environ(verb, headers, form, environ)
+        environ_ = self._prepare_environ(verb, url, headers, form, environ)
 
         def start_response(status, headers, exc_info=None):
             nonlocal response

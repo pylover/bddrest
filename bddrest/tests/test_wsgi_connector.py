@@ -4,7 +4,7 @@ import sys
 import json
 import cgi
 
-from bddrest.specification import Response
+from bddrest.response import Response
 from bddrest.connectors import WSGIConnector
 
 
@@ -81,4 +81,22 @@ def test_wsgi_forms():
     }
     response = connector.request('POST', multipart=form)
     assert response.json.items() == dict(a='1', b='Hello').items()
+
+
+def test_query_string():
+    def app(environ, start_response):
+        query = environ['QUERY_STRING']
+        start_response('200 OK', [
+            ('Content-Type', 'text/plain'),
+        ])
+        yield query
+
+    connector = WSGIConnector(app)
+
+    response = connector.request(
+        'POST',
+        '/?a=b'
+    )
+
+    assert response.text == 'a=b'
 
