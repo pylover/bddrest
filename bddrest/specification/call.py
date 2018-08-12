@@ -8,7 +8,8 @@ from webtest import TestApp
 
 from ..helpers import normalize_query_string
 from ..exceptions import CallVerifyError, InvalidUrlParametersError
-from .response import Response
+from ..connectors import WSGIConnector
+from ..response import Response
 
 
 URL_PARAMETER_VALUE_PATTERN = '[\w\d_-]+'
@@ -122,28 +123,20 @@ class Call(metaclass=ABCMeta):
             )
 
         request_params = dict(
-            expect_errors=True,
-            extra_environ=self.extra_environ,
+            environ=self.extra_environ,
             headers=headers,
-            # Commented for future usages by pylover
-            # upload_files=upload_files,
         )
         if self.form:
-            request_params['params'] = json.dumps(self.form) \
-                if self.content_type and \
-                self.content_type.startswith('application/json') \
-                else self.form
+            if self.content_type \
+                    and self.content_type.startswith('application/json'):
+                request_params['json'] = self.form
+            else:
+                request_params['form'] = self.form
 
-        web_test_response = TestApp(application)._gen_request(
+        response = WSGIConnector(application).request(
             self.verb,
             url,
             **request_params
-        )
-
-        response = Response(
-            web_test_response.status,
-            [(k, v) for k, v in web_test_response.headers.items()],
-            body=web_test_response.body
         )
 
         if 500 <= response.status < 600:

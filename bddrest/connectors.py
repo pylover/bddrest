@@ -2,7 +2,7 @@ import abc
 import io
 from urllib.parse import urlencode
 
-from .specification import Response
+from .response import Response
 from .helpers import encode_multipart_data
 
 

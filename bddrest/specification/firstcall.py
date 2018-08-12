@@ -1,7 +1,7 @@
 from .call import Call
-from .response import Response
+from ..response import Response
 from ..helpers import normalize_query_string
-from .headerset import HeaderSet
+from ..headerset import HeaderSet
 
 
 class FirstCall(Call):

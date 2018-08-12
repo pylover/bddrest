@@ -1,7 +1,7 @@
-from ..helpers import normalize_query_string
 from .call import Call
-from .headerset import HeaderSet
-from .response import Response
+from ..helpers import normalize_query_string
+from ..headerset import HeaderSet
+from ..response import Response
 
 
 class Unchanged:
