@@ -59,7 +59,7 @@ class WSGIConnector(Connector):
         return environ
 
     def request(self, verb='GET', url='/', environ=None, headers=None,
-                form=None, multipart=None, **kw):
+                form=None, multipart=None, json=None, **kw):
         response = None
         headers = headers or []
 
@@ -68,6 +68,11 @@ class WSGIConnector(Connector):
                 encode_multipart_data(multipart)
             headers.append(('Content-Type', content_type))
             headers.append(('Content-Length', content_length))
+
+        elif json:
+            form = json.dump(form)
+            headers.append(('Content-Type', 'application/json;charset:utf-8'))
+            headers.append(('Content-Length', len(form)))
 
         elif isinstance(form, dict):
             form = urlencode(form)
