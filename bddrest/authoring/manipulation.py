@@ -1,7 +1,6 @@
 import abc
 from collections import Iterable
 
-from .given import Given
 
 
 class Manipulator(metaclass=abc.ABCMeta):
@@ -125,21 +124,4 @@ class CompositeManipulatorInitializer(CompositeManipulator):
 
     def __or__(self, other):
         return CompositeManipulator() | other
-
-
-given_form = CompositeManipulatorInitializer()
-
-
-def when(*args, **kwargs):
-    story = Given.get_current()
-
-    # Checking for list manipulators if any
-    # Checking for dictionary manipulators if any
-    for k, v in kwargs.items():
-        if isinstance(v, Manipulator):
-            clone = getattr(story.base_call, k).copy()
-            v.apply(clone)
-            kwargs[k] = clone
-
-    return story.when(*args, **kwargs)
 

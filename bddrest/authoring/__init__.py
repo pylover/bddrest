@@ -4,10 +4,15 @@ from ..specification import FirstCall, AlteredCall, Call
 
 from .story import Story
 from .given import Given
-from .manipulation import Manipulator, Append, Remove, Update, when, given_form
+from .manipulation import Manipulator, Append, Remove, Update, \
+    CompositeManipulatorInitializer
 
 
 story = ObjectProxy(Given.get_current)
 response = ObjectProxy(lambda: story.response)
 status = ObjectProxy(lambda: response.status)
+given_form = CompositeManipulatorInitializer()
+
+def when(*args, **kwargs):
+    return story.when(*args, **kwargs)
 
