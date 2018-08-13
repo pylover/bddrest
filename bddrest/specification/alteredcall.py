@@ -102,7 +102,10 @@ class AlteredCall(Call):
 
     @headers.setter
     def headers(self, value):
-        self.update_diff('headers', value if value is UNCHANGED else HeaderSet(value))
+        self.update_diff(
+            'headers',
+            value if value is UNCHANGED else HeaderSet(value)
+        )
 
     @headers.deleter
     def headers(self):
@@ -114,7 +117,10 @@ class AlteredCall(Call):
 
     @query.setter
     def query(self, value):
-        self.update_diff('query', value if value is UNCHANGED else normalize_query_string(value))
+        self.update_diff(
+            'query',
+            value if value is UNCHANGED else normalize_query_string(value)
+        )
 
     @query.deleter
     def query(self):

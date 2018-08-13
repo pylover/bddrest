@@ -1,7 +1,7 @@
-from .call import Call
-from ..response import Response
-from ..helpers import normalize_query_string
 from ..headerset import HeaderSet
+from ..helpers import normalize_query_string
+from ..response import Response
+from .call import Call
 
 
 class FirstCall(Call):
@@ -30,8 +30,8 @@ class FirstCall(Call):
         super().__init__(title, description=description, response=response)
 
         self.url = url
-        # the `url_parameters` and `query` attributes may be set by the url setter. so we're
-        # not going to override them anyway.
+        # the `url_parameters` and `query` attributes may be set by the url
+        # setter. so we're not going to override them anyway.
         if url_parameters is not None:
             self.url_parameters = url_parameters
 
@@ -52,7 +52,8 @@ class FirstCall(Call):
 
     @url.setter
     def url(self, value):
-        self._url, self.url_parameters, self.query = self.extract_url_parameters(value)
+        self._url, self.url_parameters, self.query = \
+            self.extract_url_parameters(value)
 
     @property
     def url_parameters(self):

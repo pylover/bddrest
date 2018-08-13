@@ -1,12 +1,11 @@
 import re
 import sys
-import json
 from abc import ABCMeta, abstractmethod
 from urllib.parse import urlparse, urlencode
 
-from ..helpers import normalize_query_string
-from ..exceptions import CallVerifyError, InvalidUrlParametersError
 from ..connectors import WSGIConnector
+from ..exceptions import CallVerifyError, InvalidUrlParametersError
+from ..helpers import normalize_query_string
 from ..response import Response
 
 
@@ -87,7 +86,10 @@ class Call(metaclass=ABCMeta):
         if URL_PARAMETER_PATTERN.search(url):
             for k, v in URL_PARAMETER_PATTERN.findall(url):
                 url_parameters[k] = v
-                url = re.sub(f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}', url)
+                url = re.sub(
+                    f'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', f':{k}',
+                    url
+                )
 
         return url, url_parameters if url_parameters else None, query
 
