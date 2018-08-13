@@ -13,9 +13,10 @@ UNCHANGED = Unchanged()
 
 class AlteredCall(Call):
     def __init__(self, base_call, title, url=UNCHANGED, verb=UNCHANGED,
-                 url_parameters=UNCHANGED, form=UNCHANGED,
-                 content_type=UNCHANGED, headers=UNCHANGED, as_=UNCHANGED,
-                 query=UNCHANGED, description=None, extra_environ=UNCHANGED,
+                 url_parameters=UNCHANGED, form=UNCHANGED, json=UNCHANGED,
+                 multipart=UNCHANGED, content_type=UNCHANGED,
+                 headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED,
+                 description=None, extra_environ=UNCHANGED,
                  response: Response=None, authorization=UNCHANGED):
 
         self.base_call = base_call
@@ -32,6 +33,8 @@ class AlteredCall(Call):
         self.extra_environ = extra_environ
         self.verb = verb
         self.form = form
+        self.json = json
+        self.multipart = multipart
         self.content_type = content_type
         self.authorization = authorization
         self.headers = headers
@@ -185,4 +188,28 @@ class AlteredCall(Call):
     @form.deleter
     def form(self):
         del self.diff['form']
+
+    @property
+    def json(self):
+        return self.diff.get('json', self.base_call.json)
+
+    @json.setter
+    def json(self, value):
+        self.update_diff('json', value)
+
+    @json.deleter
+    def json(self):
+        del self.diff['json']
+
+    @property
+    def multipart(self):
+        return self.diff.get('multipart', self.base_call.multipart)
+
+    @multipart.setter
+    def multipart(self, value):
+        self.update_diff('multipart', value)
+
+    @multipart.deleter
+    def multipart(self):
+        del self.diff['multipart']
 

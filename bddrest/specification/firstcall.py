@@ -12,6 +12,8 @@ class FirstCall(Call):
     _verb = None
     _query = None
     _form = None
+    _json = None
+    _multipart = None
     _as = None
     _extra_environ = None
 
@@ -22,6 +24,7 @@ class FirstCall(Call):
 
     def __init__(self, title: str, url='/', verb='GET',
                  url_parameters: dict = None, form: dict = None,
+                 json: dict = None, multipart: dict = None,
                  content_type: str = None, headers: list = None,
                  as_: str = None, query: dict = None, description: str = None,
                  extra_environ: dict = None, response: Response=None,
@@ -40,6 +43,8 @@ class FirstCall(Call):
 
         self.verb = verb
         self.form = form
+        self.multipart = multipart
+        self.json = json
         self.content_type = content_type
         self.authorization = authorization
         self.headers = headers
@@ -126,5 +131,21 @@ class FirstCall(Call):
     @form.setter
     def form(self, value):
         self._form = value
+
+    @property
+    def json(self):
+        return self._json
+
+    @json.setter
+    def json(self, value):
+        self._json = value
+
+    @property
+    def multipart(self):
+        return self._multipart
+
+    @multipart.setter
+    def multipart(self, value):
+        self._multipart = value
 
 

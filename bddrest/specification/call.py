@@ -35,6 +35,13 @@ class Call(metaclass=ABCMeta):
         if self.form is not None:
             result['form'] = self.form
 
+        if self.json is not None:
+            result['json'] = self.json
+
+        if self.multipart is not None:
+            # FIXME: Take care of jsonifying file-like objects
+            result['multipart'] = self.multipart
+
         if self.headers is not None:
             result['headers'] = [': '.join(h) for h in self.headers]
 
@@ -126,12 +133,13 @@ class Call(metaclass=ABCMeta):
             environ=self.extra_environ,
             headers=headers,
         )
-        if self.form:
-            if self.content_type \
-                    and self.content_type.startswith('application/json'):
-                request_params['json'] = self.form
-            else:
-                request_params['form'] = self.form
+
+        if self.multipart:
+            request_params['multipart'] = self.multipart
+        elif self.json:
+            request_params['json'] = self.json
+        elif self.form:
+            request_params['form'] = self.form
 
         response = WSGIConnector(application).request(
             self.verb,
@@ -203,6 +211,26 @@ class Call(metaclass=ABCMeta):
     @form.setter
     @abstractmethod
     def form(self, value):  # pragma: no cover
+        pass
+
+    @property
+    @abstractmethod
+    def json(self) -> dict:  # pragma: no cover
+        pass
+
+    @json.setter
+    @abstractmethod
+    def json(self, value):  # pragma: no cover
+        pass
+
+    @property
+    @abstractmethod
+    def multipart(self) -> dict:  # pragma: no cover
+        pass
+
+    @multipart.setter
+    @abstractmethod
+    def multipart(self, value):  # pragma: no cover
         pass
 
     @property

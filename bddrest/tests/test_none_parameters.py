@@ -29,20 +29,33 @@ def wsgi_application(environ, start_response):
 
 
 def test_none_parameters_within_form():
-    call = dict(
+    form = dict(a=None)
+
+    with Given(
+        wsgi_application,
+        title='test none parameters in a url-encoded form',
+        verb='POST',
+        form=form
+    ):
+        assert status == 200
+        assert response.json['a'] == 'None'
+
+    with Given(
+        wsgi_application,
         title='test none parameters in a json form',
         verb='POST',
-        content_type='application/json',
-        form=dict(
-            a=None,
-        ),
-    )
-
-    with Given(wsgi_application, **call):
+        json=form
+    ):
         assert status == 200
         assert response.json['a'] is None
 
-        when('url-encoded', content_type=None)
+    with Given(
+        wsgi_application,
+        title='test none parameters in a multipart form',
+        verb='POST',
+        multipart=form
+    ):
         assert status == 200
         assert response.json['a'] == 'None'
+
 
