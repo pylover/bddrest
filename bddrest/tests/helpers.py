@@ -12,7 +12,9 @@ def standard_files_mockup(stdin, argv=None):
             if content is None:
                 self.buffer = io.BytesIO()
             else:
-                self.buffer = io.BytesIO(content.encode() if isinstance(content, str) else content)
+                self.buffer = io.BytesIO(
+                    content.encode() if isinstance(content, str) else content
+                )
 
         def write(self, d):
             self.buffer.write(d.encode())

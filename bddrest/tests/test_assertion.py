@@ -15,7 +15,10 @@ def wsgi_application(environ, start_response):
     try:
         code = int(form['activationCode'].value) ^ 1234
     except ValueError:
-        start_response('400 Bad Request', [('Content-Type', 'text/plain;utf-8')])
+        start_response(
+            '400 Bad Request',
+            [('Content-Type', 'text/plain;utf-8')]
+        )
         return
 
     start_response('200 OK', [

@@ -1,9 +1,10 @@
 class ObjectProxy:
     """
-    A simple object proxy to let deferred object's initialize later (for example: just after import):
-    This class encapsulates some tricky codes to resolve the proxied object members using the
-    `__getattribute__` and '__getattr__'. SO TAKE CARE about modifying the code, to prevent
-    infinite loops and stack-overflow situations.
+    A simple object proxy to let deferred object's initialize later
+    (for example: just after import): This class encapsulates some tricky
+    codes to resolve the proxied object members using the
+    `__getattribute__` and '__getattr__'. SO TAKE CARE about modifying the
+    code, to prevent infinite loops and stack-overflow situations.
 
     Module: fancy_module
 
