@@ -19,8 +19,37 @@ class WSGIResponse(Response):
 
 
 class Connector(metaclass=abc.ABCMeta):
+    def request(self, verb='GET', url='/', form=None, multipart=None,
+                json=None, environ=None, headers=None, body=None, **kw):
+        headers = headers or []
+
+        if body is None:
+            if multipart:
+                content_type, body, content_length = \
+                    encode_multipart_data(multipart)
+                headers.append(('Content-Type', content_type))
+                headers.append(('Content-Length', content_length))
+
+            elif json:
+                body = libjson.dumps(json)
+                headers.append(
+                    ('Content-Type', 'application/json;charset:utf-8')
+                )
+                headers.append(('Content-Length', len(body)))
+
+            elif isinstance(form, dict):
+                body = urlencode(form)
+                headers.append(
+                    ('Content-Type', 'application/x-www-form-urlencoded')
+                )
+
+        if isinstance(body, str):
+            body = body.encode()
+
+        return self._send_request(verb, url, environ, headers, body)
+
     @abc.abstractmethod
-    def request(self, verb='GET', url='/', **kw):
+    def _send_request(self, verb, url, environ, headers, body=None, **kw):
         pass
 
 
@@ -68,33 +97,9 @@ class WSGIConnector(Connector):
 
         return environ
 
-    def request(self, verb='GET', url='/', environ=None, headers=None,
-                form=None, multipart=None, json=None, **kw):
+    def _send_request(self, verb, url, environ, headers, body=None, **kw):
+        environ_ = self._prepare_environ(verb, url, headers, body, environ)
         response = None
-        headers = headers or []
-
-        if multipart:
-            content_type, form, content_length = \
-                encode_multipart_data(multipart)
-            headers.append(('Content-Type', content_type))
-            headers.append(('Content-Length', content_length))
-
-        elif json:
-            form = libjson.dumps(json)
-            headers.append(('Content-Type', 'application/json;charset:utf-8'))
-            headers.append(('Content-Length', len(form)))
-
-        elif isinstance(form, dict):
-            form = urlencode(form)
-            headers.append(
-                ('Content-Type', 'application/x-www-form-urlencoded')
-            )
-
-        if isinstance(form, str):
-            form = form.encode()
-
-        # Create the environ dicitonary
-        environ_ = self._prepare_environ(verb, url, headers, form, environ)
 
         def start_response(status, headers, exc_info=None):
             nonlocal response
@@ -117,5 +122,4 @@ class WSGIConnector(Connector):
                 result.close()
 
         return response
-
 

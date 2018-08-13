@@ -59,7 +59,7 @@ def test_wsgi_forms():
     response = connector.request(
         'POST',
         headers=[('Content-Type', 'application/json')],
-        form='{"a": "b"}'
+        body='{"a": "b"}'
     )
     assert response.json.items() == dict(a='b').items()
 
