@@ -1,5 +1,4 @@
 
-
 class Launcher:
     no_launch = False
     parser = None
@@ -28,3 +27,4 @@ class Launcher:
 
 class RequireSubCommand:
     no_launch = True
+

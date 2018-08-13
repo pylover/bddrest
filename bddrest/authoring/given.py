@@ -6,9 +6,9 @@ from .story import Story
 class Given(Story, Context):
     """
     :param application: A WSGI Application to examine
-    :param autodump: A string which indicates the filename to dump the story, or
-                     a `callable(story) -> filename` to determine the filename.
-                     A file-like object is also accepted.
+    :param autodump: A string which indicates the filename to dump the story,
+                     or a `callable(story) -> filename` to determine the
+                     filename. A file-like object is also accepted.
                      Default is `None`, means autodump is disabled by default.
     :param autodoc: A string which indicates the name of documentation file, or
                      a `callable(story) -> filename` to determine the filename.
@@ -17,7 +17,8 @@ class Given(Story, Context):
                      Currently only markdown is supprted.
     """
 
-    def __init__(self, application, *args, autodump=None, autodoc=None, **kwargs):
+    def __init__(self, application, *args, autodump=None, autodoc=None,
+                 **kwargs):
         self.application = application
         self.autodump = autodump
         self.autodoc = autodoc
@@ -47,7 +48,8 @@ class Given(Story, Context):
             if hasattr(self.autodump, 'write'):
                 self.dump(self.autodump)
             else:
-                filename = self.autodump(self) if callable(self.autodump) else self.autodump
+                filename = self.autodump(self) if callable(self.autodump) \
+                    else self.autodump
                 with open(filename, mode='w', encoding='utf-8') as f:
                     self.dump(f)
 
@@ -55,7 +57,8 @@ class Given(Story, Context):
             if hasattr(self.autodoc, 'write'):
                 self.dump(self.autodoc)
             else:
-                filename = self.autodoc(self) if callable(self.autodoc) else self.autodoc
+                filename = self.autodoc(self) if callable(self.autodoc) else \
+                    self.autodoc
                 with open(filename, mode='w', encoding='utf-8') as f:
                     self.document(f)
 

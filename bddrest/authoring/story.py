@@ -1,7 +1,7 @@
 import yaml
 
 from ..documentary import Documenter, MarkdownFormatter
-from ..specification import FirstCall, AlteredCall, Call
+from ..specification import FirstCall, AlteredCall
 
 
 class Story:

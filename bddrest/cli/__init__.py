@@ -4,7 +4,6 @@ from os import path
 
 import argcomplete
 
-
 from .launchers import Launcher, RequireSubCommand
 
 
