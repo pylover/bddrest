@@ -28,14 +28,14 @@ class Connector(metaclass=abc.ABCMeta):
                 content_type, body, content_length = \
                     encode_multipart_data(multipart)
                 headers.append(('Content-Type', content_type))
-                headers.append(('Content-Length', content_length))
+                headers.append(('Content-Length', str(content_length)))
 
             elif json:
                 body = libjson.dumps(json)
                 headers.append(
                     ('Content-Type', 'application/json;charset:utf-8')
                 )
-                headers.append(('Content-Length', len(body)))
+                headers.append(('Content-Length', str(len(body))))
 
             elif isinstance(form, dict):
                 body = urlencode(form)
