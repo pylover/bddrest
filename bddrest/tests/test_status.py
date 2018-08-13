@@ -1,6 +1,6 @@
 import pytest
 
-from bddrest.specification import HTTPStatus
+from bddrest import HTTPStatus
 
 
 def test_status_comparison():

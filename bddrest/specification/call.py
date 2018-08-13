@@ -107,7 +107,7 @@ class Call(metaclass=ABCMeta):
 
         url = f'{url}?{urlencode(self.query)}' if self.query else url
 
-        headers = self.headers or []
+        headers = self.headers.copy() if self.headers else []
         if self.content_type:
             self.add_header_if_not_exists(
                 headers,

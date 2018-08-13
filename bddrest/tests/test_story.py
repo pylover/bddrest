@@ -168,7 +168,9 @@ def test_to_dict():
                 activationCode='746727',
                 phone='+9897654321'
             ),
-            headers=['X-H1: Header Value'],
+            headers=[
+                'X-H1: Header Value',
+            ],
             response=dict(
                 status='200 OK',
                 headers=[
