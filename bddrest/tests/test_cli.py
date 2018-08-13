@@ -5,7 +5,8 @@ from bddrest.tests.helpers import standard_files_mockup
 
 
 def test_document_cli():
-    with standard_files_mockup(yamlstory, argv=['bddrest', 'document']) as (stdout, stderr):
+    with standard_files_mockup(
+            yamlstory, argv=['bddrest', 'document']) as (stdout, stderr):
         main()
 
     assert expected_markdown == stdout.getvalue().decode()

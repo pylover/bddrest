@@ -46,7 +46,8 @@ def test_wsgi_forms():
                 v = form[k]
                 value = v.value
 
-                result[k] = value.decode() if isinstance(value, bytes) else value
+                result[k] = \
+                    value.decode() if isinstance(value, bytes) else value
 
         start_response('200 OK', [
             ('Content-Type', 'application/json;charset=utf-8'),

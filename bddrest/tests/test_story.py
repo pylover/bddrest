@@ -20,7 +20,10 @@ def wsgi_application(environ, start_response):
         # FIXME: Why x ^ 1234
         code = int(form['activationCode'].value) ^ 1234
     except ValueError:
-        start_response('400 Bad Request', [('Content-Type', 'text/plain;utf-8')])
+        start_response(
+            '400 Bad Request',
+            [('Content-Type', 'text/plain;utf-8')]
+        )
         return
 
     start_response('200 OK', [
@@ -41,9 +44,12 @@ def wsgi_application(environ, start_response):
 
 def test_given_when():
     call = dict(
-        title='Binding and registering the device after verifying the activation code',
-        description=\
-            'As a new visitor I have to bind my device with activation code and phone number',
+        title= \
+            'Binding and registering the device after verifying the '
+            'activation code',
+        description= \
+            'As a new visitor I have to bind my device with activation code '
+            'and phone number',
         url='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
