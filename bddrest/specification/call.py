@@ -4,8 +4,6 @@ import json
 from abc import ABCMeta, abstractmethod
 from urllib.parse import urlparse, urlencode
 
-from webtest import TestApp
-
 from ..helpers import normalize_query_string
 from ..exceptions import CallVerifyError, InvalidUrlParametersError
 from ..connectors import WSGIConnector
