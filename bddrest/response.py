@@ -30,7 +30,7 @@ class HTTPStatus:
         if isinstance(other, self.__class__):
             other = other.fulltext
 
-        return self.fulltext.casefold() == other.casefold()
+        return self.fulltext == other
 
     def __gt__(self, other):
         if isinstance(other, int):

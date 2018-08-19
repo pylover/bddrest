@@ -5,7 +5,7 @@ from bddrest import HTTPStatus
 
 def test_status_comparison():
     s = HTTPStatus('200 OK')
-    assert s == '200 ok'
+    assert s == '200 OK'
     assert s == 200
     assert s != 201
     assert s != '200 OKOK'
