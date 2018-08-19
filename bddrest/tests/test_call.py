@@ -185,6 +185,9 @@ def test_querystring_parser():
     assert '/:id' == call.url
     assert dict(a='1') == call.query
 
+    call = FirstCall('Testing querystring parsing', url='/id: 1?a=1&a=2')
+    assert dict(a=['1','2']) == call.query
+
 
 def test_form_parser():
     pyload = dict(a=1, b=2)
