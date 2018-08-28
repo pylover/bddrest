@@ -12,6 +12,9 @@ story = ObjectProxy(Given.get_current)
 response = ObjectProxy(lambda: story.response)
 status = ObjectProxy(lambda: response.status)
 given_form = CompositeManipulatorInitializer()
+given_json = CompositeManipulatorInitializer()
+given_query = CompositeManipulatorInitializer()
+
 
 def when(*args, **kwargs):
     return story.when(*args, **kwargs)
