@@ -9,10 +9,6 @@ class Formatter(metaclass=ABCMeta):
         self.file.write(text)
 
     @abstractmethod
-    def writeline(self, text=''):  # pragma: no cover
-        pass
-
-    @abstractmethod
     def write_header(self, text, level=1):  # pragma: no cover
         pass
 
@@ -25,6 +21,6 @@ class Formatter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def write_list(self, listkind):  # pragma: no cover
+    def write_list(self, items):  # pragma: no cover
         pass
 
