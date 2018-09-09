@@ -14,6 +14,7 @@ status = ObjectProxy(lambda: response.status)
 given_form = CompositeManipulatorInitializer()
 given_json = CompositeManipulatorInitializer()
 given_query = CompositeManipulatorInitializer()
+given_url_parameters = CompositeManipulatorInitializer()
 
 
 def when(*args, **kwargs):
