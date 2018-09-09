@@ -20,7 +20,7 @@ class Documenter:
     def document(self, story, outfile):
         basecall = story.base_call
         formatter = self.formatter_factory(outfile)
-        formatter.write_header(basecall.title, 2)
+        formatter.write_header(basecall.title.capitalize(), 2)
         formatter.write_header(f'{basecall.verb} {basecall.url}', 3)
         if basecall.description:
             formatter.write_paragraph(basecall.description)
