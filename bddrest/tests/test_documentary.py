@@ -95,6 +95,8 @@ f2 | 123
 {"foo": "bar"}
 ```
 
+---
+
 ## WHEN: Trying invalid book id
 
 trying an invalid book id.

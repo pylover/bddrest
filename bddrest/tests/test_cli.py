@@ -86,6 +86,8 @@ name | BDD Book
 {"foo": "bar"}
 ```
 
+---
+
 ## WHEN: Trying invalid book id
 
 ### Url Parameters
