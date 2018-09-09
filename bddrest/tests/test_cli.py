@@ -76,11 +76,9 @@ name | BDD Book
 
 ### Response: 200 OK
 
-#### Headers
-
-* Content-Type: application/json;charset=utf-8
-
 #### Body
+
+Content-Type: application/json
 
 ```json
 {"foo": "bar"}
@@ -97,10 +95,6 @@ Name | Example
 id | None
 
 ### Response: 404 Not Found
-
-#### Headers
-
-* Content-Type: text/plain;charset=utf-8
 
 '''
 
