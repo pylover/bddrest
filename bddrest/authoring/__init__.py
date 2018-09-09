@@ -11,10 +11,7 @@ from .manipulation import Manipulator, Append, Remove, Update, \
 story = ObjectProxy(Given.get_current)
 response = ObjectProxy(lambda: story.response)
 status = ObjectProxy(lambda: response.status)
-given_form = CompositeManipulatorInitializer()
-given_json = CompositeManipulatorInitializer()
-given_query = CompositeManipulatorInitializer()
-given_url_parameters = CompositeManipulatorInitializer()
+given = CompositeManipulatorInitializer()
 
 
 def when(*args, **kwargs):

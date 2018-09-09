@@ -2,7 +2,7 @@ import cgi
 import json
 import pytest
 
-from bddrest import Given, Append, Remove, Update, when, response, given_form
+from bddrest import Given, Append, Remove, Update, when, response, given
 
 
 def wsgi_application(environ, start_response):
@@ -131,22 +131,22 @@ def test_form_operators():
             b='2'
         )
 
-        when('Removing an item', form=given_form - 'a')
+        when('Removing an item', form=given - 'a')
         assert response.json == dict(
             b='2'
         )
 
-        when('Removing multiple items', form=given_form - ['a', 'b'])
+        when('Removing multiple items', form=given - ['a', 'b'])
         assert response.json == dict()
 
-        when('Appending an item', form=given_form + dict(c=3))
+        when('Appending an item', form=given + dict(c=3))
         assert response.json == dict(
             a='1',
             b='2',
             c='3'
         )
 
-        when('Updating some items', form=given_form | dict(c=3, b=4))
+        when('Updating some items', form=given | dict(c=3, b=4))
         assert response.json == dict(
             a='1',
             b='4',
@@ -166,7 +166,7 @@ def test_form_operators():
 
         when(
             'Remove an item with more than one character',
-            form=given_form + dict(word='alphabet') - 'word'
+            form=given + dict(word='alphabet') - 'word'
         )
         assert response.json == dict(
             a='1',
