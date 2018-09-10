@@ -13,7 +13,7 @@ class Documenter:
         }
         if headers:
             formatter.write_header('Headers', 4)
-            formatter.write_list(f'{k}: {v}' for k, v in headers)
+            formatter.write_list(f'{k}: {v}' for k, v in headers.items())
 
         if response.status.code == 200 and response.body:
             formatter.write_header('Body', 4)
