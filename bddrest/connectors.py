@@ -104,7 +104,6 @@ class WSGIConnector(Connector):
         def start_response(status, headers, exc_info=None):
             nonlocal response
             if exc_info:
-                import pudb; pudb.set_trace()  # XXX BREAKPOINT
                 raise exc_info[1]
 
             response = WSGIResponse(status, headers)
