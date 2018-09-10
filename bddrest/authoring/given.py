@@ -55,6 +55,9 @@ class Given(Story, Context):
 
     def __exit__(self, exc_type, exc_value, traceback):
         super().__exit__(exc_type, exc_value, traceback)
+        if self.base_call.title is None:
+            return
+
         if self.autodump:
             if hasattr(self.autodump, 'write'):
                 self.dump(self.autodump)

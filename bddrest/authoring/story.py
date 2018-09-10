@@ -14,7 +14,7 @@ class Story:
     def to_dict(self):
         return dict(
             base_call=self.base_call.to_dict(),
-            calls=[c.to_dict() for c in self.calls]
+            calls=[c.to_dict() for c in self.calls if c.title is not None]
         )
 
     @classmethod
