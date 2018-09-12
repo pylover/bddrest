@@ -17,6 +17,10 @@ def test_append_form_field():
     )
 
     with Given(wsgi_application, **call):
-        assert response.status == 200
+        assert status == 200
         assert response.text == 'abcd'
+
+        when('Another try!', body=b'1234')
+        assert status == 200
+        assert response.text == '1234'
 
