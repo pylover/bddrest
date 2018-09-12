@@ -82,7 +82,7 @@ class Response:
 
     @property
     def text(self):
-        return self.body.decode()
+        return self.body.decode(self.encoding or 'utf8')
 
     @property
     def json(self):
