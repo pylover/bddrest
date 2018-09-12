@@ -17,7 +17,8 @@ class AlteredCall(Call):
                  multipart=UNCHANGED, content_type=UNCHANGED,
                  headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED,
                  description=None, extra_environ=UNCHANGED,
-                 response: Response=None, authorization=UNCHANGED):
+                 response: Response=None, authorization=UNCHANGED,
+                 body = UNCHANGED):
 
         self.base_call = base_call
         self.diff = {}
@@ -32,9 +33,16 @@ class AlteredCall(Call):
 
         self.extra_environ = extra_environ
         self.verb = verb
-        self.form = form
-        self.json = json
-        self.multipart = multipart
+        if body is not UNCHANGED:
+            self.body = body
+            self.form = None
+            self.json = None
+            self.multipart = None
+        else:
+            self.form = form
+            self.json = json
+            self.multipart = multipart
+
         self.content_type = content_type
         self.authorization = authorization
         self.headers = headers
@@ -176,6 +184,18 @@ class AlteredCall(Call):
     @extra_environ.deleter
     def extra_environ(self):
         del self.diff['extra_environ']
+
+    @property
+    def body(self):
+        return self.diff.get('body', self.base_call.body)
+
+    @body.setter
+    def body(self, value):
+        self.update_diff('body', value)
+
+    @body.deleter
+    def body(self):
+        del self.diff['body']
 
     @property
     def form(self):

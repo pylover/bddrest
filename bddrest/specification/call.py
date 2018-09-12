@@ -32,14 +32,13 @@ class Call(metaclass=ABCMeta):
         if self.url_parameters is not None:
             result['url_parameters'] = self.url_parameters
 
-        if self.form is not None:
+        if self.body is not None:
+            result['body'] = self.body
+        elif self.form is not None:
             result['form'] = self.form
-
-        if self.json is not None:
+        elif self.json is not None:
             result['json'] = self.json
-
-        if self.multipart is not None:
-            # FIXME: Take care of jsonifying file-like objects
+        elif self.multipart is not None:
             result['multipart'] = self.multipart
 
         if self.headers is not None:
@@ -134,12 +133,14 @@ class Call(metaclass=ABCMeta):
             headers=headers,
         )
 
-        if self.multipart:
-            request_params['multipart'] = self.multipart
-        elif self.json:
-            request_params['json'] = self.json
+        if self.body:
+            request_params['body'] = self.body
         elif self.form:
             request_params['form'] = self.form
+        elif self.json:
+            request_params['json'] = self.json
+        elif self.multipart:
+            request_params['multipart'] = self.multipart
 
         response = WSGIConnector(application).request(
             self.verb,
