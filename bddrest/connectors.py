@@ -1,8 +1,10 @@
-import abc
 import io
+import abc
+import socket
 import json as libjson
 from urllib.parse import urlencode
 
+import bddrest
 from .response import Response
 from .helpers import encode_multipart_data
 
@@ -78,6 +80,13 @@ class WSGIConnector(Connector):
         environ['wsgi.run_once'] = True
         environ['wsgi.url_scheme'] = 'http'
         environ['REQUEST_METHOD'] = verb
+        environ['SERVER_NAME'] = socket.gethostname()
+        environ['HTTP_HOST'] = 'bddrest-interceptor'
+        environ['HTTP_PORT'] = 80
+        environ['SERVER_PROTOCOL'] = 'HTTP/1.1\r\n'
+        environ['REMOTE_ADDR'] = '127.0.0.1'
+        environ['HTTP_USER_AGENT'] = f'Python bddrest/{bddrest.__version__}'
+
 
         if '?' in url:
             url, query = url.split('?', 1)
