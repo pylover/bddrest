@@ -33,7 +33,7 @@ def wsgi_application(environ, start_response):
     result = dict(
         secret='ABCDEF',
         code=code,
-        query=environ['QUERY_STRING'],
+        query=environ.get('QUERY_STRING')
     )
 
     identity = environ.get('HTTP_AUTHORIZATION')
@@ -183,7 +183,7 @@ def test_to_dict():
                     'Content-Type: application/json;charset=utf-8',
                     'X-Pagination-Count: 10'
                 ],
-                json={'secret': 'ABCDEF', 'code': 745525, 'query': ''}
+                json={'secret': 'ABCDEF', 'code': 745525, 'query': None}
             )
         )
         assert story_dict['calls'][0] == dict(

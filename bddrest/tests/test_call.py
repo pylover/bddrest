@@ -20,7 +20,7 @@ def wsgi_application(environ, start_response):
         [('Content-Type', 'application/json;charset=utf-8')]
     )
     result = dict(
-        query=environ['QUERY_STRING'],
+        query=environ.get('QUERY_STRING'),
         url=environ['PATH_INFO']
     )
     if form and isinstance(form, dict):
