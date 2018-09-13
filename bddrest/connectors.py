@@ -87,12 +87,10 @@ class WSGIConnector(Connector):
         environ['REMOTE_ADDR'] = '127.0.0.1'
         environ['HTTP_USER_AGENT'] = f'Python bddrest/{bddrest.__version__}'
 
-
         if '?' in url:
             url, query = url.split('?', 1)
-        else:
-            query = ''
-        environ['QUERY_STRING'] = query
+            environ['QUERY_STRING'] = query
+
         environ['PATH_INFO'] = url
 
         if extra_environ:
