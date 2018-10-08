@@ -16,13 +16,16 @@ class Given(Story, Context):
                      A file-like object is also accepted.
                      Default is `None`, meana autodoc is disabled by default.
                      Currently only markdown is supprted.
+    :param fieldinfo: A callable(resource, fieldname) to provide the field's
+                      metadata.
     """
 
     def __init__(self, application, *args, autodump=None, autodoc=None,
-                 **kwargs):
+                 fieldinfo=None, **kwargs):
         self.application = application
         self.autodump = autodump
         self.autodoc = autodoc
+        self.fieldinfo = fieldinfo
         base_call = FirstCall(*args, **kwargs)
         base_call.conclude(application)
         super().__init__(base_call)
@@ -74,7 +77,7 @@ class Given(Story, Context):
                 filename = self.autodoc(self) if callable(self.autodoc) else \
                     self.autodoc
                 with open(filename, mode='w', encoding='utf-8') as f:
-                    self.document(f)
+                    self.document(f, fieldinfo=self.fieldinfo)
 
     @property
     def response(self):

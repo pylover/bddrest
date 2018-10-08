@@ -56,8 +56,8 @@ class Story:
         for call in self.calls:
             call.validate()
 
-    def document(self, outfile, formatter_factory=MarkdownFormatter):
-        documenter = Documenter(formatter_factory)
+    def document(self, outfile, formatter_factory=MarkdownFormatter, **kw):
+        documenter = Documenter(formatter_factory, **kw)
         documenter.document(self, outfile)
 
     @property
