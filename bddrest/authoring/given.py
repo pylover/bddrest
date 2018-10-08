@@ -16,8 +16,8 @@ class Given(Story, Context):
                      A file-like object is also accepted.
                      Default is `None`, meana autodoc is disabled by default.
                      Currently only markdown is supprted.
-    :param fieldinfo: A callable(resource, fieldname) to provide the field's
-                      metadata.
+    :param fieldinfo: A callable(resource, verb, fieldname) to provide the
+                      field's metadata.
     """
 
     def __init__(self, application, *args, autodump=None, autodoc=None,
