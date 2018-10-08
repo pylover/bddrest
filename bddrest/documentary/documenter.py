@@ -61,16 +61,18 @@ class Documenter:
                 info = info or {}
                 required = info.get('required')
                 not_none = info.get('not_none')
+                type_ = info.get('type')
                 rows.append((
                     k,
-                    required if required is not None else '?',
-                    not_none if not_none is not None else '?',
+                    '?' if required is None else required and 'Yes' or 'No',
+                    '?' if not_none is None else not_none and 'No' or 'Yes',
+                    '?' if type_ is None else type_,
                     v
                 ))
 
             formatter.write_table(
                 rows,
-                headers=('Name', 'Required', 'Not Nullable', 'Example')
+                headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
             )
 
         if call.headers and (

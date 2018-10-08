@@ -70,9 +70,9 @@ a | b
 
 ### Form
 
-Name | Required | Not Nullable | Example
---- | --- | --- | ---
-name | ? | ? | BDD Book
+Name | Required | Nullable | Type | Example
+--- | --- | --- | --- | ---
+name | ? | ? | ? | BDD Book
 
 ### Response: 200 OK
 

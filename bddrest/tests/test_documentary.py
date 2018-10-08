@@ -7,7 +7,7 @@ def test_markdown():
 
     def get_field_info(resource, verb, name):
         return dict(
-            f1=dict(required=True, not_none=True),
+            f1=dict(required=True, not_none=True, type='str'),
         ).get(name)
 
     story = Story.loads(provided_story)
@@ -80,10 +80,10 @@ b | 2
 
 ### Form
 
-Name | Required | Not Nullable | Example
---- | --- | --- | ---
-f1 | True | True | abc
-f2 | ? | ? | 123
+Name | Required | Nullable | Type | Example
+--- | --- | --- | --- | ---
+f1 | Yes | No | str | abc
+f2 | ? | ? | ? | 123
 
 ### Request Headers
 
@@ -120,9 +120,9 @@ b | 4
 
 ### Form
 
-Name | Required | Not Nullable | Example
---- | --- | --- | ---
-f1 | True | True | cba
+Name | Required | Nullable | Type | Example
+--- | --- | --- | --- | ---
+f1 | Yes | No | str | cba
 
 ### Request Headers
 
