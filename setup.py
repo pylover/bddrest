@@ -20,6 +20,7 @@ setup(
     version=package_version,
     description='A toolchain for testing REST APIs in BDD manner.',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',  # This is important!
     author='Vahid Mardani',
     author_email='vahid.mardani@gmail.com',
     install_requires=dependencies,
