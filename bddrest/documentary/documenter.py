@@ -59,13 +59,13 @@ class Documenter:
                     if self.fieldinfo else None
 
                 if info is None:
-                    info = dict(nullable='?', required='?')
+                    info = dict(not_none='?', required='?')
 
-                rows.append((k, info['required'], info['nullable'], v))
+                rows.append((k, info['required'], info['not_none'], v))
 
             formatter.write_table(
                 rows,
-                headers=('Name', 'Required', 'Nullable', 'Example')
+                headers=('Name', 'Required', 'Not Nullable', 'Example')
             )
 
         if call.headers and (

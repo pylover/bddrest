@@ -70,7 +70,7 @@ a | b
 
 ### Form
 
-Name | Required | Nullable | Example
+Name | Required | Not Nullable | Example
 --- | --- | --- | ---
 name | ? | ? | BDD Book
 
