@@ -4,9 +4,15 @@ from bddrest import Story
 
 
 def test_markdown():
+
+    def get_field_info(resource, verb, name):
+        return dict(
+            f1=dict(required=True, nullable=False),
+        ).get(name)
+
     story = Story.loads(provided_story)
     outfile = io.StringIO()
-    story.document(outfile)
+    story.document(outfile, fieldinfo=get_field_info)
     outputstring = outfile.getvalue()
     assert expected_markdown == outputstring
 
@@ -74,10 +80,10 @@ b | 2
 
 ### Form
 
-Name | Example
---- | ---
-f1 | abc
-f2 | 123
+Name | Required | Nullable | Example
+--- | --- | --- | ---
+f1 | True | False | abc
+f2 | ? | ? | 123
 
 ### Request Headers
 
@@ -114,9 +120,9 @@ b | 4
 
 ### Form
 
-Name | Example
---- | ---
-f1 | cba
+Name | Required | Nullable | Example
+--- | --- | --- | ---
+f1 | True | False | cba
 
 ### Request Headers
 

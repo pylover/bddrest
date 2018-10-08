@@ -1,7 +1,8 @@
 
 class Documenter:
-    def __init__(self, formatter_factory):
+    def __init__(self, formatter_factory, fieldinfo=None):
         self.formatter_factory = formatter_factory
+        self.fieldinfo = fieldinfo
 
     def write_response(self, formatter, response):
         formatter.write_header(f'Response: {response.status}', 3)
@@ -52,9 +53,19 @@ class Documenter:
                 call.form != basecall.form
         ):
             formatter.write_header('Form', 3)
+            rows = []
+            for k, v in call.form.items():
+                info = self.fieldinfo(call.url, call.verb, k) \
+                    if self.fieldinfo else None
+
+                if info is None:
+                    info = dict(nullable='?', required='?')
+
+                rows.append((k, info['required'], info['nullable'], v))
+
             formatter.write_table(
-                call.form.items(),
-                headers=('Name', 'Example')
+                rows,
+                headers=('Name', 'Required', 'Nullable', 'Example')
             )
 
         if call.headers and (
