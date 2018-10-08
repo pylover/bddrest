@@ -22,31 +22,36 @@ class WSGIResponse(Response):
 
 class Connector(metaclass=abc.ABCMeta):
     def request(self, verb='GET', url='/', form=None, multipart=None,
-                json=None, environ=None, headers=None, body=None, **kw):
+                json=None, environ=None, headers=None, body=None,
+                content_type=None, content_length=None, **kw):
         headers = headers or []
 
         if body is None:
             if multipart:
                 content_type, body, content_length = \
                     encode_multipart_data(multipart)
-                headers.append(('Content-Type', content_type))
-                headers.append(('Content-Length', str(content_length)))
 
             elif json:
                 body = libjson.dumps(json)
-                headers.append(
-                    ('Content-Type', 'application/json;charset:utf-8')
-                )
-                headers.append(('Content-Length', str(len(body))))
+                content_type = 'application/json;charset:utf-8'
+                content_length = len(body)
 
             elif isinstance(form, dict):
                 body = urlencode(form)
-                headers.append(
-                    ('Content-Type', 'application/x-www-form-urlencoded')
-                )
+                content_length = len(body)
+                content_type = 'application/x-www-form-urlencoded'
+        else:
+            content_length = len(body)
 
         if isinstance(body, str):
             body = body.encode()
+            content_length = len(body)
+
+        if content_type is not None:
+            headers.append(('Content-Type', content_type))
+
+        if content_length is not None:
+            headers.append(('Content-Length', str(content_length)))
 
         return self._send_request(verb, url, environ, headers, body)
 
