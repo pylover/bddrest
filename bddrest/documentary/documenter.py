@@ -59,10 +59,12 @@ class Documenter:
                     if self.fieldinfo else None
 
                 info = info or {}
+                required = info.get('required')
+                not_none = info.get('not_none')
                 rows.append((
                     k,
-                    info.get('required', '?'),
-                    info.get('not_none', '?'),
+                    required if required is not None else '?',
+                    not_none if not_none is not None else '?',
                     v
                 ))
 
