@@ -58,10 +58,13 @@ class Documenter:
                 info = self.fieldinfo(call.url, call.verb, k) \
                     if self.fieldinfo else None
 
-                if info is None:
-                    info = dict(not_none='?', required='?')
-
-                rows.append((k, info['required'], info['not_none'], v))
+                info = info or {}
+                rows.append((
+                    k,
+                    info.get('required', '?'),
+                    info.get('not_none', '?'),
+                    v
+                ))
 
             formatter.write_table(
                 rows,
