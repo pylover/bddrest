@@ -65,12 +65,12 @@ class WSGIConnector(Connector):
         self.application = application
         self.environ = environ
 
-    def _prepare_environ(self, verb, url, headers, form=None,
+    def _prepare_environ(self, verb, url, headers, payload=None,
                          extra_environ=None):
-        if isinstance(form, io.BytesIO):
-            input_file = form
-        elif form:
-            input_file = io.BytesIO(form)
+        if isinstance(payload, io.BytesIO):
+            input_file = payload
+        elif payload:
+            input_file = io.BytesIO(payload)
             input_file.seek(0)
         else:
             input_file = io.BytesIO()
