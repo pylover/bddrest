@@ -25,6 +25,9 @@ class Documenter:
             formatter.write_paragraph(f'```{mime}\n{response.text}\n```')
 
     def write_call(self, basecall, call, formatter):
+
+        formatter.write_header(f'{call.verb} {call.url}', 3)
+
         if call.description:
             formatter.write_paragraph(call.description)
 
@@ -89,7 +92,6 @@ class Documenter:
         basecall = story.base_call
         formatter = self.formatter_factory(outfile)
         formatter.write_header(basecall.title.capitalize(), 2)
-        formatter.write_header(f'{basecall.verb} {basecall.url}', 3)
         self.write_call(None, basecall, formatter)
 
         for call in story.calls:
