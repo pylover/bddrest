@@ -88,6 +88,8 @@ Content-Type: application/json
 
 ## WHEN: Trying invalid book id
 
+### GET /books/:id
+
 ### Url Parameters
 
 Name | Example

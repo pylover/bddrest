@@ -103,6 +103,8 @@ Content-Type: application/json
 
 ## WHEN: Trying invalid book id
 
+### PUT /books/:id
+
 trying an invalid book id.
 
 ### Url Parameters
