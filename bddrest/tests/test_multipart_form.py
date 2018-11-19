@@ -3,7 +3,7 @@ import cgi
 import hashlib
 import io
 
-from bddrest import Given, response, status
+from bddrest import Given, response, status, story
 
 
 def wsgi_application(environ, start_response):
@@ -40,4 +40,12 @@ def test_upload_binary_file():
     with Given(wsgi_application, **call):
         assert status == '200 OK'
         assert base64.decodebytes(response.body) == BINARY_CONTENT_HASH
+
+        story_dict = story.to_dict()
+        assert 'multipart' in story_dict['base_call']
+
+        outfile = io.StringIO()
+        story.document(outfile)
+        outputstring = outfile.getvalue()
+        assert 'Multipart' in outputstring
 
