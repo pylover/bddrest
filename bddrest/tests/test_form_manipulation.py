@@ -1,5 +1,6 @@
 import cgi
 import json
+
 import pytest
 
 from bddrest import Given, Append, Remove, Update, when, response, given
@@ -172,3 +173,4 @@ def test_form_operators():
             a='1',
             b='2',
         )
+

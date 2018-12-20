@@ -1,8 +1,6 @@
-import cgi
 import json
-import pytest
 
-from bddrest import Given, Append, Remove, Update, when, response, given
+from bddrest import Given, when, response, given
 
 
 def wsgi_application(environ, start_response):
@@ -25,7 +23,7 @@ def test_update_json_fields():
     )
 
     with Given(wsgi_application, **call):
-        assert response.status =='200 OK'
+        assert response.status == '200 OK'
         assert response.json == dict(a='1', b=2)
 
         when(
@@ -45,5 +43,4 @@ def test_update_json_fields():
             json=given - 'a'
         )
         assert response.json == dict(b=2)
-
 

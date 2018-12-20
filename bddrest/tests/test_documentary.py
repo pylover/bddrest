@@ -58,6 +58,7 @@ provided_story = '''
         f1: cba
 '''
 
+
 expected_markdown = '''\
 ## Quickstart!
 

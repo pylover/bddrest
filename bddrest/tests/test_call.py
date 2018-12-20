@@ -1,9 +1,8 @@
 import cgi
-import functools
 import json
-import unittest
 
 import pytest
+
 from bddrest import CallVerifyError, FirstCall, AlteredCall
 
 
@@ -25,6 +24,7 @@ def wsgi_application(environ, start_response):
     )
     if form and isinstance(form, dict):
         result.update(form)
+
     yield json.dumps(result).encode()
 
 
