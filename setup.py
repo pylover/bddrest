@@ -11,7 +11,8 @@ with open(join(dirname(__file__), 'bddrest', '__init__.py')) as v_file:
 
 dependencies = [
     'pyyaml',
-    'argcomplete'
+    'argcomplete',
+    'pytest >= 4.0.2',
 ]
 
 
