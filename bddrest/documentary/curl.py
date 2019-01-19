@@ -8,47 +8,68 @@ class CURL:
         authorization,
         verb='GET',
         content_type='text/plain',
-        headers=[]
+        headers=[],
+        nerds_readable=False
     ):
-        self.parts = ['curl']
-        self.add_url(url)
-        self.add_verb(verb)
-        self.add_headers(headers)
-        self.add_content_type(content_type)
-        if form is not None:
-            self.add_form(form)
-        if query is not None:
-            self.add_query(query)
-        if authorization is not None:
-            self.add_authorization(authorization)
+        self._url = url
+        self._query = query
+        self._form = form
+        self._headers = headers
+        self.verb = verb
+        self.content_type = content_type
+        self.authorization = authorization
+        self.nerds_readable = nerds_readable
 
     def __repr__(self):
         return ' '.join(self.parts)
 
-    def add_url(self, url):
-        self.parts.append(url)
+    def compile_argument(self, k, v):
+        s = self.nerds_readable and '' or ' '
+        return f'{k}{s}{v}'
 
-    def add_verb(self, verb):
-        self.parts.append(f'-X {verb}')
+    @property
+    def headers(self):
+        header_parts = []
+        for header in self._headers:
+            header_parts.append(self.compile_argument('-H', f'"{header}"'))
 
-    def add_form(self, form):
-        for k, v in form.items():
-            self.parts.append(f'-F "{k}={v}"')
+        return ' '.join(header_parts)
 
-    def add_headers(self, headers):
-        for header in headers:
-            self.parts.append(f'-H "{header}"')
+    @property
+    def form(self):
+        form_parts = []
+        for k, v in self._form.items():
+            form_parts.append(self.compile_argument('-F', f'"{k}={v}"'))
 
-    def add_content_type(self, content_type):
-        self.parts.append(f'-H "Content-Type: {content_type}"')
+        return ' '.join(form_parts)
 
-    def add_authorization(self, authorization):
-        self.parts.append(f'-H "Authorization: {authorization}"')
+    @property
+    def query(self):
+        query_parts = []
+        for k, v in self._query.items():
+            query_parts.append(f'{k}={v}')
 
-    #TODO: Add this
-    def add_query(self, query):
-        pass
+        return '&'.join(query_parts)
 
+    @property
+    def full_path(self):
+        return f'"{self._url}?{self.query}"'
+
+    @property
+    def parts(self):
+        parts = ['curl']
+        parts.append(self.compile_argument('-X', self.verb))
+        parts.append(self.form)
+        parts.append(self.headers)
+        parts.append(
+            self.compile_argument('-H', f'"Content-Type: {self.content_type}"')
+        )
+        parts.append(
+            self.compile_argument('-H', f'"Authorization: {self.authorization}"')
+        )
+        parts.append('--')
+        parts.append(self.full_path)
+        return parts
 
 #    @classmethod
 #    def from_call(cls, call: Call) -> 'CURL':
