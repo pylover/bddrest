@@ -9,7 +9,7 @@ class CURL:
         verb='GET',
         content_type='text/plain',
         headers=[],
-        nerds_readable=False
+        nerds_readable=None
     ):
         self._url = url
         self._query = query
@@ -24,7 +24,7 @@ class CURL:
         return ' '.join(self.parts)
 
     def compile_argument(self, k, v):
-        s = self.nerds_readable and '' or ' '
+        s = '' if self.nerds_readable else ' '
         return f'{k}{s}{v}'
 
     @property
