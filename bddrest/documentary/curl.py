@@ -71,6 +71,3 @@ class CURL:
         parts.append(self.full_path)
         return parts
 
-#    @classmethod
-#    def from_call(cls, call: Call) -> 'CURL':
-#        raise NotImplementedError

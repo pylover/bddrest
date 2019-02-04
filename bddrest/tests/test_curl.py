@@ -28,16 +28,3 @@ def test_curl():
         '-H"Authorization: TOKEN" ' \
         '-- "example.com?c=1"'
 
-#def test_curl_from_call():
-#    call = FirstCall(
-#        'Testing Call to_curl',
-#        url='/id: 1',
-#        query=dict(c=1, d=2),
-#        verb='POST',
-#        form=dict(a=1, b=2),
-#        headers=['A: B', 'C: D'],
-#        content_type='text/plain',
-#        authorization='TOKEN'
-#    )
-#    curl = CURL.from_call(call)
-
