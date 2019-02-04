@@ -64,3 +64,14 @@ class CURL:
         parts.append(self.full_path)
         return parts
 
+    @classmethod
+    def from_call(cls, call):
+        return cls(
+            url=call.url,
+            query=call.query,
+            form=call.form,
+            headers=[f'{k}: {v}' for k, v in call.headers],
+            verb=call.verb,
+            content_type=call.content_type,
+            authorization=call.authorization
+        )
