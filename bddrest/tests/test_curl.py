@@ -1,6 +1,7 @@
 from bddrest import FirstCall, Call
 from bddrest.documentary.curl import CURL
 
+
 def test_curl():
     params = dict(
         url='example.com',

@@ -1,16 +1,9 @@
 
 class CURL:
-    def __init__(
-        self,
-        url,
-        form,
-        query,
-        authorization,
-        verb='GET',
-        content_type='text/plain',
-        headers=[],
-        nerds_readable=None
-    ):
+
+    def __init__(self, url, form, query, authorization, verb='GET',
+        content_type='text/plain', headers=[], nerds_readable=None):
+
         self._url = url
         self._query = query
         self._form = form
