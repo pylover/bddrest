@@ -92,7 +92,7 @@ f2 | ? | ? | ? | 123
 ### CURL
 
 ```bash
-curl -X PUT -F "f1=abc" -F "f2=123" -H "Content-Type: application/json;charset=utf-8" -- "/books/1?a=1&b=2"
+curl -X PUT -F "f1=abc" -F "f2=123" -H "Content-Type: application/json;charset=utf-8" -- "$URL/books/1?a=1&b=2"
 ```
 
 ### Response: 200 OK
@@ -139,7 +139,7 @@ f1 | Yes | No | str | cba
 ### CURL
 
 ```bash
-curl -X PUT -F "f1=cba" -H "A: B" -- "/books/None?a=2&b=4"
+curl -X PUT -F "f1=cba" -H "A: B" -- "$URL/books/None?a=2&b=4"
 ```
 
 ### Response: 404 Not Found

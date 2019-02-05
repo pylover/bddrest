@@ -93,5 +93,5 @@ class CURL:
 
             path_part.append(part)
 
-        return '/'.join(path_part)
+        return f'$URL{"/".join(path_part)}'
 

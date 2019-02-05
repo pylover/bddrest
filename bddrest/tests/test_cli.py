@@ -77,7 +77,7 @@ name | ? | ? | ? | BDD Book
 ### CURL
 
 ```bash
-curl -X GET -F "name=BDD Book"  -- "/books/1?a=b"
+curl -X GET -F "name=BDD Book"  -- "$URL/books/1?a=b"
 ```
 
 ### Response: 200 OK
@@ -105,7 +105,7 @@ id | None
 ### CURL
 
 ```bash
-curl -X GET -F "name=BDD Book"  -- "/books/None?a=b"
+curl -X GET -F "name=BDD Book"  -- "$URL/books/None?a=b"
 ```
 
 ### Response: 404 Not Found

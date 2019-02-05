@@ -33,7 +33,8 @@ def test_curl():
 def test_curl_from_call():
     call = FirstCall(
         title='Testing creating CURL from call',
-        url='example.com',
+        url='/resources/:id',
+        url_parameters=dict(id='1'),
         verb='POST',
         form=dict(a=1),
         content_type='text/plain',
@@ -48,5 +49,5 @@ def test_curl_from_call():
         '-H "A: B" ' \
         '-H "Content-Type: text/plain" ' \
         '-H "Authorization: TOKEN" ' \
-        '-- "example.com?q=1"'
+        '-- "$URL/resources/1?q=1"'
 
