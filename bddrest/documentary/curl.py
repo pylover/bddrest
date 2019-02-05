@@ -31,16 +31,18 @@ class CURL:
     @property
     def form(self):
         form_parts = []
-        for k, v in self._form.items():
-            form_parts.append(self.compile_argument('-F', f'"{k}={v}"'))
+        if self._form:
+            for k, v in self._form.items():
+                form_parts.append(self.compile_argument('-F', f'"{k}={v}"'))
 
         return ' '.join(form_parts)
 
     @property
     def query(self):
         query_parts = []
-        for k, v in self._query.items():
-            query_parts.append(f'{k}={v}')
+        if self._query:
+            for k, v in self._query.items():
+                query_parts.append(f'{k}={v}')
 
         return '&'.join(query_parts)
 
@@ -54,12 +56,16 @@ class CURL:
         parts.append(self.compile_argument('-X', self.verb))
         parts.append(self.form)
         parts.append(self.headers)
-        parts.append(
-            self.compile_argument('-H', f'"Content-Type: {self.content_type}"')
-        )
-        parts.append(
-            self.compile_argument('-H', f'"Authorization: {self.authorization}"')
-        )
+        if self.content_type:
+            parts.append(self.compile_argument(
+                '-H',
+                f'"Content-Type: {self.content_type}"'
+            ))
+        if self.authorization:
+            parts.append(self.compile_argument(
+                '-H',
+                f'"Authorization: {self.authorization}"'
+            ))
         parts.append('--')
         parts.append(self.full_path)
         return parts
@@ -67,11 +73,25 @@ class CURL:
     @classmethod
     def from_call(cls, call):
         return cls(
-            url=call.url,
+            url=cls.serialize_url(call.url, call.url_parameters),
             query=call.query,
             form=call.form,
-            headers=[f'{k}: {v}' for k, v in call.headers],
             verb=call.verb,
             content_type=call.content_type,
-            authorization=call.authorization
+            authorization=call.authorization,
+            headers=[f'{k}: {v}' for k, v in call.headers] \
+                if call.headers else [],
         )
+
+    @classmethod
+    def serialize_url(cls, url, url_parameters):
+        path_part = []
+
+        for part in url.split('/'):
+            if part.startswith(':'):
+                part = url_parameters[part[1:]]
+
+            path_part.append(part)
+
+        return '/'.join(path_part)
+

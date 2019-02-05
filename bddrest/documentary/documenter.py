@@ -1,3 +1,5 @@
+from .curl import CURL
+
 
 class Documenter:
     def __init__(self, formatter_factory, fieldinfo=None):
@@ -23,6 +25,10 @@ class Documenter:
             if response.content_type and 'json' in response.content_type:
                 mime = 'json'
             formatter.write_paragraph(f'```{mime}\n{response.text}\n```')
+
+    def write_curl(self, formatter, content):
+        formatter.write_header('CURL', 3)
+        formatter.write_paragraph(f'```bash\n{content}\n```')
 
     def write_call(self, basecall, call, formatter):
 
@@ -84,6 +90,8 @@ class Documenter:
         ):
             formatter.write_header('Request Headers', 3)
             formatter.write_list(f'{k}: {v}' for k, v in call.headers)
+
+        self.write_curl(formatter, CURL.from_call(call))
 
         if call.response:
             self.write_response(formatter, call.response)

@@ -89,6 +89,12 @@ f2 | ? | ? | ? | 123
 
 * Content-Type: application/json;charset=utf-8
 
+### CURL
+
+```bash
+curl -X PUT -F "f1=abc" -F "f2=123" -H "Content-Type: application/json;charset=utf-8" -- "/books/1?a=1&b=2"
+```
+
 ### Response: 200 OK
 
 #### Body
@@ -129,6 +135,12 @@ f1 | Yes | No | str | cba
 ### Request Headers
 
 * A: B
+
+### CURL
+
+```bash
+curl -X PUT -F "f1=cba" -H "A: B" -- "/books/None?a=2&b=4"
+```
 
 ### Response: 404 Not Found
 
