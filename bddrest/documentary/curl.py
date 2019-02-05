@@ -79,8 +79,7 @@ class CURL:
             verb=call.verb,
             content_type=call.content_type,
             authorization=call.authorization,
-            headers=[f'{k}: {v}' for k, v in call.headers] \
-                if call.headers else [],
+            headers=[f'{k}: {v}' for k, v in call.headers or []],
         )
 
     @classmethod
