@@ -19,7 +19,8 @@ def test_curl():
         '-H "A: B" ' \
         '-H "Content-Type: text/plain" ' \
         '-H "Authorization: TOKEN" ' \
-        '-- "example.com?c=1"'
+        '-- ' \
+        '"example.com?c=1"'
 
     assert str(CURL(nerds_readable=True, **params)) == 'curl ' \
         '-XPOST ' \
@@ -27,7 +28,8 @@ def test_curl():
         '-H"A: B" ' \
         '-H"Content-Type: text/plain" ' \
         '-H"Authorization: TOKEN" ' \
-        '-- "example.com?c=1"'
+        '-- ' \
+        '"example.com?c=1"'
 
 
 def test_curl_from_call():
@@ -49,5 +51,6 @@ def test_curl_from_call():
         '-H "A: B" ' \
         '-H "Content-Type: text/plain" ' \
         '-H "Authorization: TOKEN" ' \
-        '-- "$URL/resources/1?q=1"'
+        '-- ' \
+        '"$URL/resources/1?q=1"'
 
