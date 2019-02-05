@@ -29,6 +29,7 @@ def test_curl():
         '-H"Authorization: TOKEN" ' \
         '-- "example.com?c=1"'
 
+
 def test_curl_from_call():
     call = FirstCall(
         title='Testing creating CURL from call',
@@ -48,3 +49,4 @@ def test_curl_from_call():
         '-H "Content-Type: text/plain" ' \
         '-H "Authorization: TOKEN" ' \
         '-- "example.com?q=1"'
+
