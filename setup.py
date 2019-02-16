@@ -13,6 +13,7 @@ dependencies = [
     'pyyaml',
     'argcomplete',
     'pytest >= 4.0.2',
+    'easycli'
 ]
 
 
