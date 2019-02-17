@@ -4,7 +4,6 @@ from easycli import SubCommand, Argument
 
 from .formatters import *
 from .documenter import Documenter
-from easycli import SubCommand, Argument
 
 class DocumentaryLauncher(SubCommand):
     __command__ = 'document'
