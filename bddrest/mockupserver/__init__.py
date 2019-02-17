@@ -1,5 +1,5 @@
 import sys
-import json
+
 
 from easycli import SubCommand, Argument
 
@@ -44,3 +44,4 @@ class MockupServer(SubCommand):
 
         from nanohttp import quickstart
         quickstart(RootMockupController())
+
