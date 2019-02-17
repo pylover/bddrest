@@ -10,6 +10,3 @@ class Main(Root):
         DocumentaryLauncher
     ]
 
-
-def main():
-    Main()
