@@ -1,9 +1,9 @@
 import sys
 
-from .formatters import *
-from .documenter import Documenter
 from easycli import SubCommand, Argument
 
+from .formatters import *
+from .documenter import Documenter
 
 class DocumentaryLauncher(SubCommand):
     __command__ = 'document'
