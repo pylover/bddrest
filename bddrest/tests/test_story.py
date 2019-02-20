@@ -19,6 +19,7 @@ def wsgi_application(environ, start_response):
     try:
         # FIXME: Why x ^ 1234
         code = int(form['activationCode'].value) ^ 1234
+
     except ValueError:
         start_response(
             '400 Bad Request',
@@ -40,6 +41,7 @@ def wsgi_application(environ, start_response):
     identity = environ.get('HTTP_AUTHORIZATION')
     if identity:
         result['identity'] = identity
+
     yield json.dumps(result).encode()
 
 
@@ -72,7 +74,7 @@ def test_given_when():
         assert 'Bad Header' not in response.headers
 
         assert response.content_type == 'application/json'
-        assert response.json ==  dict(
+        assert response.json == dict(
             code=745525,
             secret='ABCDEF',
             query='a=1&b=2',
@@ -139,6 +141,7 @@ def test_url_parameters():
 
     with Given(wsgi_application, **call):
         assert response.status == '200 OK'
+
 
 def test_to_dict():
     call = dict(
@@ -370,7 +373,6 @@ def test_authorization():
         ])
 
         yield json.dumps(result).encode()
-
 
     with Given(
         wsgi_application, title='Testing authorization header',

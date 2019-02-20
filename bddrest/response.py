@@ -1,5 +1,5 @@
-import re
 import json as jsonlib
+import re
 
 from .headerset import HeaderSet
 

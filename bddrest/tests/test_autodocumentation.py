@@ -1,9 +1,8 @@
-import tempfile
-import unittest
-from os import path
 import io
+import tempfile
+from os import path
 
-from bddrest import Given, when, response
+from bddrest import Given, response
 
 
 def wsgi_application(environ, start_response):

@@ -1,5 +1,3 @@
-import unittest
-
 from bddrest.cli import main
 from bddrest.tests.helpers import standard_files_mockup
 
@@ -48,6 +46,7 @@ calls:
   url_parameters:
     id: None
 '''
+
 
 expected_markdown = '''\
 ## Posting a book
@@ -126,3 +125,4 @@ Sub Commands:
     document  Generates REST API Documentation from standard input to standard
               output.
 '''
+
