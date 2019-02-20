@@ -8,8 +8,12 @@ app = Application('bddrest', 'bddrest.cli:Main')
 
 
 def test_document_cli():
-    with Command(app, 'Pass document for generate markdown', stdin=yamlstory,
-                 positionals=['document']):
+    with Command(
+            app,
+            'Pass document for generate markdown',
+            stdin=yamlstory,
+            positionals=['document']
+    ):
         assert status == 0
         assert stderr == ''
         assert stdout == expected_markdown
@@ -129,34 +133,5 @@ Sub commands:
     document            Generates REST API Documentation from standard input
                         to standard output.
     completion          Bash auto completion using argcomplete python package.
-'''
-
-
-yamlstory = '''
-base_call:
-  as_: visitor
-  description: As a member I have to POST a book to the library.
-  form:
-    name: BDD Book
-  query:
-    a: b response:
-    headers:
-    - 'Content-Type: application/json;charset=utf-8'
-    json:
-      foo: bar
-    status: 200 OK
-  title: Posting a book
-  url: /books/:id
-  url_parameters:
-    id: '1'
-  verb: GET
-calls:
-- response:
-    headers:
-    - 'Content-Type: text/plain;charset=utf-8'
-    status: 404 Not Found
-  title: Trying invalid book id
-  url_parameters:
-    id: None
 '''
 

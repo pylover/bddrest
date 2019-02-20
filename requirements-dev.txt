@@ -1,5 +1,5 @@
+-r requirements-ci.txt
 bddcli
-coveralls
-pytest-cov
 pytest-pudb
+ipython
 
