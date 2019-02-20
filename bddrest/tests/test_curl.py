@@ -10,7 +10,7 @@ def test_curl():
         form=dict(a=1),
         headers=['A: B'],
         content_type='text/plain',
-        authorization='base64 encoded jwt token'
+        authorization='base64-encoded-jwt-token'
     )
 
     assert str(CURL(**params)) == 'curl ' \
@@ -42,7 +42,7 @@ def test_curl_from_call():
         content_type='text/plain',
         headers=['A: B'],
         query=dict(q=1),
-        authorization='base64 encoded jwt token'
+        authorization='base64-encoded-jwt-token'
     )
 
     assert str(CURL.from_call(call)) == 'curl ' \
