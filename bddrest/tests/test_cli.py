@@ -1,21 +1,29 @@
-from bddrest.cli import main
+
+from bddcli import Command, when, stdout, status, stderr, Application
+
 from bddrest.tests.helpers import standard_files_mockup
 
 
-def test_document_cli():
-    with standard_files_mockup(
-            yamlstory, argv=['bddrest', 'document']) as (stdout, stderr):
-        main()
+app = Application('bddrest', 'bddrest.cli:Main')
 
-    assert expected_markdown == stdout.getvalue().decode()
+
+def test_document_cli():
+    with Command(
+            app,
+            'Pass document for generate markdown',
+            stdin=yamlstory,
+            positionals=['document']
+    ):
+        assert status == 0
+        assert stderr == ''
+        assert stdout == expected_markdown
 
 
 def test_help():
-    with standard_files_mockup(yamlstory, argv=['bddrest']) \
-            as (stdout, stderr):
-        main()
-
-    assert expected_help == stdout.getvalue().decode()
+    with Command(app, 'Without any pramater for getting help.'):
+        assert status == 0
+        assert stderr == ''
+        assert stdout == expected_help
 
 
 yamlstory = '''
@@ -113,16 +121,17 @@ curl -X GET -F "name=BDD Book"  -- "$URL/books/None?a=b"
 
 
 expected_help = '''\
-usage: bddrest [-h] {document} ...
+usage: bddrest [-h] {document,completion} ...
 
-bddrest command line interface.
+bddrest
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
 
-Sub Commands:
-  {document}
-    document  Generates REST API Documentation from standard input to standard
-              output.
+Sub commands:
+  {document,completion}
+    document            Generates REST API Documentation from standard input
+                        to standard output.
+    completion          Bash auto completion using argcomplete python package.
 '''
 
