@@ -4,7 +4,7 @@ import re
 from .headerset import HeaderSet
 
 
-CONTENT_TYPE_PATTERN = re.compile('(\w+/\w+)(?:;\s?charset=(.+))?')
+CONTENT_TYPE_PATTERN = re.compile(r'(\w+/\w+)(?:;\s?charset=(.+))?')
 
 
 class HTTPStatus:
