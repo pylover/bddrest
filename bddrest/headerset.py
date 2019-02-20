@@ -1,7 +1,4 @@
-import re
 from typing.re import Pattern
-
-from collections import Iterable
 
 
 class HeaderSet(list):

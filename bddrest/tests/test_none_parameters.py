@@ -1,8 +1,7 @@
-
 import cgi
 import json
 
-from bddrest import Given, response, status, when
+from bddrest import Given, response, status
 
 
 def wsgi_application(environ, start_response):
@@ -57,5 +56,4 @@ def test_none_parameters_within_form():
     ):
         assert status == 200
         assert response.json['a'] == 'None'
-
 

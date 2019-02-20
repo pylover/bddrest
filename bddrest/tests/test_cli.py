@@ -1,4 +1,3 @@
-import unittest
 
 from bddcli import Command, when, stdout, status, stderr, Application
 
@@ -21,6 +20,36 @@ def test_help():
         assert status == 0
         assert stderr == ''
         assert stdout == expected_help
+
+
+yamlstory = '''
+base_call:
+  as_: visitor
+  description: As a member I have to POST a book to the library.
+  form:
+    name: BDD Book
+  query:
+    a: b
+  response:
+    headers:
+    - 'Content-Type: application/json;charset=utf-8'
+    json:
+      foo: bar
+    status: 200 OK
+  title: Posting a book
+  url: /books/:id
+  url_parameters:
+    id: '1'
+  verb: GET
+calls:
+- response:
+    headers:
+    - 'Content-Type: text/plain;charset=utf-8'
+    status: 404 Not Found
+  title: Trying invalid book id
+  url_parameters:
+    id: None
+'''
 
 
 expected_markdown = '''\
@@ -110,8 +139,7 @@ base_call:
   form:
     name: BDD Book
   query:
-    a: b
-  response:
+    a: b response:
     headers:
     - 'Content-Type: application/json;charset=utf-8'
     json:

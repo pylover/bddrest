@@ -1,12 +1,12 @@
-import io
 import abc
-import socket
+import io
 import json as libjson
+import socket
 from urllib.parse import urlencode
 
 import bddrest
-from .response import Response
 from .helpers import encode_multipart_data
+from .response import Response
 
 
 class WSGIResponse(Response):
@@ -129,6 +129,7 @@ class WSGIConnector(Connector):
         try:
             for i in result:
                 response.write(i)
+
         finally:
             if hasattr(result, 'close'):
                 result.close()

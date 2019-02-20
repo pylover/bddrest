@@ -1,11 +1,9 @@
-import io
-import os
-import sys
-import json
 import cgi
+import io
+import json
 
-from bddrest.response import Response
 from bddrest.connectors import WSGIConnector
+from bddrest.response import Response
 
 
 def test_wagi_streaming():

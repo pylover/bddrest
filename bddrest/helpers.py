@@ -1,8 +1,8 @@
-import os
-import io
 import base64
-from urllib.parse import parse_qs
+import io
+import os
 from mimetypes import guess_type
+from urllib.parse import parse_qs
 
 
 def normalize_query_string(query):
@@ -52,5 +52,4 @@ def encode_multipart_data(fields):
     body.seek(0)
     content_type = 'multipart/form-data; boundary=%s' % boundary
     return content_type, body, length
-
 

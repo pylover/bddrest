@@ -1,8 +1,8 @@
-import cgi
 import json
+
 import pytest
 
-from bddrest import Given, Append, Remove, Update, when, response, status
+from bddrest import Given, Append, Remove, when, response, status
 
 
 def wsgi_application(environ, start_response):
@@ -66,3 +66,4 @@ def test_remove_headers_field():
         # Remove an invalid header(Not exists)
         with pytest.raises(ValueError):
             when('Invalid  key', headers=Remove('invalid header'))
+

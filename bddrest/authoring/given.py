@@ -85,4 +85,3 @@ class Given(Story, Context):
             return None
         return self.current_call.response
 
-
