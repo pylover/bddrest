@@ -64,7 +64,7 @@ class CURL:
         if self.authorization:
             parts.append(self.compile_argument(
                 '-H',
-                f'"Authorization: {self.authorization}"'
+                '"Authorization: $TOKEN"'
             ))
         parts.append('--')
         parts.append(self.full_path)

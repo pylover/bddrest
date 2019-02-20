@@ -13,6 +13,7 @@ dependencies = [
     'pyyaml',
     'argcomplete',
     'pytest >= 4.0.2',
+    'easycli'
 ]
 
 
@@ -28,7 +29,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'bddrest = bddrest.cli:main'
+            'bddrest = bddrest.cli:Main'
         ]
     },
     test_suite='bddrest.tests',

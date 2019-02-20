@@ -10,7 +10,7 @@ def test_curl():
         form=dict(a=1),
         headers=['A: B'],
         content_type='text/plain',
-        authorization='TOKEN'
+        authorization='base64-encoded-jwt-token'
     )
 
     assert str(CURL(**params)) == 'curl ' \
@@ -18,7 +18,7 @@ def test_curl():
         '-F "a=1" ' \
         '-H "A: B" ' \
         '-H "Content-Type: text/plain" ' \
-        '-H "Authorization: TOKEN" ' \
+        '-H "Authorization: $TOKEN" ' \
         '-- ' \
         '"example.com?c=1"'
 
@@ -27,7 +27,7 @@ def test_curl():
         '-F"a=1" ' \
         '-H"A: B" ' \
         '-H"Content-Type: text/plain" ' \
-        '-H"Authorization: TOKEN" ' \
+        '-H"Authorization: $TOKEN" ' \
         '-- ' \
         '"example.com?c=1"'
 
@@ -42,7 +42,7 @@ def test_curl_from_call():
         content_type='text/plain',
         headers=['A: B'],
         query=dict(q=1),
-        authorization='TOKEN'
+        authorization='base64-encoded-jwt-token'
     )
 
     assert str(CURL.from_call(call)) == 'curl ' \
@@ -50,7 +50,7 @@ def test_curl_from_call():
         '-F "a=1" ' \
         '-H "A: B" ' \
         '-H "Content-Type: text/plain" ' \
-        '-H "Authorization: TOKEN" ' \
+        '-H "Authorization: $TOKEN" ' \
         '-- ' \
         '"$URL/resources/1?q=1"'
 
