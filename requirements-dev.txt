@@ -1,3 +1,4 @@
+bddcli
 coveralls
 pytest-cov
 pytest-pudb
