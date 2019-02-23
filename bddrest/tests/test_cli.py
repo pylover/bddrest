@@ -121,7 +121,7 @@ curl -F "name=BDD Book" -- "$URL/books/None?a=b"
 
 
 expected_help = '''\
-usage: bddrest [-h] {document,completion} ...
+usage: bddrest [-h] {document,mockupserver,completion} ...
 
 bddrest
 
@@ -129,9 +129,10 @@ optional arguments:
   -h, --help            show this help message and exit
 
 Sub commands:
-  {document,completion}
+  {document,mockupserver,completion}
     document            Generates REST API Documentation from standard input
                         to standard output.
+    mockupserver        Generates a mockup from YAML file.
     completion          Bash auto completion using argcomplete python package.
 '''
 
