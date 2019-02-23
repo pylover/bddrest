@@ -8,7 +8,7 @@ class Main(Root):
     __help__ = 'bddrest'
     __completion__ = True
     __arguments__ = [
-        DocumentaryLauncher
-#        MockupServer
+        DocumentaryLauncher,
+        MockupServer,
     ]
 
