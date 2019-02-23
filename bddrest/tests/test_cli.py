@@ -18,6 +18,7 @@ def test_document_cli():
         assert stderr == ''
         assert stdout == expected_markdown
 
+
 def test_help():
     with Command(app, 'Without any pramater for getting help.'):
         assert status == 0
