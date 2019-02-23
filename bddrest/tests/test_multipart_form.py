@@ -29,6 +29,35 @@ BINARY_CONTENT = \
 BINARY_CONTENT_HASH = hashlib.md5(BINARY_CONTENT).digest()
 
 
+expected_markdown = '''\
+## Uploading an image
+
+### POST /
+
+### Multipart
+
+Name | Required | Nullable | Type | Example
+--- | --- | --- | --- | ---
+a | ? | ? | ? | <File>
+
+### CURL
+
+```bash
+curl -X POST   -- "$URL/?"
+```
+
+### Response: 200 OK
+
+#### Body
+
+Content-Type: text/plain
+
+```
+L5uEQbqDZrdzj5AX9wjtVA==\n
+```
+
+'''
+
 def test_upload_binary_file():
 
     call = dict(
@@ -48,4 +77,5 @@ def test_upload_binary_file():
         story.document(outfile)
         outputstring = outfile.getvalue()
         assert 'Multipart' in outputstring
+        assert expected_markdown == outputstring
 
