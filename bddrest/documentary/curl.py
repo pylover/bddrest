@@ -53,19 +53,28 @@ class CURL:
     @property
     def parts(self):
         parts = ['curl']
-        parts.append(self.compile_argument('-X', self.verb))
-        parts.append(self.form)
-        parts.append(self.headers)
+
+        if self.verb != 'GET':
+            parts.append(self.compile_argument('-X', self.verb))
+
+        if self.form:
+            parts.append(self.form)
+
+        if self.headers:
+            parts.append(self.headers)
+
         if self.content_type:
             parts.append(self.compile_argument(
                 '-H',
                 f'"Content-Type: {self.content_type}"'
             ))
+
         if self.authorization:
             parts.append(self.compile_argument(
                 '-H',
                 '"Authorization: $TOKEN"'
             ))
+
         parts.append('--')
         parts.append(self.full_path)
         return parts
