@@ -53,7 +53,6 @@ class CURL:
     @property
     def parts(self):
         parts = ['curl']
-
         if self.verb != 'GET':
             parts.append(self.compile_argument('-X', self.verb))
 
