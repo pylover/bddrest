@@ -1,3 +1,5 @@
+import io
+
 from .curl import CURL
 
 
@@ -77,6 +79,33 @@ class Documenter:
                     '?' if not_none is None else not_none and 'No' or 'Yes',
                     '?' if type_ is None else type_,
                     v
+                ))
+
+            formatter.write_table(
+                rows,
+                headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
+            )
+
+        if call.multipart and (
+                basecall is None or
+                call.multipart != basecall.multipart
+        ):
+            formatter.write_header('Multipart', 3)
+            rows = []
+            for k, v in call.multipart.items():
+                info = self.fieldinfo(call.url, call.verb, k) \
+                    if self.fieldinfo else None
+
+                info = info or {}
+                required = info.get('required')
+                not_none = info.get('not_none')
+                type_ = info.get('type')
+                rows.append((
+                    k,
+                    '?' if required is None else required and 'Yes' or 'No',
+                    '?' if not_none is None else not_none and 'No' or 'Yes',
+                    '?' if type_ is None else type_,
+                    v if not isinstance(v, io.BytesIO) else '<File>',
                 ))
 
             formatter.write_table(
