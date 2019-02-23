@@ -1,7 +1,7 @@
-from nanohttp import controllers
+from nanohttp.controllers import Controller
 
 
-class MockupController(controllers):
+class MockupController(Controller):
 
     def __init__(self):
         self.stories = []

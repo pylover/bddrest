@@ -8,6 +8,6 @@ class Main(Root):
     __completion__ = True
     __arguments__ = [
         DocumentaryLauncher,
-        MockupServer
+        MockupServer,
     ]
 
