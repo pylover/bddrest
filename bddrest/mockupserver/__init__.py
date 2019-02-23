@@ -4,7 +4,8 @@ from contextlib import contextmanager
 from bddrest.authoring import when, status, response, given
 from easycli import SubCommand, Argument
 from nanohttp.controllers import RegexRouteController
-#from restfulpy.application import Application
+
+from bddrest.mockupserver.controller import MockupController
 
 story = None
 
@@ -23,7 +24,8 @@ class MockupServer(SubCommand):
         with open(args.story) as story_file:
             story = Story.load(story_file)
             print(story.base_call.url)
-
+        server = MockupController()
+        print(server.__call__(story.base_call))
 
 
 
