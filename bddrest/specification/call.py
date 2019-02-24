@@ -176,18 +176,13 @@ class Call(metaclass=ABCMeta):
             result =f'{result}\n{header}'
 
         if self.body is not None:
-            # Raw data
             result = f'{result}\n{self.body}'
         elif self.form is not None:
-            # URL-Encodded form
             result = f'{result}\n{self.form}'
         elif self.json is not None:
-            # Json payload
             result = f'{result}\n{self.json}'
         elif self.multipart is not None:
-            # Multipart form
              result = f'{result}\n{self.form}'
-
 
         return result
 
