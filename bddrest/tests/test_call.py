@@ -196,11 +196,12 @@ def test_form_parser():
 
 def test_call_repr():
     pyload = dict(a=1)
+    json_form = json.dumps(pyload)
     call = FirstCall(
         'Base call for testing repr',
-        url='/apiv1/books/isbn: abc/pages/page: 3?highlight=false',
-        form=pyload,
+        url='/apiv1/books/isbn/pages/page',
+        form=json_form,
     )
 
-    assert str(call) == f'GET /apiv1/books/:isbn/pages/:page HTTP/1.1\n{pyload}'
+    assert str(call) == f'GET /apiv1/books/isbn/pages/page HTTP/1.1\n{json_form}'
 
