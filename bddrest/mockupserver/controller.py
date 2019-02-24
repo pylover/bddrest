@@ -10,5 +10,5 @@ class MockupController(Controller):
         self.stories.append(story)
 
     def __call__(self, *remaining_paths):
-        pass
+        raise NotImplementedError
 
