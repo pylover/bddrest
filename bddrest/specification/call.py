@@ -182,7 +182,7 @@ class Call(metaclass=ABCMeta):
         elif self.json is not None:
             result = f'{result}\n{self.json}'
         elif self.multipart is not None:
-             result = f'{result}\n{self.form}'
+             result = f'{result}\n{self.multipart}'
 
         return result
 
