@@ -194,3 +194,13 @@ def test_form_parser():
     call = FirstCall('Testing form parsing', form=pyload)
     assert call.form == pyload
 
+def test_call_repr():
+    pyload = dict(a=1)
+    call = FirstCall(
+        'Base call for testing repr',
+        url='/apiv1/books/isbn: abc/pages/page: 3?highlight=false',
+        form=pyload,
+    )
+
+    assert str(call) == f'GET /apiv1/books/:isbn/pages/:page HTTP/1.1\n{pyload}'
+

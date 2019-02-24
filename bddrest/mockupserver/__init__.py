@@ -19,6 +19,9 @@ class MockupServer(SubCommand):
         from ..authoring import Story
         with open(args.story) as story_file:
             story = Story.load(story_file)
-
+#            for calls, s in story.__dict__.items():
+#                http_request = f'{calls.verb} {calls.url} HTTP1/1'
+#                print(http_request)
+#
 
 
