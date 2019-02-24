@@ -20,5 +20,3 @@ class MockupServer(SubCommand):
         with open(args.story) as story_file:
             story = Story.load(story_file)
 
-
-
