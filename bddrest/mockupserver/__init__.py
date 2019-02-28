@@ -40,7 +40,6 @@ class MockupServer(SubCommand):
             def __call__(self, *remaining_paths):
                 calls = [story.base_call] + story.calls
                 for call in calls:
-                    import pudb; pudb.set_trace()  # XXX BREAKPOINT
                     url = call.url.replace(':', '')
                     if set(url.strip('/').split('/')) == set(remaining_paths) :
                         return self.server(call)
