@@ -1,13 +1,16 @@
+import io
+
 
 class CURL:
 
     def __init__(self, url, form, query, authorization, verb='GET',
-        content_type='text/plain', headers=[], nerds_readable=None):
+        content_type='text/plain', headers=[], nerds_readable=None, multipart=None):
 
         self._url = url
         self._query = query
         self._form = form
         self._headers = headers
+        self._multipart = multipart
         self.verb = verb
         self.content_type = content_type
         self.authorization = authorization
@@ -38,6 +41,22 @@ class CURL:
         return ' '.join(form_parts)
 
     @property
+    def multipart(self):
+        multipart_parts = []
+        if self._multipart:
+            for k, v in self._multipart.items():
+                if isinstance(v, io.BytesIO):
+                    multipart_parts.append(
+                        self.compile_argument('-F', f'"{k}=@<path/to/file>"')
+                    )
+                else:
+                    multipart_parts.append(
+                        self.compile_argument('-F', f'"{k}={v}"')
+                    )
+
+        return ' '.join(multipart_parts)
+
+    @property
     def query(self):
         query_parts = []
         if self._query:
@@ -58,6 +77,9 @@ class CURL:
 
         if self.form:
             parts.append(self.form)
+
+        if self.multipart:
+            parts.append(self.multipart)
 
         if self.headers:
             parts.append(self.headers)
@@ -88,6 +110,7 @@ class CURL:
             content_type=call.content_type,
             authorization=call.authorization,
             headers=[f'{k}: {v}' for k, v in call.headers or []],
+            multipart=call.multipart,
         )
 
     @classmethod

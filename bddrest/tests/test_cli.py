@@ -4,7 +4,7 @@ from bddcli import Command, when, stdout, status, stderr, Application
 from bddrest.tests.helpers import standard_files_mockup
 
 
-app = Application('bddrest', 'bddrest.cli:Main')
+app = Application('bddrest', 'bddrest.cli:main')
 
 
 def test_document_cli():
@@ -12,7 +12,7 @@ def test_document_cli():
             app,
             'Pass document for generate markdown',
             stdin=yamlstory,
-            positionals=['document']
+            arguments=['document']
     ):
         assert status == 0
         assert stderr == ''

@@ -4,7 +4,7 @@ from .documentary import DocumentaryLauncher
 from .mockupserver import MockupServer
 
 
-class Main(Root):
+class BDDRESTCommand(Root):
     __help__ = 'bddrest'
     __completion__ = True
     __arguments__ = [
@@ -12,3 +12,6 @@ class Main(Root):
         MockupServer,
     ]
 
+
+def main():
+    BDDRESTCommand().main()

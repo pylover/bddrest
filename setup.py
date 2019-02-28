@@ -29,7 +29,7 @@ setup(
     packages=find_packages(),
     entry_points={
         'console_scripts': [
-            'bddrest = bddrest.cli:Main'
+            'bddrest = bddrest.cli:main'
         ]
     },
     test_suite='bddrest.tests',
