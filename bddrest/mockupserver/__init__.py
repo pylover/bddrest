@@ -23,5 +23,3 @@ class MockupServer(SubCommand):
         server = MockupController()
         print(server.__call__(story.base_call))
 
-
-

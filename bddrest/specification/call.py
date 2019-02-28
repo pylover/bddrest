@@ -33,12 +33,16 @@ class Call(metaclass=ABCMeta):
             result['url_parameters'] = self.url_parameters
 
         if self.body is not None:
+            # Raw data
             result['body'] = self.body
         elif self.form is not None:
+            # URL-Encodded form
             result['form'] = self.form
         elif self.json is not None:
+            # Json payload
             result['json'] = self.json
         elif self.multipart is not None:
+            # Multipart form
             result['multipart'] = self.multipart
 
         if self.headers is not None:
@@ -163,6 +167,29 @@ class Call(metaclass=ABCMeta):
         if self.response is None:
             self.validate()
             self.response = self.invoke(application)
+
+    def __repr__(self):
+        result = f'{self.verb} {self.url} HTTP/1.1'
+
+        if self.headers is not None:
+            header = [': '.join(h) for h in self.headers]
+            result =f'{result}\n{header}'
+
+        if self.body is not None:
+            # Raw data
+            result = f'{result}\n{self.body}'
+        elif self.form is not None:
+            # URL-Encodded form
+            result = f'{result}\n{self.form}'
+        elif self.json is not None:
+            # Json payload
+            result = f'{result}\n{self.json}'
+        elif self.multipart is not None:
+            # Multipart form
+             result = f'{result}\n{self.form}'
+
+
+        return result
 
     @property
     @abstractmethod
