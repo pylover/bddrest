@@ -20,9 +20,6 @@ class MockupServer(SubCommand):
         from ..authoring import Story
         with open(args.story) as story_file:
             story = Story.load(story_file)
-            print(story.base_call.url)
-        server = MockupController()
-        print(server.__call__(story.base_call))
 
         class RootMockupController(Controller):
 
