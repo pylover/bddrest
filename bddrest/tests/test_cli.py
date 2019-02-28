@@ -12,7 +12,7 @@ def test_document_cli():
             app,
             'Pass document for generate markdown',
             stdin=yamlstory,
-            positionals=['document']
+            arguments=['document']
     ):
         assert status == 0
         assert stderr == ''
