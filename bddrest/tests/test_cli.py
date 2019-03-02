@@ -10,8 +10,8 @@ app = Application('bddrest', 'bddrest.cli:main')
 def test_document_cli():
    with Given(app, ['document']):
         when(stdin=yamlstory)
-        assert status == 0
         assert stderr == ''
+        assert status == 0
         assert stdout == expected_markdown
 
 

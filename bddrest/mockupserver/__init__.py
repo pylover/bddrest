@@ -2,7 +2,6 @@ import sys
 import json
 
 from easycli import SubCommand, Argument
-from nanohttp import Controller, HTTPNotFound, context
 
 
 class MockupServer(SubCommand):
@@ -17,6 +16,7 @@ class MockupServer(SubCommand):
     ]
 
     def __call__(self, args):
+        from nanohttp import Controller, HTTPNotFound, context
         from ..authoring import Story
         with open(args.story) as story_file:
             story = Story.load(story_file)
