@@ -2,13 +2,9 @@
 from bddcli import Command, when, stdout, status, stderr, Application
 
 from bddrest.tests.helpers import standard_files_mockup
-from bddrest.cli import Main
 
 
-def main():
-    test_app = Main().main()
-
-app = Application('bddrest', 'bddrest.tests.test_cli:main')
+app = Application('bddrest', 'bddrest.cli:main')
 
 
 def test_document_cli():
