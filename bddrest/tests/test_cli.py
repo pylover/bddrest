@@ -1,5 +1,5 @@
 
-from bddcli import Command, when, stdout, status, stderr, Application
+from bddcli import Given, when, stdout, status, stderr, Application
 
 from bddrest.tests.helpers import standard_files_mockup
 
@@ -8,21 +8,15 @@ app = Application('bddrest', 'bddrest.cli:main')
 
 
 def test_document_cli():
-    with Command(
-            app,
-            'Pass document for generate markdown',
-            stdin=yamlstory,
-            arguments=['document']
-    ):
-        assert status == 0
+   with Given(app, ['document']):
+        when(stdin=yamlstory)
         assert stderr == ''
+        assert status == 0
         assert stdout == expected_markdown
 
 
 def test_help():
-    with Command(app, 'Without any pramater for getting help.'):
-        assert status == 0
-        assert stderr == ''
+    with Given(app):
         assert stdout == expected_help
 
 
@@ -54,7 +48,6 @@ calls:
   url_parameters:
     id: None
 '''
-
 
 expected_markdown = '''\
 ## Posting a book
