@@ -1,6 +1,7 @@
+import io
 import json
 
-from bddrest import Given, when, response, given
+from bddrest import Given, when, response, given, status, story
 
 
 def wsgi_application(environ, start_response):
@@ -43,4 +44,60 @@ def test_update_json_fields():
             json=given - 'a'
         )
         assert response.json == dict(b=2)
+
+
+expected_markdown = '''\
+## Testing auto documentation with json request
+
+### POST /
+
+### Form
+
+Name | Required | Nullable | Type | Example
+--- | --- | --- | --- | ---
+a | ? | ? | ? | 1
+b | ? | ? | ? | None
+c | ? | ? | ? | False
+
+### CURL
+
+```bash
+curl -X POST -- "$URL/?"
+```
+
+### Response: 200 OK
+
+#### Body
+
+Content-Type: application/json
+
+```json
+{"a": 1, "b": null, "c": false}
+```
+
+'''
+
+
+def test_autodocument_json():
+    call = dict(
+        title='Testing auto documentation with json request',
+        verb='POST',
+        json=dict(
+            a=1,
+            b=None,
+            c=False,
+        )
+    )
+
+    with Given(wsgi_application, **call):
+        assert status == '200 OK'
+
+        story_dict = story.to_dict()
+        assert 'json' in story_dict['base_call']
+
+        outfile = io.StringIO()
+        story.document(outfile)
+        outputstring = outfile.getvalue()
+        assert 'Form' in outputstring
+        assert expected_markdown == outputstring
 
