@@ -1,5 +1,11 @@
 import yaml
 
+try:
+    from yaml import CLoader as Loader
+
+except ImportError:  # pragma: no cover
+    from yaml import Loader
+
 from ..documentary import Documenter, MarkdownFormatter
 from ..specification import FirstCall, AlteredCall
 
@@ -43,12 +49,12 @@ class Story:
 
     @classmethod
     def load(cls, file):
-        data = yaml.load(file)
+        data = yaml.load(file, Loader)
         return cls.from_dict(data)
 
     @classmethod
     def loads(cls, string):
-        data = yaml.load(string)
+        data = yaml.load(string, Loader)
         return cls.from_dict(data)
 
     def validate(self):
