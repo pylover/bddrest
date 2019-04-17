@@ -113,7 +113,7 @@ class Documenter:
                 headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
             )
 
-        if call.json and (
+        if call.json and not isinstance(call.json, list) and (
                 basecall is None or
                 call.json != basecall.json
         ):
