@@ -113,6 +113,33 @@ class Documenter:
                 headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
             )
 
+        if call.json and (
+                basecall is None or
+                call.json != basecall.json
+        ):
+            formatter.write_header('Form', 3)
+            rows = []
+            for k, v in call.json.items():
+                info = self.fieldinfo(call.url, call.verb, k) \
+                    if self.fieldinfo else None
+
+                info = info or {}
+                required = info.get('required')
+                not_none = info.get('not_none')
+                type_ = info.get('type')
+                rows.append((
+                    k,
+                    '?' if required is None else required and 'Yes' or 'No',
+                    '?' if not_none is None else not_none and 'No' or 'Yes',
+                    '?' if type_ is None else type_,
+                    v
+                ))
+
+            formatter.write_table(
+                rows,
+                headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
+            )
+
         if call.headers and (
                 basecall is None or
                 call.headers != basecall.headers
