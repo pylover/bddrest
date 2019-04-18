@@ -221,4 +221,10 @@ Add this into your `.bashrc` and or `$VIRTUAL_ENV/bin/postactivate`.
 eval "$(register-python-argcomplete bddrest)"
 ```
 
+### Mockup server
 
+When you want serve the server for special yaml file using like below.
+
+```bash
+bddrest mockupserver yamlfilename
+```
