@@ -6,6 +6,7 @@ from bddrest.tests.helpers import standard_files_mockup
 
 app = Application('bddrest', 'bddrest.cli:main')
 
+
 def test_document_cli():
    with Given(app, ['document']):
         when(stdin=yamlstory)

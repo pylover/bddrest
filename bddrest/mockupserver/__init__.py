@@ -68,3 +68,4 @@ class MockupServer(SubCommand):
 
         from nanohttp import quickstart
         quickstart(RootMockupController())
+
