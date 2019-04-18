@@ -62,7 +62,7 @@ c | ? | ? | ? | False
 ### CURL
 
 ```bash
-curl -X POST -- "$URL/?"
+curl -X POST --data {"a": 1, "b": null, "c": false} -- "$URL/?"
 ```
 
 ### Response: 200 OK
