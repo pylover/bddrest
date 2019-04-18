@@ -32,6 +32,7 @@ class MockupServer(SubCommand):
             def server(self, call):
                 for k, v in call.response.headers:
                     context.response_headers.add_header(k, v)
+
                 yield call.response.text.encode()
 
             def __call__(self, *remaining_paths):
@@ -40,7 +41,9 @@ class MockupServer(SubCommand):
                     url = call.url.replace(':', '')
                     if set(url.strip('/').split('/')) == set(remaining_paths) :
                         return self.server(call)
+
                 raise HTTPNotFound()
 
         from nanohttp import quickstart
         quickstart(RootMockupController())
+
