@@ -1,10 +1,12 @@
 import io
+import json
 
 
 class CURL:
 
     def __init__(self, url, form, query, authorization, verb='GET',
-        content_type='text/plain', headers=[], nerds_readable=None, multipart=None):
+                 content_type='text/plain', headers=[], nerds_readable=None,
+                 multipart=None, json=None):
 
         self._url = url
         self._query = query
@@ -15,6 +17,7 @@ class CURL:
         self.content_type = content_type
         self.authorization = authorization
         self.nerds_readable = nerds_readable
+        self._json = json
 
     def __repr__(self):
         return ' '.join(self.parts)
@@ -39,6 +42,11 @@ class CURL:
                 form_parts.append(self.compile_argument('-F', f'"{k}={v}"'))
 
         return ' '.join(form_parts)
+
+    @property
+    def json(self):
+        if self._json:
+            return f'--data {json.dumps(self._json)}'
 
     @property
     def multipart(self):
@@ -81,6 +89,9 @@ class CURL:
         if self.multipart:
             parts.append(self.multipart)
 
+        if self.json:
+            parts.append(self.json)
+
         if self.headers:
             parts.append(self.headers)
 
@@ -111,6 +122,7 @@ class CURL:
             authorization=call.authorization,
             headers=[f'{k}: {v}' for k, v in call.headers or []],
             multipart=call.multipart,
+            json=call.json,
         )
 
     @classmethod
