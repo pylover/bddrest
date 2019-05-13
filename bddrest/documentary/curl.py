@@ -46,7 +46,7 @@ class CURL:
     @property
     def json(self):
         if self._json:
-            return f'--data {json.dumps(self._json)}'
+            return f'--data \'{json.dumps(self._json)}\''
 
     @property
     def multipart(self):
