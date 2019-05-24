@@ -9,7 +9,7 @@ class RepeatCall(AlteredCall):
         super().__init__(base_call, title=None, **kwargs)
 
     def invoke(self, application) -> Response:
-        responses = []
+        responses = [self.base_call.response]
         for k, v in self.diff.items():
             for key, values in v.items():
                 for item in values:

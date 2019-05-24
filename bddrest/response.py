@@ -148,8 +148,8 @@ class ListObject:
     def __not__(self, other):
         return all(not object >= other for object in self._objects)
 
-    def __not__(self, other):
-        return all(object other for object in self._objects)
+    def __not__(self):
+        return self.__class__([not object for object in self._objects])
 
     def __repr__(self):
         return self._objects[-1].__repr__()
@@ -178,11 +178,9 @@ class AllResponse(Response):
 
     @property
     def headers(self):
-        from pudb import set_trace; set_trace()
         return ListObject([response.headers for response in self._responses])
 
     @property
     def status(self):
-        from pudb import set_trace; set_trace()
         return ListObject([response.status for response in self._responses])
 
