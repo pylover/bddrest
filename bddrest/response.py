@@ -120,23 +120,36 @@ class ListObject:
         self._objects = objects
 
     def __getattr__(self, key):
-        from pudb import set_trace; set_trace()
         if not hasattr(self._objects[-1], key):
             raise AttributeError(f'Response object dose not have {key} attr')
         return self._objects[-1].__dict__.get(key)
 
     def __getitem__(self, key):
-       from pudb import set_trace; set_trace()
-       if not hasattr(self._objects[-1], key):
-           raise AttributeError(f'Response object dose not have {key} attr')
-       return self._objects[-1].__dict__.get(key)
-
+       return self.__class__([x.get(key) for x in self._objects])
 
     def __eq__(self, other):
         return all(object == other for object in self._objects)
 
     def __nq__(self, other):
         return all(object != other for object in self._objects)
+
+    def __lt__(self, other):
+        return all(object < other for object in self._objects)
+
+    def __le__(self, other):
+        return all(object <= other for object in self._objects)
+
+    def __gt__(self, other):
+        return all(object > other for object in self._objects)
+
+    def __ge__(self, other):
+        return all(object >= other for object in self._objects)
+
+    def __not__(self, other):
+        return all(not object >= other for object in self._objects)
+
+    def __not__(self, other):
+        return all(object other for object in self._objects)
 
     def __repr__(self):
         return self._objects[-1].__repr__()

@@ -54,7 +54,7 @@ class Given(Story, Context):
         return new_call
 
     def repeat(self, record=True, **kwargs):
-        new_call = RepeatCall(self.base_call, **kwargs)
+        new_call = RepeatCall(self.calls[-1], **kwargs)
         new_call.conclude(self.application)
         if record:
             self.calls.append(new_call)
