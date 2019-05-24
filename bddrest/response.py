@@ -111,3 +111,65 @@ class Response:
 
         return self.body == other.body
 
+
+class ListObject:
+    def __init__(self, objects: list):
+        if not isinstance(objects, list):
+            raise TypeError('objects argument shoud be list')
+
+        self._objects = objects
+
+    def __getattr__(self, key):
+        from pudb import set_trace; set_trace()
+        if not hasattr(self._objects[-1], key):
+            raise AttributeError(f'Response object dose not have {key} attr')
+        return self._objects[-1].__dict__.get(key)
+
+    def __getitem__(self, key):
+       from pudb import set_trace; set_trace()
+       if not hasattr(self._objects[-1], key):
+           raise AttributeError(f'Response object dose not have {key} attr')
+       return self._objects[-1].__dict__.get(key)
+
+
+    def __eq__(self, other):
+        return all(object == other for object in self._objects)
+
+    def __nq__(self, other):
+        return all(object != other for object in self._objects)
+
+    def __repr__(self):
+        return self._objects[-1].__repr__()
+
+
+class AllResponse(Response):
+    _responses = []
+
+    def __init__(self, responses):
+        self._responses = responses
+
+    @property
+    def text(self):
+        return ListObject([response.text for response in  self._responses])
+
+    @property
+    def json(self):
+        return ListObject([response.json for response in  self._responses])
+
+    def __eq__(self, other):
+        return all(response == other for response in self._responses)
+
+    @property
+    def status(self):
+        return ListObject([response.status for response in self._responses])
+
+    @property
+    def headers(self):
+        from pudb import set_trace; set_trace()
+        return ListObject([response.headers for response in self._responses])
+
+    @property
+    def status(self):
+        from pudb import set_trace; set_trace()
+        return ListObject([response.status for response in self._responses])
+

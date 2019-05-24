@@ -1,5 +1,5 @@
 from ..context import Context
-from ..specification import FirstCall, AlteredCall, Call
+from ..specification import FirstCall, AlteredCall, RepeatCall, Call
 from .story import Story
 from .manipulation import Manipulator
 
@@ -37,7 +37,7 @@ class Given(Story, Context):
         else:
             return self.base_call
 
-    def when(self, *args, record=True, **kwargs):
+    def when(self, *args, record=True, Call=AlteredCall, **kwargs):
 
         # Checking for list manipulators if any
         # Checking for dictionary manipulators if any
@@ -47,7 +47,14 @@ class Given(Story, Context):
                 v.apply(clone)
                 kwargs[k] = clone
 
-        new_call = AlteredCall(self.base_call, *args, **kwargs)
+        new_call = Call(self.base_call, *args, **kwargs)
+        new_call.conclude(self.application)
+        if record:
+            self.calls.append(new_call)
+        return new_call
+
+    def repeat(self, record=True, **kwargs):
+        new_call = RepeatCall(self.base_call, **kwargs)
         new_call.conclude(self.application)
         if record:
             self.calls.append(new_call)

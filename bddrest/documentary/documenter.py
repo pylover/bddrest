@@ -11,14 +11,14 @@ class Documenter:
     def write_response(self, formatter, response):
         formatter.write_header(f'Response: {response.status}', 3)
         ignore_headers = ['content-type']
-
-        headers = {
-            k: v for k, v in response.headers \
-            if k.lower() not in ignore_headers
-        }
-        if headers:
-            formatter.write_header('Headers', 4)
-            formatter.write_list(f'{k}: {v}' for k, v in headers.items())
+        response.headers
+        #headers = {
+        #    k: v for k, v in response.headers \
+        #    if k.lower() not in ignore_headers
+        #}
+        #if headers:
+        #    formatter.write_header('Headers', 4)
+        #    formatter.write_list(f'{k}: {v}' for k, v in headers.items())
 
         if response.status.code == 200 and response.body:
             formatter.write_header('Body', 4)

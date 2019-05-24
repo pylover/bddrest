@@ -17,3 +17,7 @@ given = CompositeManipulatorInitializer()
 def when(*args, **kwargs):
     return story.when(*args, **kwargs)
 
+
+def repeat(*args, **kwargs):
+    return story.repeat(**kwargs)
+
