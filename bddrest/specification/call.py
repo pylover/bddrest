@@ -153,7 +153,12 @@ class Call(metaclass=ABCMeta):
         )
 
         if 500 <= response.status < 600:
-            print(response.json['stackTrace'], file=sys.stderr)
+            if response.content_type == 'application/json':
+                out = response.json['stackTrace']
+            else:
+                out = response.text
+
+            print(out, file=sys.stderr)
 
         return response
 
