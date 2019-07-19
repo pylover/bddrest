@@ -25,5 +25,5 @@ deploy:
   on:
     tags: true
     distributions: sdist bdist_wheel
-    repo: Carrene/bddrest
+    repo: pylover/bddrest
     all_branches: true
