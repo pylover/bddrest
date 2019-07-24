@@ -27,7 +27,7 @@ setup(
     author='Vahid Mardani',
     author_email='vahid.mardani@gmail.com',
     install_requires=dependencies,
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     entry_points={
         'console_scripts': [
             'bddrest = bddrest.cli:main'
