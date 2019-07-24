@@ -1,5 +1,5 @@
 coverage
 coveralls
 pytest-cov
-bddcli >= 2, < 3
+bddcli >= 2.4, < 3
 
