@@ -13,7 +13,7 @@ before_install:
   - pip install -r requirements-dev.txt
 
 install: pip install -ve .
-script: py.test --cov=bddrest bddrest/tests
+script: py.test --cov=bddrest tests
 after_success: travis_retry coveralls
 deploy:
   provider: pypi
