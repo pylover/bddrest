@@ -1,7 +1,4 @@
-
 from bddcli import Given, when, stdout, status, stderr, Application
-
-from bddrest.tests.helpers import standard_files_mockup
 
 
 app = Application('bddrest', 'bddrest.cli:main')
