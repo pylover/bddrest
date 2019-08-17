@@ -102,7 +102,16 @@ class Response:
                 result['body'] = self.body.decode()
         return result
 
-    def __eq__(self, other: 'Response'):
+    def __repr__(self):
+        return self.text or '<Empty Response>'
+
+    def __eq__(self, other):
+        if isinstance(other, str):
+            return self.text == other
+
+        if isinstance(other, dict):
+            return self.json == other
+
         if self.status != other.status or self.headers != other.headers:
             return False
 

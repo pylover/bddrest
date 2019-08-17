@@ -26,9 +26,7 @@ def wsgi_application(environ, start_response):
         ('X-Pagination-Count', '10')
     ])
     result = json.dumps(dict(
-        secret='ABCDEF',
         code=code,
-        query=environ['QUERY_STRING']
     ))
     yield result.encode()
 
@@ -57,6 +55,10 @@ def test_equality():
     with Given(wsgi_application, **call):
         assert response.status == '200 OK'
         assert response.status == 200
+        assert response == '{"code": 745525}'
+        assert response == {
+            'code': 745525,
+        }
 
         when(
             'Trying invalid code',
@@ -65,4 +67,5 @@ def test_equality():
             )
         )
         assert response.status == 400
+
 
