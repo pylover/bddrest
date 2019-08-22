@@ -99,9 +99,6 @@ class Response:
                 result['body'] = self.body.decode()
         return result
 
-    def __repr__(self):
-        return self.text or '<Empty Response>'
-
     def __eq__(self, other):
         if isinstance(other, str):
             return self.text == other
