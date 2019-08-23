@@ -117,3 +117,6 @@ class Response:
 
         return self.body == other.body
 
+    def __repr__(self):
+        return f'\'{self.text}\''
+
