@@ -4,7 +4,7 @@ import re
 from .headerset import HeaderSet
 
 
-CONTENT_TYPE_PATTERN = re.compile(r'(\w+/\w+)(?:;\s?charset=(.+))?')
+CONTENT_TYPE_PATTERN = re.compile(r'(\w+/\w+)(?:;\s?charset=(.+))?', re.I)
 
 
 class HTTPStatus:
@@ -74,7 +74,7 @@ class Response:
 
         if headers:
             for k, v in self.headers:
-                if k == 'Content-Type':
+                if k.lower() == 'content-type':
                     match = CONTENT_TYPE_PATTERN.match(v)
                     if match:
                         self.content_type, self.encoding = match.groups()
