@@ -82,6 +82,9 @@ class Response:
 
     @property
     def text(self):
+        if self.body is None:
+            return None
+
         return self.body.decode(self.encoding or 'utf8')
 
     @property
