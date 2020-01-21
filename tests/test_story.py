@@ -159,7 +159,7 @@ def test_to_dict():
     with Given(wsgi_application, **call):
         assert response.status == '200 OK'
         when(
-            'Trying invalid code',
+            title='Trying invalid code',
             description='Awesome invalid code description',
             form=dict(
                 activationCode='badCode'
@@ -354,7 +354,6 @@ def test_url_overriding():
         assert response.status == '200 OK'
 
         modified_call = when(
-            'Trying different url!',
             url='/apiv1/devices?a=b&c=d'
         )
         assert modified_call.url_parameters is None

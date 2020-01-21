@@ -16,7 +16,7 @@ URL_PARAMETER_PATTERN = \
 
 class Call(metaclass=ABCMeta):
 
-    def __init__(self, title, description=None, response=None):
+    def __init__(self, title=None, description=None, response=None):
         self.title = title
         self.description = description
         if response is not None and not isinstance(response, Response):

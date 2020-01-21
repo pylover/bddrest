@@ -29,12 +29,11 @@ def wsgi_application(environ, start_response):
 
 
 def test_call_constructor():
-    call = FirstCall('Testing Call contractor', url='/id: 1')
+    call = FirstCall(url='/id: 1')
     assert call.url == '/:id'
     assert call.url_parameters == dict(id='1')
 
     call = FirstCall(
-        'Testing Call contractor',
         url='/id: 1/:name',
         url_parameters=dict(name='foo', id=2)
     )
@@ -46,13 +45,13 @@ def test_call_constructor():
 
 
 def test_call_invoke():
-    call = FirstCall('Testing Call contractor', url='/id: 1')
+    call = FirstCall(url='/id: 1')
     call.conclude(wsgi_application)
     assert call.response is not None
 
 
 def test_call_response():
-    call = FirstCall('Testing Call contractor', url='/id: 1', query='a=1')
+    call = FirstCall(url='/id: 1', query='a=1')
     call.conclude(wsgi_application)
     assert call.response is not None
     assert call.response.body is not None
@@ -68,7 +67,7 @@ def test_call_response():
 
 
 def test_call_to_dict():
-    call = FirstCall('Testing Call to_dict', url='/id: 1', query='a=1')
+    call = FirstCall(title='Testing Call to_dict', url='/id: 1', query='a=1')
     call.conclude(wsgi_application)
     call_dict = call.to_dict()
     assert call_dict == dict(
@@ -87,14 +86,14 @@ def test_call_to_dict():
 
 def test_altered_call():
     call = FirstCall(
-        'Testing AlteredCall contractor',
+        title='Testing AlteredCall contractor',
         url='/id: 1',
         query=dict(a=1)
     )
 
     altered_call = AlteredCall(
         call,
-        'Altering a call',
+        title='Altering a call',
         query=dict(b=2)
     )
     altered_call.conclude(wsgi_application)
@@ -111,7 +110,6 @@ def test_altered_call():
 
 def test_alteredcall_setters_deleters():
     basecall = FirstCall(
-        'Base call for testing When class',
         url='/apiv1/devices/id: 1',
     )
 
@@ -155,7 +153,6 @@ def test_alteredcall_setters_deleters():
 
 def test_call_verify():
     call = FirstCall(
-        'Testing FirstCall contractor',
         url='/id: 1',
         query=dict(a=1)
     )
@@ -181,24 +178,23 @@ def test_call_verify():
 
 
 def test_querystring_parser():
-    call = FirstCall('Testing querystring parsing', url='/id: 1?a=1')
+    call = FirstCall(url='/id: 1?a=1')
     assert '/:id' == call.url
     assert dict(a='1') == call.query
 
-    call = FirstCall('Testing querystring parsing', url='/id: 1?a=1&a=2')
+    call = FirstCall(url='/id: 1?a=1&a=2')
     assert dict(a=['1','2']) == call.query
 
 
 def test_form_parser():
     pyload = dict(a=1, b=2)
-    call = FirstCall('Testing form parsing', form=pyload)
+    call = FirstCall(form=pyload)
     assert call.form == pyload
 
 def test_call_repr():
     pyload = dict(a=1)
     json_form = json.dumps(pyload)
     call = FirstCall(
-        'Base call for testing repr',
         url='/apiv1/books/isbn/pages/page',
         form=json_form,
     )

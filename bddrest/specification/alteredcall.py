@@ -12,17 +12,17 @@ UNCHANGED = Unchanged()
 
 
 class AlteredCall(Call):
-    def __init__(self, base_call, title, url=UNCHANGED, verb=UNCHANGED,
+    def __init__(self, base_call, url=UNCHANGED, verb=UNCHANGED,
                  url_parameters=UNCHANGED, form=UNCHANGED, json=UNCHANGED,
                  multipart=UNCHANGED, content_type=UNCHANGED,
-                 headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED,
+                 headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED, title=None,
                  description=None, extra_environ=UNCHANGED,
                  response: Response=None, authorization=UNCHANGED,
                  body = UNCHANGED):
 
         self.base_call = base_call
         self.diff = {}
-        super().__init__(title, description=description, response=response)
+        super().__init__(title=title, description=description, response=response)
 
         self.url = url
         if url_parameters is not UNCHANGED:

@@ -23,15 +23,13 @@ class FirstCall(Call):
 
     _body = None
 
-    def __init__(self, title: str, url='/', verb='GET',
-                 url_parameters: dict = None, form: dict = None,
-                 json: dict = None, multipart: dict = None,
-                 content_type: str = None, headers: list = None,
-                 as_: str = None, query: dict = None, description: str = None,
-                 extra_environ: dict = None, response: Response=None,
-                 authorization: str = None, body: bytes = None):
+    def __init__(self, url='/', verb='GET', url_parameters=None, form=None,
+                 json=None, multipart=None, content_type=None, headers=None,
+                 as_=None, query=None, title=None, description=None,
+                 extra_environ=None, response: Response=None,
+                 authorization=None, body=None):
 
-        super().__init__(title, description=description, response=response)
+        super().__init__(title=title, description=description, response=response)
 
         self.url = url
         # the `url_parameters` and `query` attributes may be set by the url
