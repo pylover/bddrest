@@ -5,8 +5,8 @@ Toolchain to define and verify REST API in BDD.
 
 
 [![PyPI Status](http://img.shields.io/pypi/v/bddrest.svg)](https://pypi.python.org/pypi/bddrest)
-[![Build Status](https://travis-ci.org/Carrene/bddrest.svg?branch=master)](https://travis-ci.org/Carrene/bddrest)
-[![Coverage Status](https://coveralls.io/repos/github/Carrene/bddrest/badge.svg?branch=master)](https://coveralls.io/github/Carrene/bddrest?branch=master)
+[![Build Status](https://travis-ci.org/pylover/bddrest.svg?branch=master)](https://travis-ci.org/pylover/bddrest)
+[![Coverage Status](https://coveralls.io/repos/github/pylover/bddrest/badge.svg?branch=master)](https://coveralls.io/github/pylover/bddrest?branch=master)
 
 Table of Contents
 =================

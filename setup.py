@@ -35,7 +35,7 @@ setup(
     },
     test_suite='bddrest.tests',
     license='MIT',
-    url='https://github.com/Carrene/bddrest',
+    url='https://github.com/pylover/bddrest',
     classifiers=[
         'Environment :: Console',
         'Environment :: Web Environment',
