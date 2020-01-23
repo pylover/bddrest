@@ -88,6 +88,9 @@ class Call(metaclass=ABCMeta):
         query = None
         parsedurl = urlparse(url)
 
+        if url is None:
+            return None, None, None
+
         # Parsing the querystrings if available
         if parsedurl.query:
             query = normalize_query_string(parsedurl.query)
