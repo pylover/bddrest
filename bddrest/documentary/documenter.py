@@ -160,6 +160,9 @@ class Documenter:
         self.write_call(None, basecall, formatter)
 
         for call in story.calls:
+            if call.title is None:
+                continue
+
             formatter.write_hr()
             formatter.write_header(f'WHEN: {call.title}', 2)
             self.write_call(basecall, call, formatter)
