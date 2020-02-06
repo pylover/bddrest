@@ -9,12 +9,11 @@ from .story import Story
 
 class Given(Story, Context):
     """
-    :param application: A WSGI Application to examine
-    :param autodump: A `callable(story) -> file-like` to write dumped story.
+    :param application: A WSGI Application to examine.
+    :param autodump: A file-like object to write dumped story.
                      Default is `None`, means autodump is disabled by default.
-    :param autodoc: A `callable(story) -> file-like` to write documentation.
-                     Default is `None`, meana autodoc is disabled by default.
-                     Currently only markdown is supprted.
+    :param autodoc: A file-like object to write documentation.
+                    Default is `None`, meana autodoc is disabled by default.
     :param autodoc_format: Either ``markdown`` or ``html``. default is
                            ``markdown``.
     :param fieldinfo: A callable(resource, verb, fieldname) to provide the
