@@ -2,7 +2,6 @@ from .base import Formatter
 
 
 class HTMLFormatter(Formatter):
-
     def _opentag(self, tag, end=''):
         self.writeline(f'<{tag}{end}>')
 

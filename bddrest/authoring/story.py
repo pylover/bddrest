@@ -1,12 +1,14 @@
 import yaml
 
+
 try:
     from yaml import CLoader as Loader
 
 except ImportError:  # pragma: no cover
     from yaml import Loader
 
-from ..documentary import Documenter, MarkdownFormatter
+
+from ..documentary import Documenter
 from ..specification import FirstCall, AlteredCall
 
 
