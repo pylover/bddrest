@@ -43,7 +43,7 @@ a | ? | ? | ? | <File>
 ### CURL
 
 ```bash
-curl -X POST -F "a=@<path/to/file>" -- "$URL/?"
+curl -X POST -F "a=@<path/to/file>" -- "$URL/"
 ```
 
 ### Response: 200 OK

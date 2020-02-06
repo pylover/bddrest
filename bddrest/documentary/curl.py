@@ -75,7 +75,8 @@ class CURL:
 
     @property
     def full_path(self):
-        return f'"{self._url}?{self.query}"'
+        query = f'?{self.query}' if self.query else ''
+        return f'"{self._url}{query}"'
 
     @property
     def parts(self):
