@@ -15,15 +15,18 @@ class Given(Story, Context):
     :param autodoc: A `callable(story) -> file-like` to write documentation.
                      Default is `None`, meana autodoc is disabled by default.
                      Currently only markdown is supprted.
+    :param autodoc_format: Either ``markdown`` or ``html``. default is
+                           ``markdown``.
     :param fieldinfo: A callable(resource, verb, fieldname) to provide the
                       field's metadata.
     """
 
     def __init__(self, application, *args, autodump=None, autodoc=None,
-                 fieldinfo=None, **kwargs):
+                 autodoc_format='markdown', fieldinfo=None, **kwargs):
         self.application = application
         self.autodump = autodump
         self.autodoc = autodoc
+        self.autodoc_format = autodoc_format
         self.fieldinfo = fieldinfo
         base_call = FirstCall(*args, **kwargs)
         base_call.conclude(application)
@@ -37,7 +40,6 @@ class Given(Story, Context):
             return self.base_call
 
     def when(self, *args, record=True, **kwargs):
-
         # Checking for list manipulators if any
         # Checking for dictionary manipulators if any
         for k, v in kwargs.items():
@@ -64,7 +66,11 @@ class Given(Story, Context):
             self.dump(self.autodump)
 
         if self.autodoc:
-            self.document(self.autodoc, fieldinfo=self.fieldinfo)
+            self.document(
+                self.autodoc,
+                format_=self.autodoc_format,
+                fieldinfo=self.fieldinfo
+            )
 
     @property
     def response(self):

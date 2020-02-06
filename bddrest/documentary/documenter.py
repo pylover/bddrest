@@ -1,11 +1,12 @@
 import io
 
 from .curl import CURL
+from .formatters import create as createformatter
 
 
 class Documenter:
-    def __init__(self, formatter_factory, fieldinfo=None):
-        self.formatter_factory = formatter_factory
+    def __init__(self, format_, fieldinfo=None):
+        self.format_ = format_
         self.fieldinfo = fieldinfo
 
     def write_response(self, formatter, response):
@@ -26,11 +27,11 @@ class Documenter:
             mime = ''
             if response.content_type and 'json' in response.content_type:
                 mime = 'json'
-            formatter.write_paragraph(f'```{mime}\n{response.text}\n```')
+            formatter.write_codeblock(mime, response.text)
 
     def write_curl(self, formatter, content):
         formatter.write_header('CURL', 3)
-        formatter.write_paragraph(f'```bash\n{content}\n```')
+        formatter.write_codeblock('bash', content)
 
     def write_call(self, basecall, call, formatter):
 
@@ -154,12 +155,12 @@ class Documenter:
 
     def document(self, story, outfile):
         basecall = story.base_call
-        formatter = self.formatter_factory(outfile)
+        formatter = createformatter(self.format_, outfile)
         formatter.write_header(basecall.title.capitalize(), 2)
         self.write_call(None, basecall, formatter)
 
         for call in story.calls:
-            formatter.write_paragraph('---')
+            formatter.write_hr()
             formatter.write_header(f'WHEN: {call.title}', 2)
             self.write_call(basecall, call, formatter)
 
