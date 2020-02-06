@@ -1,6 +1,4 @@
 import io
-import tempfile
-from os import path
 
 from bddrest import  Given, response
 
@@ -8,19 +6,6 @@ from bddrest import  Given, response
 def wsgi_application(environ, start_response):
     start_response('200 OK', [])
     yield b'Nothing'
-
-
-def test_autodump_filename():
-    filename = tempfile.mktemp()
-    with Given(
-        wsgi_application,
-        title='Testing auto dump',
-        url='/apiv1/devices/name: SM-12345678',
-        autodump=filename,
-    ):
-        assert response.status == 200
-
-    assert path.exists(filename)
 
 
 def test_autodump_file_object():
