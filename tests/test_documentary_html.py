@@ -14,8 +14,6 @@ def test_html():
     outfile = io.StringIO()
     story.document(outfile, fieldinfo=get_field_info, format_='html')
     outputstring = outfile.getvalue()
-    with open('/home/vahid/Desktop/deleteme/a.html', 'w') as f:
-        f.write(outputstring)
     assert expected_html == outputstring
 
 
