@@ -89,6 +89,8 @@ class Response:
 
     @property
     def json(self):
+        if self.body is None:
+            return None
         return jsonlib.loads(self.body)
 
     def to_dict(self):
