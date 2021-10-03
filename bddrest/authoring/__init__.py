@@ -1,4 +1,3 @@
-
 from ..proxy import ObjectProxy
 from ..specification import FirstCall, AlteredCall, Call
 
@@ -16,4 +15,3 @@ given = CompositeManipulatorInitializer()
 
 def when(*args, **kwargs):
     return story.when(*args, **kwargs)
-

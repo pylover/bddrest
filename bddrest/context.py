@@ -46,5 +46,3 @@ class Context:
     @classmethod
     def get_current(cls):
         return cls.__context_stack__().current
-
-

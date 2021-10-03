@@ -36,8 +36,8 @@ def encode_multipart_data(fields):
                 filename = value.name if hasattr(value, 'name') else key
                 lines.append('--' + boundary)
                 lines.append(
-                    'Content-Disposition: form-data; name="%s"; filename="%s"' %
-                    (key, filename)
+                    'Content-Disposition: form-data; name="%s"; '
+                    'filename="%s"' % (key, filename)
                 )
                 lines.append(
                     'Content-Type: %s' %
@@ -51,11 +51,10 @@ def encode_multipart_data(fields):
 
     body = io.BytesIO()
     length = 0
-    for l in lines:
-        line = (l if isinstance(l, bytes) else l.encode()) + crlf
+    for line in lines:
+        line = (line if isinstance(line, bytes) else line.encode()) + crlf
         length += len(line)
         body.write(line)
     body.seek(0)
     content_type = 'multipart/form-data; boundary=%s' % boundary
     return content_type, body, length
-

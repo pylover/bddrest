@@ -1,4 +1,3 @@
-
 from .headerset import HeaderSet
 from .response import HTTPStatus, Response
 from .specification import Call, FirstCall, AlteredCall
@@ -8,4 +7,3 @@ from .exceptions import InvalidUrlParametersError, CallVerifyError
 
 
 __version__ = '4.0.4'
-

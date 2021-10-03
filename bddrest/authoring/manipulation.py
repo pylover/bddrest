@@ -122,4 +122,3 @@ class CompositeManipulatorInitializer(CompositeManipulator):
 
     def __or__(self, other):
         return CompositeManipulator() | other
-

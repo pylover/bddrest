@@ -124,4 +124,3 @@ class Response:
 
     def __repr__(self):
         return f'\'{self.text}\''
-

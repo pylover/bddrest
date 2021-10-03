@@ -89,4 +89,3 @@ class HeaderSet(list):
 
     def copy(self):
         return self.__class__(super().copy())
-

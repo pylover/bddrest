@@ -1,4 +1,3 @@
-
 class CallVerifyError(Exception):
     pass
 
@@ -9,4 +8,3 @@ class ValidationError(ValueError):
 
 class InvalidUrlParametersError(ValidationError):
     pass
-

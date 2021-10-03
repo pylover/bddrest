@@ -63,4 +63,3 @@ class ObjectProxy:
 
     def __repr__(self):
         return self.proxied_object.__repr__()
-

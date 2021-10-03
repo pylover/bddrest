@@ -76,4 +76,3 @@ class Given(Story, Context):
         if self.current_call is None:
             return None
         return self.current_call.response
-

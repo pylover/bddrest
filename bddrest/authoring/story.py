@@ -71,4 +71,3 @@ class Story:
     @property
     def title(self):
         return self.base_call.title
-

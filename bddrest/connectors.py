@@ -135,4 +135,3 @@ class WSGIConnector(Connector):
                 result.close()
 
         return response
-
