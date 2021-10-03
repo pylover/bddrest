@@ -34,12 +34,10 @@ def wsgi_application(environ, start_response):
 def test_equality():
 
     call = dict(
-        title=\
-            'Binding and registering the device after verifying the '
-            'activation code',
-        description=\
-            'As a new visitor I have to bind my device with activation '
-            'code and phone number',
+        title='Binding and registering the device after verifying the '
+              'activation code',
+        description='As a new visitor I have to bind my device with '
+                    'activation code and phone number',
         url='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
@@ -67,5 +65,3 @@ def test_equality():
             )
         )
         assert response.status == 400
-
-

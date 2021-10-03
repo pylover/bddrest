@@ -145,5 +145,4 @@ curl -X PUT -F "f1=cba" -H "A: B" -- "$URL/books/None?a=2&b=4"
 
 ### Response: 404 Not Found
 
-'''
-
+'''  # noqa

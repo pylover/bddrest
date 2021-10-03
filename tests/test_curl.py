@@ -1,4 +1,4 @@
-from bddrest import FirstCall, Call
+from bddrest import FirstCall
 from bddrest.documentary.curl import CURL
 
 
@@ -53,4 +53,3 @@ def test_curl_from_call():
         '-H "Authorization: $TOKEN" ' \
         '-- ' \
         '"$URL/resources/1?q=1"'
-

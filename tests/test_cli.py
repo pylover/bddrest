@@ -5,7 +5,7 @@ app = Application('bddrest', 'bddrest.cli:main')
 
 
 def test_document_cli():
-   with Given(app, ['document']):
+    with Given(app, ['document']):
         when(stdin=yamlstory)
         assert stderr == ''
         assert status == 0
@@ -125,4 +125,3 @@ Sub commands:
     mockupserver        Generates a mockup from YAML file.
     completion          Bash auto completion using argcomplete python package.
 '''
-

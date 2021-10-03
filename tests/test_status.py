@@ -27,4 +27,3 @@ def test_status_comparison():
 
     with pytest.raises(ValueError):
         s > '100 Continue'
-

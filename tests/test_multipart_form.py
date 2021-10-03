@@ -58,6 +58,7 @@ L5uEQbqDZrdzj5AX9wjtVA==\n
 
 '''
 
+
 def test_upload_binary_file():
 
     call = dict(
@@ -78,4 +79,3 @@ def test_upload_binary_file():
         outputstring = outfile.getvalue()
         assert 'Multipart' in outputstring
         assert expected_markdown == outputstring
-

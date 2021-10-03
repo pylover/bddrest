@@ -62,4 +62,3 @@ def test_upload_list_of_file():
 
         assert base64.decodebytes(response.json['file2'].encode()) \
             == BINARY_CONTENT_HASH2
-

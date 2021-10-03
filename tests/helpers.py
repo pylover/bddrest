@@ -8,6 +8,7 @@ def standard_files_mockup(stdin, argv=None):
 
     class StandardFile:
         encoding = 'UTF-8'
+
         def __init__(self, content=None):
             if content is None:
                 self.buffer = io.BytesIO()
@@ -53,4 +54,3 @@ def standard_files_mockup(stdin, argv=None):
 
     stdoutfile.seek(0)
     stderrfile.seek(0)
-

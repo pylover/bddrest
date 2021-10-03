@@ -100,4 +100,3 @@ def test_autodocument_json():
         outputstring = outfile.getvalue()
         assert 'Form' in outputstring
         assert expected_markdown == outputstring
-

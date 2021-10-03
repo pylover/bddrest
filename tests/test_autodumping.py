@@ -1,6 +1,6 @@
 import io
 
-from bddrest import  Given, response
+from bddrest import Given, response
 
 
 def wsgi_application(environ, start_response):
@@ -16,7 +16,6 @@ def test_autodump_file_object():
         url='/apiv1/devices/name: SM-12345678',
         autodump=file,
     ):
-        assert response.status  == 200
+        assert response.status == 200
 
     assert len(file.getvalue()) > 0
-

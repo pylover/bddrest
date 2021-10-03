@@ -183,13 +183,14 @@ def test_querystring_parser():
     assert dict(a='1') == call.query
 
     call = FirstCall(url='/id: 1?a=1&a=2')
-    assert dict(a=['1','2']) == call.query
+    assert dict(a=['1', '2']) == call.query
 
 
 def test_form_parser():
     pyload = dict(a=1, b=2)
     call = FirstCall(form=pyload)
     assert call.form == pyload
+
 
 def test_call_repr():
     pyload = dict(a=1)
@@ -199,5 +200,5 @@ def test_call_repr():
         form=json_form,
     )
 
-    assert str(call) == f'GET /apiv1/books/isbn/pages/page HTTP/1.1\n{json_form}'
-
+    assert str(call) == \
+        f'GET /apiv1/books/isbn/pages/page HTTP/1.1\n{json_form}'

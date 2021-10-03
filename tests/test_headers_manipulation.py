@@ -66,4 +66,3 @@ def test_remove_headers_field():
         # Remove an invalid header(Not exists)
         with pytest.raises(ValueError):
             when('Invalid  key', headers=Remove('invalid header'))
-
