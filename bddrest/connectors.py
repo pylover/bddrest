@@ -2,7 +2,7 @@ import abc
 import io
 import json as libjson
 import socket
-from urllib.parse import urlencode
+from urllib.parse import urlencode, unquote
 
 import bddrest
 from .helpers import encode_multipart_data
@@ -96,7 +96,7 @@ class WSGIConnector(Connector):
             url, query = url.split('?', 1)
             environ['QUERY_STRING'] = query
 
-        environ['PATH_INFO'] = url
+        environ['PATH_INFO'] = unquote(url, 'iso-8859-1')
 
         if extra_environ:
             environ.update(extra_environ)
