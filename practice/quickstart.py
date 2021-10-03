@@ -1,6 +1,3 @@
-
-import re
-import sys
 import json
 
 from bddrest.authoring import Given, when, response, status
@@ -42,5 +39,3 @@ with Given(
     )
 
     assert response.status == 404
-
-

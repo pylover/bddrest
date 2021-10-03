@@ -47,12 +47,10 @@ def wsgi_application(environ, start_response):
 
 def test_given_when():
     call = dict(
-        title= \
-            'Binding and registering the device after verifying the '
-            'activation code',
-        description= \
-            'As a new visitor I have to bind my device with activation code '
-            'and phone number',
+        title='Binding and registering the device after verifying the '
+              'activation code',
+        description='As a new visitor I have to bind my device with '
+                    'activation code and phone number',
         url='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
@@ -188,7 +186,7 @@ def test_to_dict():
                     'Content-Type: application/json;charset=utf-8',
                     'X-Pagination-Count: 10'
                 ],
-                json= {
+                json={
                     'secret': 'ABCDEF',
                     'code': 745525,
                     'query': None,
@@ -379,4 +377,3 @@ def test_authorization():
         authorization='testuser'
     ):
         assert response.json['identity'] == 'testuser'
-

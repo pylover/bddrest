@@ -103,4 +103,3 @@ def test_copy():
     assert headers is not headers_copy
     assert 'A' in headers
     assert 'A' not in headers_copy
-

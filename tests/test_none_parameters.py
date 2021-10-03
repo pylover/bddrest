@@ -56,4 +56,3 @@ def test_none_parameters_within_form():
     ):
         assert status == 200
         assert response.json['a'] == 'None'
-

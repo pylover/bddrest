@@ -98,4 +98,3 @@ def test_query_string():
     )
 
     assert response.text == 'a=b'
-

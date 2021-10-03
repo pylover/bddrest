@@ -19,4 +19,3 @@ def test_autodoc_file_object():
         assert response.status == 200
 
     assert len(file.getvalue()) > 0
-

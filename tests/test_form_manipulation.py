@@ -34,7 +34,7 @@ def test_append_form_field():
     with Given(wsgi_application, **call):
         assert response.status == '200 OK'
 
-        modified_call = when(
+        when(
             'Adding another field',
             form=Append(email='user@example.com')
         )
@@ -58,7 +58,7 @@ def test_remove_from_fields():
     )
 
     with Given(wsgi_application, **call):
-        assert response.status =='200 OK'
+        assert response.status == '200 OK'
 
         when('Removing fields', form=Remove('email', 'phone'))
         assert response.json == dict(activationCode='746727')
@@ -82,12 +82,11 @@ def test_update_from_fields():
     )
 
     with Given(wsgi_application, **call):
-        assert response.status =='200 OK'
+        assert response.status == '200 OK'
         assert response.json == dict(
             activationCode='746727',
             email='user@example.com'
         )
-
 
         when(
             'Updating email and phone fields',
@@ -126,7 +125,7 @@ def test_form_operators():
     )
 
     with Given(wsgi_application, **call):
-        assert response.status =='200 OK'
+        assert response.status == '200 OK'
         assert response.json == dict(
             a='1',
             b='2'
@@ -173,4 +172,3 @@ def test_form_operators():
             a='1',
             b='2',
         )
-
