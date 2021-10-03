@@ -27,8 +27,8 @@ class MarkdownFormatter(Formatter):
         self.writeline()
 
     def write_list(self, listkind):
-        for l in listkind:
-            self.writeline(f'* {l}')
+        for item in listkind:
+            self.writeline(f'* {item}')
         self.writeline()
 
     def write_codeblock(self, language, codeblock):  # pragma: no cover
@@ -38,4 +38,3 @@ class MarkdownFormatter(Formatter):
 
     def write_hr(self):
         self.writeline(f'---{self.cr}')
-

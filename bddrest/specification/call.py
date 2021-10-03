@@ -165,7 +165,6 @@ class Call(metaclass=ABCMeta):
 
         return response
 
-
     def verify(self, application):
         response = self.invoke(application)
         if self.response != response:
@@ -181,7 +180,7 @@ class Call(metaclass=ABCMeta):
 
         if self.headers is not None:
             header = [': '.join(h) for h in self.headers]
-            result =f'{result}\n{header}'
+            result = f'{result}\n{header}'
 
         if self.body is not None:
             result = f'{result}\n{self.body}'
@@ -190,7 +189,7 @@ class Call(metaclass=ABCMeta):
         elif self.json is not None:
             result = f'{result}\n{self.json}'
         elif self.multipart is not None:
-             result = f'{result}\n{self.multipart}'
+            result = f'{result}\n{self.multipart}'
 
         return result
 
@@ -313,4 +312,3 @@ class Call(metaclass=ABCMeta):
     @abstractmethod
     def extra_environ(self, value):  # pragma: no cover
         pass
-

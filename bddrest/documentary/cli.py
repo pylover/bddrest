@@ -12,7 +12,7 @@ class DocumentaryLauncher(SubCommand):
             '-f', '--format',
             default='markdown',
             help='The output format. One of markdown or html. Default is '
-                'markdown.'
+                 'markdown.'
         ),
     ]
 
@@ -23,4 +23,3 @@ class DocumentaryLauncher(SubCommand):
         from ..authoring import Story
         story = Story.load(source)
         story.document(outfile, format_=format_)
-

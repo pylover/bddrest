@@ -14,7 +14,7 @@ class Documenter:
         ignore_headers = ['content-type']
 
         headers = {
-            k: v for k, v in response.headers \
+            k: v for k, v in response.headers
             if k.lower() not in ignore_headers
         }
         if headers:
@@ -40,30 +40,23 @@ class Documenter:
         if call.description:
             formatter.write_paragraph(call.description)
 
-        if call.url_parameters and (
-                basecall is None or
-                call.url_parameters != basecall.url_parameters
-        ):
+        if call.url_parameters \
+                and (basecall is None
+                     or call.url_parameters != basecall.url_parameters):
             formatter.write_header('Url Parameters', 3)
             formatter.write_table(
                 call.url_parameters.items(),
                 headers=('Name', 'Example')
             )
 
-        if call.query and (
-                basecall is None or
-                call.query != basecall.query
-        ):
+        if call.query and (basecall is None or call.query != basecall.query):
             formatter.write_header('Query Strings', 3)
             formatter.write_table(
                 call.query.items(),
                 headers=('Name', 'Example')
             )
 
-        if call.form and (
-                basecall is None or
-                call.form != basecall.form
-        ):
+        if call.form and (basecall is None or call.form != basecall.form):
             formatter.write_header('Form', 3)
             rows = []
             for k, v in call.form.items():
@@ -87,10 +80,8 @@ class Documenter:
                 headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
             )
 
-        if call.multipart and (
-                basecall is None or
-                call.multipart != basecall.multipart
-        ):
+        if call.multipart \
+                and (basecall is None or call.multipart != basecall.multipart):
             formatter.write_header('Multipart', 3)
             rows = []
             for k, v in call.multipart.items():
@@ -114,10 +105,8 @@ class Documenter:
                 headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
             )
 
-        if call.json and not isinstance(call.json, list) and (
-                basecall is None or
-                call.json != basecall.json
-        ):
+        if call.json and not isinstance(call.json, list) \
+                and (basecall is None or call.json != basecall.json):
             formatter.write_header('Form', 3)
             rows = []
             for k, v in call.json.items():
@@ -141,10 +130,8 @@ class Documenter:
                 headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
             )
 
-        if call.headers and (
-                basecall is None or
-                call.headers != basecall.headers
-        ):
+        if call.headers \
+                and (basecall is None or call.headers != basecall.headers):
             formatter.write_header('Request Headers', 3)
             formatter.write_list(f'{k}: {v}' for k, v in call.headers)
 
@@ -166,4 +153,3 @@ class Documenter:
             formatter.write_hr()
             formatter.write_header(f'WHEN: {call.title}', 2)
             self.write_call(basecall, call, formatter)
-

@@ -1,7 +1,6 @@
 from .call import Call
 from ..helpers import normalize_query_string
 from ..headerset import HeaderSet
-from ..response import Response
 
 
 class Unchanged:
@@ -17,12 +16,15 @@ class AlteredCall(Call):
                  multipart=UNCHANGED, content_type=UNCHANGED,
                  headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED, title=None,
                  description=None, extra_environ=UNCHANGED,
-                 response: Response=None, authorization=UNCHANGED,
-                 body = UNCHANGED):
-
+                 response=None, authorization=UNCHANGED,
+                 body=UNCHANGED):
         self.base_call = base_call
         self.diff = {}
-        super().__init__(title=title, description=description, response=response)
+        super().__init__(
+            title=title,
+            description=description,
+            response=response
+        )
 
         self.url = url
         if url_parameters is not UNCHANGED:
@@ -232,4 +234,3 @@ class AlteredCall(Call):
     @multipart.deleter
     def multipart(self):
         del self.diff['multipart']
-

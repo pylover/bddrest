@@ -59,4 +59,3 @@ class HTMLFormatter(Formatter):
 
     def write_hr(self):
         self._tag('hr')
-

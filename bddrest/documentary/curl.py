@@ -137,4 +137,3 @@ class CURL:
             path_part.append(part)
 
         return f'$URL{"/".join(path_part)}'
-

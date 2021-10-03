@@ -1,6 +1,5 @@
 from ..headerset import HeaderSet
 from ..helpers import normalize_query_string
-from ..response import Response
 from .call import Call
 
 
@@ -26,10 +25,14 @@ class FirstCall(Call):
     def __init__(self, url='/', verb='GET', url_parameters=None, form=None,
                  json=None, multipart=None, content_type=None, headers=None,
                  as_=None, query=None, title=None, description=None,
-                 extra_environ=None, response: Response=None,
+                 extra_environ=None, response=None,
                  authorization=None, body=None):
 
-        super().__init__(title=title, description=description, response=response)
+        super().__init__(
+            title=title,
+            description=description,
+            response=response
+        )
 
         self.url = url
         # the `url_parameters` and `query` attributes may be set by the url
@@ -158,4 +161,3 @@ class FirstCall(Call):
     @multipart.setter
     def multipart(self, value):
         self._multipart = value
-

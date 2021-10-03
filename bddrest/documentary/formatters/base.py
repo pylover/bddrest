@@ -35,4 +35,3 @@ class Formatter(metaclass=ABCMeta):
     @abstractmethod
     def write_hr(self):  # pragma: no cover
         raise NotImplementedError()
-

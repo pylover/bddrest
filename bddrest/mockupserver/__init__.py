@@ -1,6 +1,3 @@
-import sys
-import json
-
 from easycli import SubCommand, Argument
 
 
@@ -39,11 +36,10 @@ class MockupServer(SubCommand):
                 calls = [story.base_call] + story.calls
                 for call in calls:
                     url = call.url.replace(':', '')
-                    if set(url.strip('/').split('/')) == set(remaining_paths) :
+                    if set(url.strip('/').split('/')) == set(remaining_paths):
                         return self.server(call)
 
                 raise HTTPNotFound()
 
         from nanohttp import quickstart
         quickstart(RootMockupController())
-
