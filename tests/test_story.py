@@ -89,6 +89,23 @@ def test_given_when():
         assert response.status == 400
 
 
+def test_url_parameters_encoding():
+    def app(environ, start_response):
+        start_response('200 OK', [
+            ('Content-Type', 'text/plain'),
+        ])
+        url = environ.get('PATH_INFO')
+        return [url]
+
+    with Given(app, '/id: foo%20bar'):
+        assert response.status == 200
+        assert response == '/foo bar'
+
+        when(url_parameters=given | dict(id='foo Bar'))
+        assert response.status == 200
+        assert response == '/foo Bar'
+
+
 def test_url_parameters():
     call = dict(
         title='Multiple url parameters',

@@ -9,7 +9,7 @@ from ..helpers import normalize_query_string
 from ..response import Response
 
 
-URL_PARAMETER_VALUE_PATTERN = r'[ \w\d_-]+'
+URL_PARAMETER_VALUE_PATTERN = r'[ %\w\d_-]+'
 URL_PARAMETER_PATTERN = \
     re.compile(rf'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
 
