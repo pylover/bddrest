@@ -9,7 +9,7 @@ from ..helpers import normalize_query_string
 from ..response import Response
 
 
-URL_PARAMETER_VALUE_PATTERN = r'[\w\d_-]+'
+URL_PARAMETER_VALUE_PATTERN = r'[ \w\d_-]+'
 URL_PARAMETER_PATTERN = \
     re.compile(rf'/(?P<key>\w+):\s?(?P<value>{URL_PARAMETER_VALUE_PATTERN})')
 
@@ -63,7 +63,12 @@ class Call(metaclass=ABCMeta):
         return result
 
     def validate_url_parameters(self):
-        required_parameters = set(i[1:] for i in re.findall(r':\w+', self.url))
+        # i[1:].strip() for i in re.findall(r':[ \w]+', self.url))
+        required_parameters = set(
+            i[1:] for i in re.findall(
+                fr':\s?{URL_PARAMETER_VALUE_PATTERN}', self.url)
+        )
+
         if not required_parameters and self.url_parameters is None:
             return
 

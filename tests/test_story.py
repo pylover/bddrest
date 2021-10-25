@@ -5,7 +5,7 @@ import tempfile
 import pytest
 
 from bddrest import Given, when, story, response, InvalidUrlParametersError, \
-    CallVerifyError, Call, AlteredCall, Story
+    CallVerifyError, Call, AlteredCall, Story, given
 
 
 def wsgi_application(environ, start_response):
@@ -92,7 +92,7 @@ def test_given_when():
 def test_url_parameters():
     call = dict(
         title='Multiple url parameters',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
+        url='/apiv1/devices/name: SM 12345678/id: 1',
         verb='POST',
         form=dict(
             activationCode='746727',
@@ -102,6 +102,21 @@ def test_url_parameters():
 
     with Given(wsgi_application, **call):
         assert response.status == '200 OK'
+        assert response.json == {
+            'code': 745525,
+            'query': None,
+            'secret': 'ABCDEF',
+            'url': '/apiv1/devices/SM 12345678/1',
+        }
+
+        when(url_parameters=given | dict(name='foo'))
+        assert response.status == '200 OK'
+        assert response.json == {
+            'code': 745525,
+            'query': None,
+            'secret': 'ABCDEF',
+            'url': '/apiv1/devices/foo/1',
+        }
 
         with pytest.raises(InvalidUrlParametersError):
             when(

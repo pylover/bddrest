@@ -20,7 +20,7 @@ def wsgi_application(environ, start_response):
 def test_append_headers_field():
     with Given(
         wsgi_application,
-        'test add header field',
+        title='test add header field',
         headers={'header1': '1'}
     ):
         assert status == '200 OK'
@@ -28,17 +28,17 @@ def test_append_headers_field():
 
         # Using dictionary to manipulate lists, expecting error.
         with pytest.raises(ValueError):
-            when('Abusing', headers=Append(header2='2'))
+            when(title='Abusing', headers=Append(header2='2'))
 
         when(
-            'Adding new header: 2-tuple',
+            title='Adding new header: 2-tuple',
             headers=Append(('header2', '2'))
         )
         assert response.json['header1'] == '1'
         assert response.json['header2'] == '2'
 
         when(
-            'Adding new header: single string',
+            title='Adding new header: single string',
             headers=Append('header3: 3')
         )
         assert response.json['header1'] == '1'
@@ -49,20 +49,20 @@ def test_append_headers_field():
 def test_remove_headers_field():
     with Given(
         wsgi_application,
-        'test remove  header field',
+        title='test remove header field',
         headers={'header1': '1'}
     ):
         assert status == '200 OK'
         assert response.json['header1'] == '1'
 
         when(
-            'Removing an existing header: 2-tuple',
+            title='Removing an existing header: 2-tuple',
             headers=Remove(('header1', '1'))
         )
         assert 'header1' not in response.json
 
-        when('Remove header by key', headers=Remove('header1'))
+        when(title='Remove header by key', headers=Remove('header1'))
 
         # Remove an invalid header(Not exists)
         with pytest.raises(ValueError):
-            when('Invalid  key', headers=Remove('invalid header'))
+            when(title='Invalid  key', headers=Remove('invalid header'))
