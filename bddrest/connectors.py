@@ -53,7 +53,7 @@ class Connector(metaclass=abc.ABCMeta):
         if content_length is not None:
             headers.append(('Content-Length', str(content_length)))
 
-        return self._send_request(verb, url, environ, headers, body)
+        return self._send_request(verb, url, environ, headers, body, **kw)
 
     @abc.abstractmethod
     def _send_request(self, verb, url, environ, headers, body=None, **kw):
@@ -66,7 +66,7 @@ class WSGIConnector(Connector):
         self.environ = environ
 
     def _prepare_environ(self, verb, url, headers, payload=None,
-                         extra_environ=None):
+                         extra_environ=None, https=False):
         if isinstance(payload, io.BytesIO):
             input_file = payload
         elif payload:
@@ -83,7 +83,7 @@ class WSGIConnector(Connector):
         environ['wsgi.multithread'] = False
         environ['wsgi.multiprocess'] = False
         environ['wsgi.run_once'] = True
-        environ['wsgi.url_scheme'] = 'http'
+        environ['wsgi.url_scheme'] = 'https' if https else 'http'
         environ['REQUEST_METHOD'] = verb
         environ['SERVER_NAME'] = socket.gethostname()
         environ['HTTP_HOST'] = 'bddrest-interceptor'
@@ -91,6 +91,9 @@ class WSGIConnector(Connector):
         environ['SERVER_PROTOCOL'] = 'HTTP/1.1\r\n'
         environ['REMOTE_ADDR'] = '127.0.0.1'
         environ['HTTP_USER_AGENT'] = f'Python bddrest/{bddrest.__version__}'
+
+        if https:
+            environ['HTTPS'] = 'yes'
 
         if '?' in url:
             url, query = url.split('?', 1)
@@ -109,8 +112,10 @@ class WSGIConnector(Connector):
 
         return environ
 
-    def _send_request(self, verb, url, environ, headers, body=None, **kw):
-        environ_ = self._prepare_environ(verb, url, headers, body, environ)
+    def _send_request(self, verb, url, environ, headers, body=None,
+                      https=False, **kw):
+        environ_ = self._prepare_environ(verb, url, headers, body, environ,
+                                         https)
         response = None
 
         def start_response(status, headers, exc_info=None):

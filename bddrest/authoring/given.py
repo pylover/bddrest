@@ -18,6 +18,9 @@ class Given(Story, Context):
                            ``markdown``.
     :param fieldinfo: A callable(resource, verb, fieldname) to provide the
                       field's metadata.
+
+
+    See :class:`Story` for other arguments.
     """
 
     def __init__(self, application, *args, autodump=None, autodoc=None,

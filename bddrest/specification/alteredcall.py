@@ -17,7 +17,7 @@ class AlteredCall(Call):
                  headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED, title=None,
                  description=None, extra_environ=UNCHANGED,
                  response=None, authorization=UNCHANGED,
-                 body=UNCHANGED):
+                 body=UNCHANGED, https=UNCHANGED):
         self.base_call = base_call
         self.diff = {}
         super().__init__(
@@ -49,6 +49,7 @@ class AlteredCall(Call):
         self.authorization = authorization
         self.headers = headers
         self.as_ = as_
+        self.https = https
 
     def to_dict(self):
         result = dict(title=self.title)
@@ -234,3 +235,11 @@ class AlteredCall(Call):
     @multipart.deleter
     def multipart(self):
         del self.diff['multipart']
+
+    @property
+    def https(self):
+        return self.diff.get('https', self.base_call.https)
+
+    @https.setter
+    def https(self, value):
+        self.update_diff('https', value)

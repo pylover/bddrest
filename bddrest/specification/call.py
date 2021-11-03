@@ -143,6 +143,7 @@ class Call(metaclass=ABCMeta):
         request_params = dict(
             environ=self.extra_environ,
             headers=headers,
+            https=self.https,
         )
 
         if self.body:
@@ -316,4 +317,14 @@ class Call(metaclass=ABCMeta):
     @extra_environ.setter
     @abstractmethod
     def extra_environ(self, value):  # pragma: no cover
+        pass
+
+    @property
+    @abstractmethod
+    def https(self) -> str:  # pragma: no cover
+        pass
+
+    @https.setter
+    @abstractmethod
+    def https(self, value):  # pragma: no cover
         pass

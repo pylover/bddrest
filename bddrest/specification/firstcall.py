@@ -15,6 +15,7 @@ class FirstCall(Call):
     _multipart = None
     _as = None
     _extra_environ = None
+    _https = False
 
     # FIXME: remove them  and use header set to store it.
     _content_type = None
@@ -26,7 +27,7 @@ class FirstCall(Call):
                  json=None, multipart=None, content_type=None, headers=None,
                  as_=None, query=None, title=None, description=None,
                  extra_environ=None, response=None,
-                 authorization=None, body=None):
+                 authorization=None, body=None, https=False):
 
         super().__init__(
             title=title,
@@ -56,6 +57,7 @@ class FirstCall(Call):
         self.headers = headers
         self.as_ = as_
         self.extra_environ = extra_environ
+        self.https = https
 
     @property
     def url(self):
@@ -161,3 +163,11 @@ class FirstCall(Call):
     @multipart.setter
     def multipart(self, value):
         self._multipart = value
+
+    @property
+    def https(self):
+        return self._https
+
+    @https.setter
+    def https(self, value):
+        self._https = value
