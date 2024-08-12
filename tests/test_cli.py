@@ -115,7 +115,7 @@ usage: bddrest [-h] {document,mockupserver,completion} ...
 
 bddrest
 
-optional arguments:
+options:
   -h, --help            show this help message and exit
 
 Sub commands:
