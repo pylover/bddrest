@@ -6,4 +6,4 @@ from .authoring import Given, when, story, response, Story, Append, Update, \
 from .exceptions import InvalidUrlParametersError, CallVerifyError
 
 
-__version__ = '4.2.2'
+__version__ = '4.2.3'
