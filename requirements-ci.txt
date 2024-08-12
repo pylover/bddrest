@@ -1,3 +1,5 @@
+build
+setuptools
 coverage
 coveralls
 pytest-cov
