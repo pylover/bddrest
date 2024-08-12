@@ -148,7 +148,7 @@ class Call(metaclass=ABCMeta):
 
         if self.body:
             request_params['body'] = self.body
-        elif self.form:
+        elif self.form is not None:
             request_params['form'] = self.form
         elif self.json:
             request_params['json'] = self.json
