@@ -46,6 +46,9 @@ class Given(Story, Context):
         # Checking for dictionary manipulators if any
         for k, v in kwargs.items():
             if isinstance(v, Manipulator):
+                basevalue = getattr(self.base_call, k)
+                if basevalue is None:
+                    raise ValueError(f'{k} argument is not given yet')
                 clone = getattr(self.base_call, k).copy()
                 v.apply(clone)
                 kwargs[k] = clone

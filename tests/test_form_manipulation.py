@@ -44,6 +44,16 @@ def test_append_form_field():
             email='user@example.com'
         )
 
+    call = dict(
+        title='test add form field',
+        url='/apiv1/devices/name: SM-12345678/id: 1',
+        verb='POST',
+    )
+    with Given(wsgi_application, **call):
+        with pytest.raises(ValueError):
+            when('Appending a field to an empty form',
+                 form=Append('email', 'foo@bar.baz'))
+
 
 def test_remove_from_fields():
     call = dict(
@@ -62,6 +72,10 @@ def test_remove_from_fields():
 
         when('Removing fields', form=Remove('email', 'phone'))
         assert response.json == dict(activationCode='746727')
+
+        with pytest.raises(ValueError):
+            when('Removing a field from an empty form',
+                 json=Remove('email', 'phone'))
 
         with pytest.raises(ValueError):
             Remove('a').apply(['b', 'c'])
