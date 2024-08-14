@@ -1,5 +1,6 @@
-import cgi
 import json
+
+from . import multipart
 
 from bddrest import Given, response, status
 
@@ -8,16 +9,14 @@ def wsgi_application(environ, start_response):
     if environ.get('CONTENT_TYPE', '').startswith('application/json'):
         result = json.loads(environ['wsgi.input'].read())
     else:
-        form = cgi.FieldStorage(
-            fp=environ['wsgi.input'],
-            environ=environ,
-            strict_parsing=False,
-            keep_blank_values=True
+        form, _ = multipart.parse_form_data(
+            environ,
+            charset="utf8",
+            strict=True
         )
         result = {}
         for k in form.keys():
-            v = form[k]
-            value = v.value
+            value = form[k]
 
             result[k] = value.decode() if isinstance(value, bytes) else value
 

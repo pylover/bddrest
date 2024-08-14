@@ -1,25 +1,25 @@
 import base64
-import cgi
 import hashlib
 import io
 import json
 
 from bddrest import Given, response, status
 
+from . import multipart
+
 
 def wsgi_application(environ, start_response):
-    form = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        strict_parsing=False,
-        keep_blank_values=True
+    _, files = multipart.parse_form_data(
+        environ,
+        charset="utf8",
+        strict=True
     )
 
     start_response('200 OK', [
         ('Content-Type', 'text/plain;charset=utf-8'),
     ])
-    file1 = form['a'][0].file
-    file2 = form['a'][1].file
+    file1 = files['a'][0].file
+    file2 = files['a'][1].file
     response = dict(
         file1=base64.encodebytes(hashlib.md5(file1.read()).digest()).decode(),
         file2=base64.encodebytes(hashlib.md5(file2.read()).digest()).decode()

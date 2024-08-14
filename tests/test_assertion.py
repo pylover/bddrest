@@ -1,19 +1,19 @@
-import cgi
 import json
+from urllib.parse import parse_qs
 
 from bddrest import Given, when, response
 
 
 def wsgi_application(environ, start_response):
-    form = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        strict_parsing=False,
-        keep_blank_values=True
+    fp = environ['wsgi.input']
+    form = parse_qs(
+        fp.read(int(environ.get('CONTENT_LENGTH'))).decode(),
+        keep_blank_values=True,
+        strict_parsing=True
     )
 
     try:
-        code = int(form['activationCode'].value) ^ 1234
+        code = int(form['activationCode'][0]) ^ 1234
     except ValueError:
         start_response(
             '400 Bad Request',

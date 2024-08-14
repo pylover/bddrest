@@ -1,4 +1,4 @@
-from typing.re import Pattern
+from typing import Pattern
 
 
 class HeaderSet(list):

@@ -1,4 +1,3 @@
-import cgi
 import json
 import tempfile
 
@@ -7,18 +6,19 @@ import pytest
 from bddrest import Given, when, story, response, InvalidUrlParametersError, \
     CallVerifyError, Call, AlteredCall, Story, given
 
+from . import multipart
+
 
 def wsgi_application(environ, start_response):
-    form = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        strict_parsing=False,
-        keep_blank_values=True
+    form, _ = multipart.parse_form_data(
+        environ,
+        charset="utf8",
+        strict=True
     )
 
     try:
         # FIXME: Why x ^ 1234
-        code = int(form['activationCode'].value) ^ 1234
+        code = int(form['activationCode']) ^ 1234
 
     except ValueError:
         start_response(

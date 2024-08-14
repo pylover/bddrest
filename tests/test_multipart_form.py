@@ -1,23 +1,23 @@
 import base64
-import cgi
 import hashlib
 import io
+
+from . import multipart
 
 from bddrest import Given, response, status, story
 
 
 def wsgi_application(environ, start_response):
-    form = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        strict_parsing=False,
-        keep_blank_values=True
+    _, files = multipart.parse_form_data(
+        environ,
+        charset="utf8",
+        strict=True
     )
 
     start_response('200 OK', [
         ('Content-Type', 'text/plain;charset=utf-8'),
     ])
-    binary_file = form['a'].file
+    binary_file = files['a'].file
     yield base64.encodebytes(hashlib.md5(binary_file.read()).digest()).decode()
 
 

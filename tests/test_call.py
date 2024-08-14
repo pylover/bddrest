@@ -1,5 +1,5 @@
-import cgi
 import json
+from urllib.parse import parse_qs
 
 import pytest
 
@@ -7,11 +7,11 @@ from bddrest import CallVerifyError, FirstCall, AlteredCall
 
 
 def wsgi_application(environ, start_response):
-    form = cgi.FieldStorage(
-        fp=environ['wsgi.input'],
-        environ=environ,
-        strict_parsing=False,
-        keep_blank_values=True
+    fp = environ['wsgi.input']
+    form = parse_qs(
+        fp.read(int(environ.get('CONTENT_LENGTH', 0))).decode(),
+        keep_blank_values=True,
+        strict_parsing=True
     )
 
     start_response(

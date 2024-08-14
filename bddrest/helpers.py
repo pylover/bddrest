@@ -23,16 +23,7 @@ def encode_multipart_data(fields):
     for key, value in fields.items():
         values = [value] if not isinstance(value, list) else value
         for value in values:
-            if not hasattr(value, 'read'):
-                lines.append('--' + boundary)
-                lines.append('Content-Disposition: form-data; name="%s"' % key)
-                lines.append('')
-                if not isinstance(value, str):
-                    value = str(value)
-
-                lines.append(value)
-
-            else:
+            if hasattr(value, 'read'):
                 filename = value.name if hasattr(value, 'name') else key
                 lines.append('--' + boundary)
                 lines.append(
@@ -45,6 +36,15 @@ def encode_multipart_data(fields):
                 )
                 lines.append('')
                 lines.append(value.read())
+
+            else:
+                lines.append('--' + boundary)
+                lines.append('Content-Disposition: form-data; name="%s"' % key)
+                lines.append('')
+                if not isinstance(value, str):
+                    value = str(value)
+
+                lines.append(value)
 
     lines.append('--' + boundary + '--')
     lines.append('')

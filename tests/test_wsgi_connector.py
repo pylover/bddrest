@@ -1,9 +1,10 @@
-import cgi
 import io
 import json
 
 from bddrest.connectors import WSGIConnector
 from bddrest.response import Response
+
+from . import multipart
 
 
 def test_wagi_streaming():
@@ -33,16 +34,20 @@ def test_wsgi_forms():
         if environ.get('CONTENT_TYPE', '').startswith('application/json'):
             result = json.loads(environ['wsgi.input'].read())
         else:
-            form = cgi.FieldStorage(
-                fp=environ['wsgi.input'],
-                environ=environ,
-                strict_parsing=False,
-                keep_blank_values=True
+            form, files = multipart.parse_form_data(
+                environ,
+                charset="utf8",
+                strict=True
             )
             result = {}
             for k in form.keys():
-                v = form[k]
-                value = v.value
+                value = form[k]
+
+                result[k] = \
+                    value.decode() if isinstance(value, bytes) else value
+
+            for k in files.keys():
+                value = files[k].file.read()
 
                 result[k] = \
                     value.decode() if isinstance(value, bytes) else value
