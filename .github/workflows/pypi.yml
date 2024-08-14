@@ -15,7 +15,7 @@ jobs:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
     - name: Install dependencies
-      run: make env
+      run: make env-ci
     - name: Create distributions
       run: make dist
     - name: Publish a Python distribution to PyPI
