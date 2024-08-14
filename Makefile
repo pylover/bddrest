@@ -3,12 +3,12 @@ PKG = $(shell basename $(HERE))
 VENVPATH ?= $(HOME)/.virtualenvs/$(PKG)
 PYTEST_FLAGS = -v
 TEST_DIR = tests
-PY = $(VENVPATH)/bin/python3
-PIP = $(VENVPATH)/bin/pip3
-PYTEST = $(VENVPATH)/bin/pytest
-COVERAGE = $(VENVPATH)/bin/coverage
-FLAKE8 = $(VENVPATH)/bin/flake8
-TWINE = $(VENVPATH)/bin/twine
+PY ?= $(VENVPATH)/bin/python3
+PIP ?= $(VENVPATH)/bin/pip3
+PYTEST ?= $(VENVPATH)/bin/pytest
+COVERAGE ?= $(VENVPATH)/bin/coverage
+FLAKE8 ?= $(VENVPATH)/bin/flake8
+TWINE ?= $(VENVPATH)/bin/twine
 
 
 ifdef F

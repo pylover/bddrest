@@ -20,6 +20,7 @@ jobs:
         python-version: ['3.10', '3.11', '3.12']
     env:
       VENVPATH: /usr 
+      FLAKE8: flake8
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
