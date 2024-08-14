@@ -11,7 +11,7 @@ def wsgi_application(environ, start_response):
     form = parse_qs(
         fp.read(int(environ.get('CONTENT_LENGTH', 0))).decode(),
         keep_blank_values=True,
-        strict_parsing=True
+        strict_parsing=False
     )
 
     start_response(

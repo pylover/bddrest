@@ -9,7 +9,7 @@ def wsgi_application(environ, start_response):
     form = parse_qs(
         fp.read(int(environ.get('CONTENT_LENGTH'))).decode(),
         keep_blank_values=True,
-        strict_parsing=True
+        strict_parsing=False
     )
 
     try:
