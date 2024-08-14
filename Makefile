@@ -1,15 +1,14 @@
 HERE = $(shell readlink -f `dirname .`)
-VENVNAME = $(shell basename $(HERE))
-VENV := $(HOME)/.virtualenvs/$(VENVNAME)
-PKG = $(VENVNAME)
+PKG = $(shell basename $(HERE))
+VENVPATH := $(HOME)/.virtualenvs/$(PKG)
 PYTEST_FLAGS = -v
 TEST_DIR = tests
-PY = $(VENV)/bin/python3
-PIP = $(VENV)/bin/pip3
-PYTEST = $(VENV)/bin/pytest
-COVERAGE = $(VENV)/bin/coverage
-FLAKE8 = $(VENV)/bin/flake8
-TWINE = $(VENV)/bin/twine
+PY = $(VENVPATH)/bin/python3
+PIP = $(VENVPATH)/bin/pip3
+PYTEST = $(VENVPATH)/bin/pytest
+COVERAGE = $(VENVPATH)/bin/coverage
+FLAKE8 = $(VENVPATH)/bin/flake8
+TWINE = $(VENVPATH)/bin/twine
 
 
 ifdef F

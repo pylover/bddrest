@@ -1,0 +1,10 @@
+[run]
+source=bddrest
+concurrency=multiprocessing
+omit = 
+	bddrest/__init__.py
+
+[report]
+exclude_lines=
+	raise NotImplementedError
+	pragma: no cover

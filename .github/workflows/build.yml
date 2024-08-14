@@ -18,7 +18,8 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
-
+    env:
+      VENVPATH: /usr 
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
@@ -26,11 +27,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: make env VENV=/usr
+      run: make env
     - name: Lint with Flake8
-      run: make lint VENV=/usr
+      run: make lint
     - name: Test with pytest
-      run: make cover VENV=/usr
+      run: make cover
     - name: Coveralls
       run: coveralls
       env:

@@ -1,8 +1,3 @@
-import json
-import tempfile
-
-import pytest
-
 from bddrest import Given, when, response
 
 
@@ -18,7 +13,7 @@ def wsgi_application(environ, start_response):
 
 
 def test_querystring():
-    with Given(wsgi_application, query=dict(foo='')) as s:
+    with Given(wsgi_application, query=dict(foo='')):
         assert response.status == 200
         assert response.text == 'foo='
 

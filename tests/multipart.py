@@ -26,7 +26,6 @@ __all__ = [
 
 
 import re
-import sys
 from io import BytesIO
 from tempfile import TemporaryFile
 from urllib.parse import parse_qs
@@ -45,9 +44,7 @@ VERBS_PROHIBITED = [
 ]
 
 
-##############################################################################
-################################ Helper & Misc ###############################
-##############################################################################
+# Helper & Misc ###############################
 # Some of these were copied from bottle: https://bottlepy.org
 
 
@@ -122,7 +119,8 @@ def copy_file(stream, target, maxread=-1, buffer_size=2 ** 16):
     size, read = 0, stream.read
 
     while True:
-        to_read = buffer_size if maxread < 0 else min(buffer_size, maxread - size)
+        to_read = buffer_size if maxread < 0 else min(buffer_size,
+                                                      maxread - size)
         part = read(to_read)
 
         if not part:
@@ -142,7 +140,9 @@ _re_special = re.compile(r'[%s]' % _special)
 _quoted_string = r'"(?:\\.|[^"])*"'  # Quoted string
 _value = r'(?:[^%s]+|%s)' % (_special, _quoted_string)  # Save or quoted string
 _option = r'(?:;|^)\s*([^%s]+)\s*=\s*(%s)' % (_special, _value)
-_re_option = re.compile(_option)  # key=value part of an Content-Type like header
+
+# key=value part of an Content-Type like header
+_re_option = re.compile(_option)
 
 
 def header_quote(val):
@@ -179,9 +179,7 @@ def parse_options_header(header, options=None):
     return content_type, options
 
 
-##############################################################################
-################################## Multipart #################################
-##############################################################################
+# Multipart #
 
 
 class MultipartError(ValueError):
@@ -253,8 +251,8 @@ class MultipartParser(object):
     def _lineiter(self):
         """ Iterate over a binary file-like object line by line. Each line is
             returned as a (line, line_ending) tuple. If the line does not fit
-            into self.buffer_size, line_ending is empty and the rest of the line
-            is returned with the next iteration.
+            into self.buffer_size, line_ending is empty and the rest of the
+            line is returned with the next iteration.
         """
         read = self.stream.read
         maxread, maxbuf = self.content_length, self.buffer_size
@@ -269,7 +267,8 @@ class MultipartParser(object):
             # be sure that the first line does not become too big
             if len_first_line > self.buffer_size:
                 # at the same time don't split a '\r\n' accidentally
-                if len_first_line == self.buffer_size + 1 and lines[0].endswith(b"\r\n"):
+                if len_first_line == self.buffer_size + 1 \
+                        and lines[0].endswith(b"\r\n"):
                     splitpos = self.buffer_size - 1
                 else:
                     splitpos = self.buffer_size
@@ -364,7 +363,8 @@ class MultipartParser(object):
 
 
 class MultipartPart(object):
-    def __init__(self, buffer_size=2 ** 16, memfile_limit=2 ** 18, charset="latin1"):
+    def __init__(self, buffer_size=2 ** 16, memfile_limit=2 ** 18,
+                 charset="latin1"):
         self.headerlist = []
         self.headers = None
         self.file = False
@@ -428,7 +428,8 @@ class MultipartPart(object):
         if not content_disposition:
             raise MultipartError("Content-Disposition header is missing.")
 
-        self.disposition, self.options = parse_options_header(content_disposition)
+        self.disposition, self.options = \
+            parse_options_header(content_disposition)
         self.name = self.options.get("name")
         self.filename = self.options.get("filename")
         self.content_type, options = parse_options_header(content_type)
@@ -478,10 +479,7 @@ class MultipartPart(object):
             self.file = False
 
 
-##############################################################################
-#################################### WSGI ####################################
-##############################################################################
-
+# WSGI
 
 def parse_form_data(environ, charset="utf8", strict=False, **kwargs):
     """ Parse form data from an environ dict and return a (forms, files) tuple.
@@ -521,7 +519,8 @@ def parse_form_data(environ, charset="utf8", strict=False, **kwargs):
             if not boundary:
                 raise MultipartError("No boundary for multipart/form-data.")
 
-            for part in MultipartParser(stream, boundary, content_length, **kwargs):
+            for part in MultipartParser(stream, boundary, content_length,
+                                        **kwargs):
                 if part.filename or not part.is_buffered():
                     if part.name in files:
                         if not isinstance(files[part.name], list):
