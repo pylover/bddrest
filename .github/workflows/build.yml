@@ -26,11 +26,11 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: make env
+      run: make env VENV=/usr
     - name: Lint with Flake8
-      run: make lint
+      run: make lint VENV=/usr
     - name: Test with pytest
-      run: make cover
+      run: make cover VENV=/usr
     - name: Coveralls
       run: coveralls
       env:

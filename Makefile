@@ -1,6 +1,6 @@
 HERE = $(shell readlink -f `dirname .`)
 VENVNAME = $(shell basename $(HERE))
-VENV = $(HOME)/.virtualenvs/$(VENVNAME)
+VENV := $(HOME)/.virtualenvs/$(VENVNAME)
 PKG = $(VENVNAME)
 PYTEST_FLAGS = -v
 TEST_DIR = tests
