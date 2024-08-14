@@ -50,6 +50,12 @@ env:
 	$(PIP) install -e .
 
 
+.PHONY: env-ci
+env-ci:
+	$(PIP) install -r requirements-ci.txt
+	$(PIP) install -e .
+
+
 .PHONY: venv-delete
 venv-delete: clean
 	rm -rf $(VENV)
