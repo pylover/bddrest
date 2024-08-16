@@ -71,13 +71,13 @@ class Documenter:
 
                 for v in value:
                     info = info or {}
-                    required = info.get('required')
-                    not_none = info.get('not_none')
+                    needed = info.get('required')
+                    notnone = info.get('not_none')
                     type_ = info.get('type')
                     rows.append((
                         k,
-                        '?' if required is None else required and 'Yes' or 'No',
-                        '?' if not_none is None else not_none and 'No' or 'Yes',
+                        '?' if needed is None else needed and 'Yes' or 'No',
+                        '?' if notnone is None else notnone and 'No' or 'Yes',
                         '?' if type_ is None else type_,
                         v
                     ))
