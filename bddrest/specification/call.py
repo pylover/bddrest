@@ -1,11 +1,11 @@
 import re
 import sys
 from abc import ABCMeta, abstractmethod
-from urllib.parse import urlparse, urlencode
+from urllib.parse import urlparse
 
 from ..connectors import WSGIConnector
 from ..exceptions import CallVerifyError, InvalidUrlParametersError
-from ..helpers import normalize_query_string
+from ..helpers import querystring_parse, querystring_encode
 from ..response import Response
 
 
@@ -98,7 +98,7 @@ class Call(metaclass=ABCMeta):
 
         # Parsing the querystrings if available
         if parsedurl.query:
-            query = normalize_query_string(parsedurl.query)
+            query = querystring_parse(parsedurl.query)
 
         url = parsedurl.path
         if URL_PARAMETER_PATTERN.search(url):
@@ -123,7 +123,7 @@ class Call(metaclass=ABCMeta):
             for k, v in self.url_parameters.items():
                 url = url.replace(f':{k}', str(v))
 
-        url = f'{url}?{urlencode(self.query)}' if self.query else url
+        url = f'{url}?{querystring_encode(self.query)}' if self.query else url
 
         headers = self.headers.copy() if self.headers else []
         if self.content_type:

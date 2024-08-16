@@ -9,6 +9,7 @@ def test_document_cli():
         when(stdin=yamlstory)
         assert stderr == ''
         assert status == 0
+        print(stdout)
         assert stdout == expected_markdown
 
 

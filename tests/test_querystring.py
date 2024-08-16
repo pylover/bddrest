@@ -23,7 +23,7 @@ def test_querystring():
 
         when(query='foo=')
         assert response.status == 200
-        assert response.text == ''
+        assert response.text == 'foo='
 
         when(url='/?foo=')
         assert response.status == 200
@@ -32,3 +32,9 @@ def test_querystring():
         when(query=dict(foo=''))
         assert response.status == 200
         assert response.text == 'foo='
+
+
+def test_querystring_raw():
+    with Given(wsgi_application, query='foo=&bar=baz'):
+        assert response.status == 200
+        assert response.text == 'foo=&bar=baz'

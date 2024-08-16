@@ -2,15 +2,43 @@ import base64
 import io
 import os
 from mimetypes import guess_type
-from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlencode
 
 
-def normalize_query_string(query):
+def querystring_parse(query):
     if not query:
         return None
-    return {
-        k: v[0] if len(v) == 1 else v for k, v in parse_qs(query).items()
-    } if isinstance(query, str) else query
+
+    if isinstance(query, str):
+        query = parse_qs(
+            query,
+            keep_blank_values=True,
+        )
+
+    elif isinstance(query, dict):
+        query = {
+            k: v if isinstance(v, list) else [v] for k, v in query.items()
+        }
+    else:
+        raise TypeError('Only dict and str is supported')
+
+    return query
+
+
+def querystring_encode(query):
+    qs = []
+
+    if query is None:
+        return ''
+
+    for key, value in query.items():
+        if isinstance(value, list):
+            for v in value:
+                qs.append((key, v))
+        else:
+            qs.append((key, value))
+
+    return urlencode(qs)
 
 
 def encode_multipart_data(fields):

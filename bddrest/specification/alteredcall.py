@@ -1,5 +1,5 @@
 from .call import Call
-from ..helpers import normalize_query_string
+from ..helpers import querystring_parse
 from ..headerset import HeaderSet
 
 
@@ -133,7 +133,7 @@ class AlteredCall(Call):
     def query(self, value):
         self.update_diff(
             'query',
-            value if value is UNCHANGED else normalize_query_string(value)
+            value if value is UNCHANGED else querystring_parse(value)
         )
 
     @query.deleter

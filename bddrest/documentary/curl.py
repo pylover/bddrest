@@ -1,6 +1,8 @@
 import io
 import json
 
+from ..helpers import querystring_encode
+
 
 class CURL:
 
@@ -66,12 +68,7 @@ class CURL:
 
     @property
     def query(self):
-        query_parts = []
-        if self._query:
-            for k, v in self._query.items():
-                query_parts.append(f'{k}={v}')
-
-        return '&'.join(query_parts)
+        return querystring_encode(self._query)
 
     @property
     def full_path(self):

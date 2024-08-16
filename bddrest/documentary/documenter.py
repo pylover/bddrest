@@ -51,10 +51,16 @@ class Documenter:
 
         if call.query and (basecall is None or call.query != basecall.query):
             formatter.write_header('Query Strings', 3)
-            formatter.write_table(
-                call.query.items(),
-                headers=('Name', 'Example')
-            )
+
+            rows = []
+            for k, value in call.query.items():
+                if isinstance(value, list):
+                    for v in value:
+                        rows.append((k, v))
+                else:
+                    rows.append((k, value))
+
+            formatter.write_table(rows, headers=('Name', 'Example'))
 
         if call.form and (basecall is None or call.form != basecall.form):
             formatter.write_header('Form', 3)

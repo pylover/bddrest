@@ -72,7 +72,7 @@ def test_call_to_dict():
     call_dict = call.to_dict()
     assert call_dict == dict(
         title='Testing Call to_dict',
-        query=dict(a='1'),
+        query=dict(a=['1']),
         url='/:id',
         url_parameters={'id': '1'},
         verb='GET',
@@ -99,7 +99,7 @@ def test_altered_call():
     altered_call.conclude(wsgi_application)
     assert altered_call.to_dict() == dict(
         title='Altering a call',
-        query=dict(b=2),
+        query=dict(b=[2]),
         response=dict(
             status='200 OK',
             headers=['Content-Type: application/json;charset=utf-8'],
@@ -126,7 +126,7 @@ def test_alteredcall_setters_deleters():
     )
     assert '/apiv1/books/:isbn/pages/:page' == when.url
     assert dict(isbn='abc', page='3') == when.url_parameters
-    assert dict(highlight='false') == when.query
+    assert dict(highlight=['false']) == when.query
     assert dict(a='b') == when.form
     assert 'POST' == when.verb
     assert 'A' in when.headers
@@ -180,7 +180,7 @@ def test_call_verify():
 def test_querystring_parser():
     call = FirstCall(url='/id: 1?a=1')
     assert '/:id' == call.url
-    assert dict(a='1') == call.query
+    assert dict(a=['1']) == call.query
 
     call = FirstCall(url='/id: 1?a=1&a=2')
     assert dict(a=['1', '2']) == call.query

@@ -1,5 +1,5 @@
 from ..headerset import HeaderSet
-from ..helpers import normalize_query_string
+from ..helpers import querystring_parse
 from .call import Call
 
 
@@ -98,7 +98,7 @@ class FirstCall(Call):
 
     @query.setter
     def query(self, value):
-        self._query = normalize_query_string(value)
+        self._query = querystring_parse(value)
 
     @property
     def content_type(self):

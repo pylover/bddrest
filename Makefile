@@ -1,7 +1,7 @@
 HERE = $(shell readlink -f `dirname .`)
 PKG = $(shell basename $(HERE))
 VENVPATH ?= $(HOME)/.virtualenvs/$(PKG)
-PYTEST_FLAGS = -v
+PYTEST_FLAGS = -vvv
 TEST_DIR = tests
 PY ?= $(VENVPATH)/bin/python3
 PIP ?= $(VENVPATH)/bin/pip3
