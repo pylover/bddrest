@@ -65,21 +65,22 @@ class Documenter:
         if call.form and (basecall is None or call.form != basecall.form):
             formatter.write_header('Form', 3)
             rows = []
-            for k, v in call.form.items():
+            for k, value in call.form.items():
                 info = self.fieldinfo(call.url, call.verb, k) \
                     if self.fieldinfo else None
 
-                info = info or {}
-                required = info.get('required')
-                not_none = info.get('not_none')
-                type_ = info.get('type')
-                rows.append((
-                    k,
-                    '?' if required is None else required and 'Yes' or 'No',
-                    '?' if not_none is None else not_none and 'No' or 'Yes',
-                    '?' if type_ is None else type_,
-                    v
-                ))
+                for v in value:
+                    info = info or {}
+                    required = info.get('required')
+                    not_none = info.get('not_none')
+                    type_ = info.get('type')
+                    rows.append((
+                        k,
+                        '?' if required is None else required and 'Yes' or 'No',
+                        '?' if not_none is None else not_none and 'No' or 'Yes',
+                        '?' if type_ is None else type_,
+                        v
+                    ))
 
             formatter.write_table(
                 rows,

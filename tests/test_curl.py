@@ -7,7 +7,7 @@ def test_curl():
         url='example.com',
         query=dict(c=1),
         verb='POST',
-        form=dict(a=1),
+        form=dict(a=[1]),
         headers=['A: B'],
         content_type='text/plain',
         authorization='base64-encoded-jwt-token'

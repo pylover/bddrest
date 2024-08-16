@@ -181,24 +181,6 @@ class Call(metaclass=ABCMeta):
             self.validate()
             self.response = self.invoke(application)
 
-    def __repr__(self):
-        result = f'{self.verb} {self.url} HTTP/1.1'
-
-        if self.headers is not None:
-            header = [': '.join(h) for h in self.headers]
-            result = f'{result}\n{header}'
-
-        if self.body is not None:
-            result = f'{result}\n{self.body}'
-        elif self.form is not None:
-            result = f'{result}\n{self.form}'
-        elif self.json is not None:
-            result = f'{result}\n{self.json}'
-        elif self.multipart is not None:
-            result = f'{result}\n{self.multipart}'
-
-        return result
-
     @property
     @abstractmethod
     def verb(self) -> str:  # pragma: no cover

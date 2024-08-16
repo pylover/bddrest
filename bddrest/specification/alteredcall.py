@@ -206,7 +206,10 @@ class AlteredCall(Call):
 
     @form.setter
     def form(self, value):
-        self.update_diff('form', value)
+        self.update_diff(
+            'form',
+            value if value is UNCHANGED else querystring_parse(value)
+        )
 
     @form.deleter
     def form(self):

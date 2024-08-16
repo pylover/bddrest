@@ -146,7 +146,7 @@ class FirstCall(Call):
 
     @form.setter
     def form(self, value):
-        self._form = value
+        self._form = querystring_parse(value)
 
     @property
     def json(self):

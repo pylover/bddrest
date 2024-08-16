@@ -6,20 +6,22 @@ def wsgi_application(environ, start_response):
     start_response('200 OK', [
         ('Content-Type', 'text/plain;charset=utf-8'),
     ])
-    yield fp.read().decode('utf8')
+    clen = int(environ.get('CONTENT_LENGTH', 0))
+    yield str(clen)
+    if clen:
+        yield ' '
+        yield fp.read().decode('utf8')
 
 
-def test_append_form_field():
-    call = dict(
-        title='test raw request body',
-        verb='POST',
-        body=b'abcd'
-    )
-
-    with Given(wsgi_application, **call):
+def test_raw_requestbody():
+    with Given(wsgi_application, verb='POST'):
         assert status == 200
-        assert response.text == 'abcd'
+        assert response.text == '0'
 
         when('Another try!', body=b'1234')
         assert status == 200
-        assert response.text == '1234'
+        assert response.text == '4 1234'
+
+    with Given(wsgi_application, verb='POST', form='foobarbaz'):
+        assert status == 200
+        assert response.text == '10 foobarbaz='

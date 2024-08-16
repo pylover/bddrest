@@ -2,10 +2,10 @@ import abc
 import io
 import json as libjson
 import socket
-from urllib.parse import urlencode, unquote
+from urllib.parse import unquote
 
 import bddrest
-from .helpers import encode_multipart_data
+from .helpers import encode_multipart_data, querystring_encode
 from .response import Response
 
 
@@ -37,7 +37,7 @@ class Connector(metaclass=abc.ABCMeta):
                 content_length = len(body)
 
             elif isinstance(form, dict):
-                body = urlencode(form)
+                body = querystring_encode(form)
                 content_length = len(body)
                 content_type = 'application/x-www-form-urlencoded'
         else:

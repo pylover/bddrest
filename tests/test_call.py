@@ -127,7 +127,7 @@ def test_alteredcall_setters_deleters():
     assert '/apiv1/books/:isbn/pages/:page' == when.url
     assert dict(isbn='abc', page='3') == when.url_parameters
     assert dict(highlight=['false']) == when.query
-    assert dict(a='b') == when.form
+    assert dict(a=['b']) == when.form
     assert 'POST' == when.verb
     assert 'A' in when.headers
     assert 'text/plain' == when.content_type
@@ -189,16 +189,4 @@ def test_querystring_parser():
 def test_form_parser():
     pyload = dict(a=1, b=2)
     call = FirstCall(form=pyload)
-    assert call.form == pyload
-
-
-def test_call_repr():
-    pyload = dict(a=1)
-    json_form = json.dumps(pyload)
-    call = FirstCall(
-        url='/apiv1/books/isbn/pages/page',
-        form=json_form,
-    )
-
-    assert str(call) == \
-        f'GET /apiv1/books/isbn/pages/page HTTP/1.1\n{json_form}'
+    assert call.form == dict(a=[1], b=[2])

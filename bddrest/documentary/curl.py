@@ -40,8 +40,10 @@ class CURL:
     def form(self):
         form_parts = []
         if self._form:
-            for k, v in self._form.items():
-                form_parts.append(self.compile_argument('-F', f'"{k}={v}"'))
+            for k, value in self._form.items():
+                for v in value:
+                    form_parts.append(
+                        self.compile_argument('-F', f'"{k}={v}"'))
 
         return ' '.join(form_parts)
 

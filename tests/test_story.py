@@ -59,8 +59,8 @@ def test_given_when():
             b=2
         ),
         form=dict(
-            activationCode='746727',
-            phone='+9897654321'
+            activationCode=['746727'],
+            phone=['+9897654321']
         )
     )
     with Given(wsgi_application, **call) as s:
@@ -82,7 +82,7 @@ def test_given_when():
         when(
             'Trying invalid code',
             form=dict(
-                activationCode='badCode'
+                activationCode=['badCode']
             )
         )
 
@@ -112,8 +112,8 @@ def test_url_parameters():
         url='/apiv1/devices/name: SM 12345678/id: 1',
         verb='POST',
         form=dict(
-            activationCode='746727',
-            phone='+9897654321'
+            activationCode=['746727'],
+            phone=['+9897654321']
         ),
     )
 
@@ -164,8 +164,8 @@ def test_url_parameters():
         url='/apiv1/devices',
         verb='POST',
         form=dict(
-            activationCode='746727',
-            phone='+9897654321'
+            activationCode=['746727'],
+            phone=['+9897654321']
         ),
     )
 
@@ -181,8 +181,8 @@ def test_to_dict():
         verb='POST',
         as_='visitor',
         form=dict(
-            activationCode='746727',
-            phone='+9897654321'
+            activationCode=['746727'],
+            phone=['+9897654321']
         ),
         headers=[('X-H1', 'Header Value')]
     )
@@ -192,7 +192,7 @@ def test_to_dict():
             title='Trying invalid code',
             description='Awesome invalid code description',
             form=dict(
-                activationCode='badCode'
+                activationCode=['badCode']
             )
         )
         assert response.status == 400
@@ -206,8 +206,8 @@ def test_to_dict():
             as_='visitor',
             url_parameters=dict(name='SM-12345678'),
             form=dict(
-                activationCode='746727',
-                phone='+9897654321'
+                activationCode=['746727'],
+                phone=['+9897654321']
             ),
             headers=[
                 'X-H1: Header Value',
@@ -230,7 +230,7 @@ def test_to_dict():
             title='Trying invalid code',
             description='Awesome invalid code description',
             form=dict(
-                activationCode='badCode'
+                activationCode=['badCode']
             ),
             response=dict(
                 headers=['Content-Type: text/plain;utf-8'],
@@ -248,8 +248,8 @@ def test_from_dict():
             as_='visitor',
             url_parameters=dict(name='SM-12345678'),
             form=dict(
-                activationCode='746727',
-                phone='+9897654321'
+                activationCode=['746727'],
+                phone=['+9897654321']
             ),
             headers=['X-H1: Header Value'],
             response=dict(
@@ -265,7 +265,7 @@ def test_from_dict():
             dict(
                 title='Trying invalid code',
                 form=dict(
-                    activationCode='badCode'
+                    activationCode=['badCode']
                 ),
                 response=dict(
                     headers=['Content-Type: text/plain;utf-8'],
@@ -289,7 +289,7 @@ def test_dump_load():
         verb='POST',
         as_='visitor',
         form=dict(
-            activationCode='746727',
+            activationCode=['746727'],
             phone='+9897654321'
         ),
         headers=[('X-H1', 'Header Value')]
@@ -299,7 +299,7 @@ def test_dump_load():
         when(
             'Trying invalid code',
             form=dict(
-                activationCode='badCode'
+                activationCode=['badCode']
             )
         )
         assert response.status == 400
@@ -317,7 +317,7 @@ def test_verify():
         verb='POST',
         as_='visitor',
         form=dict(
-            activationCode='746727',
+            activationCode=['746727'],
             phone='+9897654321'
         ),
         headers=[('X-H1', 'Header Value')]
@@ -327,7 +327,7 @@ def test_verify():
         when(
             'Trying invalid code',
             form=dict(
-                activationCode='badCode'
+                activationCode=['badCode']
             )
         )
         dumped_story = story.dumps()
@@ -349,8 +349,8 @@ def test_dump_load_file():
             verb='POST',
             as_='visitor',
             form=dict(
-                activationCode='746727',
-                phone='+9897654321'
+                activationCode=['746727'],
+                phone=['+9897654321']
             ),
             headers=[('X-H1', 'Header Value')]
         )
@@ -359,7 +359,7 @@ def test_dump_load_file():
             when(
                 'Trying invalid code',
                 form=dict(
-                    activationCode='badCode'
+                    activationCode=['badCode']
                 )
             )
             story.dump(temp_file)
@@ -376,7 +376,7 @@ def test_url_overriding():
         verb='POST',
         form=dict(
             activationCode='746727',
-            phone='+9897654321'
+            phone=['+9897654321']
         ),
     )
 
