@@ -36,9 +36,9 @@ expected_markdown = '''\
 
 ### Multipart
 
-Name | Required | Nullable | Type | Example
---- | --- | --- | --- | ---
-a | ? | ? | ? | <File>
+Name | Required | Type | Example
+--- | --- | --- | ---
+a | ? | ? | <File>
 
 ### CURL
 

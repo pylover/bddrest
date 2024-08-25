@@ -21,5 +21,6 @@ class DocumentaryLauncher(SubCommand):
 
     def convert_file(self, source, outfile, format_):
         from ..authoring import Story
+
         story = Story.load(source)
-        story.document(outfile, format_=format_)
+        story.document(outfile, format=format_)

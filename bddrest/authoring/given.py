@@ -4,32 +4,23 @@ from .manipulation import Manipulator
 from .story import Story
 
 
-# TODO: add autodoc_format argumnet
-
-
 class Given(Story, Context):
     """
     :param application: A WSGI Application to examine.
     :param autodump: A file-like object to write dumped story.
                      Default is `None`, means autodump is disabled by default.
-    :param autodoc: A file-like object to write documentation.
-                    Default is `None`, meana autodoc is disabled by default.
-    :param autodoc_format: Either ``markdown`` or ``html``. default is
-                           ``markdown``.
-    :param fieldinfo: A callable(resource, verb, fieldname) to provide the
-                      field's metadata.
+    :param autodoc: A dictionary to pass to :class:`Documenter` and enable
+                    auto documentary.
 
 
     See :class:`Story` for other arguments.
     """
 
     def __init__(self, application, *args, autodump=None, autodoc=None,
-                 autodoc_format='markdown', fieldinfo=None, **kwargs):
+                 **kwargs):
         self.application = application
         self.autodump = autodump
         self.autodoc = autodoc
-        self.autodoc_format = autodoc_format
-        self.fieldinfo = fieldinfo
         base_call = FirstCall(*args, **kwargs)
         base_call.conclude(application)
         super().__init__(base_call)
@@ -71,11 +62,7 @@ class Given(Story, Context):
             self.dump(self.autodump)
 
         if self.autodoc:
-            self.document(
-                self.autodoc,
-                format_=self.autodoc_format,
-                fieldinfo=self.fieldinfo
-            )
+            self.document(**self.autodoc)
 
     @property
     def response(self):

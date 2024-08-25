@@ -5,9 +5,10 @@ from .formatters import create as createformatter
 
 
 class Documenter:
-    def __init__(self, format_, fieldinfo=None):
-        self.format_ = format_
-        self.fieldinfo = fieldinfo
+    def __init__(self, format='markdown', oncall=None, onfield=None):
+        self.format = format
+        self.oncall = oncall
+        self.onfield = onfield
 
     def write_response(self, formatter, response):
         formatter.write_header(f'Response: {response.status}', 3)
@@ -34,6 +35,9 @@ class Documenter:
         formatter.write_codeblock('bash', content)
 
     def write_call(self, basecall, call, formatter):
+
+        if self.oncall:
+            self.oncall(call)
 
         formatter.write_header(f'{call.verb} {call.url}', 3)
 
@@ -66,25 +70,23 @@ class Documenter:
             formatter.write_header('Form', 3)
             rows = []
             for k, value in call.form.items():
-                info = self.fieldinfo(call.url, call.verb, k) \
-                    if self.fieldinfo else None
+                info = self.onfield(call, k) if self.onfield else {}
+                if info is None:
+                    info = {}
 
                 for v in value:
-                    info = info or {}
                     needed = info.get('required')
-                    notnone = info.get('not_none')
                     type_ = info.get('type')
                     rows.append((
                         k,
                         '?' if needed is None else needed and 'Yes' or 'No',
-                        '?' if notnone is None else notnone and 'No' or 'Yes',
                         '?' if type_ is None else type_,
                         v
                     ))
 
             formatter.write_table(
                 rows,
-                headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
+                headers=('Name', 'Required', 'Type', 'Example')
             )
 
         if call.multipart \
@@ -92,24 +94,22 @@ class Documenter:
             formatter.write_header('Multipart', 3)
             rows = []
             for k, v in call.multipart.items():
-                info = self.fieldinfo(call.url, call.verb, k) \
-                    if self.fieldinfo else None
+                info = self.onfield(call, k) if self.onfield else {}
+                if info is None:
+                    info = {}
 
-                info = info or {}
                 required = info.get('required')
-                not_none = info.get('not_none')
                 type_ = info.get('type')
                 rows.append((
                     k,
                     '?' if required is None else required and 'Yes' or 'No',
-                    '?' if not_none is None else not_none and 'No' or 'Yes',
                     '?' if type_ is None else type_,
                     v if not isinstance(v, io.BytesIO) else '<File>',
                 ))
 
             formatter.write_table(
                 rows,
-                headers=('Name', 'Required', 'Nullable', 'Type', 'Example')
+                headers=('Name', 'Required', 'Type', 'Example')
             )
 
         if call.json and not isinstance(call.json, list) \
@@ -117,10 +117,7 @@ class Documenter:
             formatter.write_header('Form', 3)
             rows = []
             for k, v in call.json.items():
-                info = self.fieldinfo(call.url, call.verb, k) \
-                    if self.fieldinfo else None
-
-                info = info or {}
+                info = self.onfield(call, k) if self.onfield else {}
                 required = info.get('required')
                 not_none = info.get('not_none')
                 type_ = info.get('type')
@@ -149,7 +146,7 @@ class Documenter:
 
     def document(self, story, outfile):
         basecall = story.base_call
-        formatter = createformatter(self.format_, outfile)
+        formatter = createformatter(self.format, outfile)
         formatter.write_header(basecall.title.capitalize(), 2)
         self.write_call(None, basecall, formatter)
 

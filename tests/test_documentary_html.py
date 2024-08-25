@@ -5,14 +5,14 @@ from bddrest import Story
 
 def test_html():
 
-    def get_field_info(resource, verb, name):
+    def get_field_info(call, name):
         return dict(
             f1=dict(required=True, not_none=True, type='str'),
         ).get(name)
 
     story = Story.loads(provided_story)
     outfile = io.StringIO()
-    story.document(outfile, fieldinfo=get_field_info, format_='html')
+    story.document(outfile, onfield=get_field_info, format='html')
     outputstring = outfile.getvalue()
     assert expected_html == outputstring
 
@@ -131,9 +131,6 @@ Name
 Required
 </th>
 <th>
-Nullable
-</th>
-<th>
 Type
 </th>
 <th>
@@ -148,9 +145,6 @@ f1
 Yes
 </td>
 <td>
-No
-</td>
-<td>
 str
 </td>
 <td>
@@ -160,9 +154,6 @@ abc
 <tr>
 <td>
 f2
-</td>
-<td>
-?
 </td>
 <td>
 ?
@@ -277,9 +268,6 @@ Name
 Required
 </th>
 <th>
-Nullable
-</th>
-<th>
 Type
 </th>
 <th>
@@ -292,9 +280,6 @@ f1
 </td>
 <td>
 Yes
-</td>
-<td>
-No
 </td>
 <td>
 str

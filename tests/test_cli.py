@@ -68,9 +68,9 @@ a | b
 
 ### Form
 
-Name | Required | Nullable | Type | Example
---- | --- | --- | --- | ---
-name | ? | ? | ? | BDD Book
+Name | Required | Type | Example
+--- | --- | --- | ---
+name | ? | ? | BDD Book
 
 ### CURL
 

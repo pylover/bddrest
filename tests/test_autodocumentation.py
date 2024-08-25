@@ -14,7 +14,7 @@ def test_autodoc_file_object():
         wsgi_application,
         title='Testing auto documentation',
         url='/apiv1/devices/name: SM-12345678',
-        autodoc=file,
+        autodoc=dict(file=file),
     ):
         assert response.status == 200
 
