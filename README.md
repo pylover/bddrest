@@ -75,7 +75,7 @@ with Given(
 
     when(
         'Trying invalid book id',
-        url_parameters={'id': None}
+        path_parameters={'id': None}
     )
 
     assert response.status == 404
@@ -106,7 +106,7 @@ base_call:
     status: 200 OK
   title: Posting a book
   url: /books/:id
-  url_parameters:
+  path_parameters:
     id: '1'
   verb: GET
 calls:
@@ -115,7 +115,7 @@ calls:
     - 'Content-Type: text/plain;charset=utf-8'
     status: 404 Not Found
   title: Trying invalid book id
-  url_parameters:
+  path_parameters:
     id: None
 ```
 
@@ -160,7 +160,7 @@ bddrest document < story.yml > story.md
     
     As a member I have to POST a book to the library.
     
-    ### Url Parameters
+    ### Path Parameters
     
     Name | Example
     --- | ---
@@ -192,7 +192,7 @@ bddrest document < story.yml > story.md
     
     ## WHEN: Trying invalid book id
     
-    ### Url Parameters
+    ### Path Parameters
     
     Name | Example
     --- | ---

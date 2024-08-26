@@ -36,7 +36,7 @@ def test_curl_from_call():
     call = FirstCall(
         title='Testing creating CURL from call',
         url='/resources/:id',
-        url_parameters=dict(id='1'),
+        path_parameters=dict(id='1'),
         verb='POST',
         form=dict(a=1),
         content_type='text/plain',

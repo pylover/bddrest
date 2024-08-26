@@ -89,7 +89,7 @@ def test_given_when():
         assert response.status == 400
 
 
-def test_url_parameters_encoding():
+def test_path_parameters_encoding():
     def app(environ, start_response):
         start_response('200 OK', [
             ('Content-Type', 'text/plain'),
@@ -101,12 +101,12 @@ def test_url_parameters_encoding():
         assert response.status == 200
         assert response == '/foo bar'
 
-        when(url_parameters=given | dict(id='foo Bar'))
+        when(path_parameters=given | dict(id='foo Bar'))
         assert response.status == 200
         assert response == '/foo Bar'
 
 
-def test_url_parameters():
+def test_path_parameters():
     call = dict(
         title='Multiple url parameters',
         url='/apiv1/devices/name: SM 12345678/id: 1',
@@ -126,7 +126,7 @@ def test_url_parameters():
             'url': '/apiv1/devices/SM 12345678/1',
         }
 
-        when(url_parameters=given | dict(name='foo'))
+        when(path_parameters=given | dict(name='foo'))
         assert response.status == '200 OK'
         assert response.json == {
             'code': 745525,
@@ -138,7 +138,7 @@ def test_url_parameters():
         with pytest.raises(InvalidUrlParametersError):
             when(
                 title='Incomplete url parameters',
-                url_parameters=dict(
+                path_parameters=dict(
                     id=2
                 )
             )
@@ -146,7 +146,7 @@ def test_url_parameters():
         with pytest.raises(InvalidUrlParametersError):
             when(
                 title='Extra url parameters',
-                url_parameters=dict(
+                path_parameters=dict(
                     name='any',
                     id=3,
                     garbage='yes'
@@ -156,7 +156,7 @@ def test_url_parameters():
         with pytest.raises(InvalidUrlParametersError):
             when(
                 title='Without url parameters',
-                url_parameters=None
+                path_parameters=None
             )
 
     call = dict(
@@ -204,7 +204,7 @@ def test_to_dict():
             url='/apiv1/devices/:name',
             verb='POST',
             as_='visitor',
-            url_parameters=dict(name='SM-12345678'),
+            path_parameters=dict(name='SM-12345678'),
             form=dict(
                 activationCode=['746727'],
                 phone=['+9897654321']
@@ -246,7 +246,7 @@ def test_from_dict():
             url='/apiv1/devices/:name',
             verb='POST',
             as_='visitor',
-            url_parameters=dict(name='SM-12345678'),
+            path_parameters=dict(name='SM-12345678'),
             form=dict(
                 activationCode=['746727'],
                 phone=['+9897654321']
@@ -386,7 +386,7 @@ def test_url_overriding():
         modified_call = when(
             url='/apiv1/devices?a=b&c=d'
         )
-        assert modified_call.url_parameters is None
+        assert modified_call.path_parameters is None
         assert response.status == 200
         assert response.json['query'] == 'a=b&c=d'
 

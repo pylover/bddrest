@@ -31,15 +31,15 @@ def wsgi_application(environ, start_response):
 def test_call_constructor():
     call = FirstCall(url='/id: 1')
     assert call.url == '/:id'
-    assert call.url_parameters == dict(id='1')
+    assert call.path_parameters == dict(id='1')
 
     call = FirstCall(
         url='/id: 1/:name',
-        url_parameters=dict(name='foo', id=2)
+        path_parameters=dict(name='foo', id=2)
     )
     call.validate()
     assert call.url == '/:id/:name'
-    assert call.url_parameters == dict(id='2', name='foo')
+    assert call.path_parameters == dict(id='2', name='foo')
     call.conclude(wsgi_application)
     assert '/2/foo' == call.response.json['url']
 
@@ -74,7 +74,7 @@ def test_call_to_dict():
         title='Testing Call to_dict',
         query=dict(a=['1']),
         url='/:id',
-        url_parameters={'id': '1'},
+        path_parameters={'id': '1'},
         verb='GET',
         response=dict(
             json={'query': 'a=1', 'url': '/1'},
@@ -125,14 +125,14 @@ def test_alteredcall_setters_deleters():
         extra_environ=dict(A='B')
     )
     assert '/apiv1/books/:isbn/pages/:page' == when.url
-    assert dict(isbn='abc', page='3') == when.url_parameters
+    assert dict(isbn='abc', page='3') == when.path_parameters
     assert dict(highlight=['false']) == when.query
     assert dict(a=['b']) == when.form
     assert 'POST' == when.verb
     assert 'A' in when.headers
     assert 'text/plain' == when.content_type
     assert 'Admin' == when.as_
-    del when.url_parameters
+    del when.path_parameters
     del when.verb
     del when.headers
     del when.query
@@ -141,7 +141,7 @@ def test_alteredcall_setters_deleters():
     del when.extra_environ
     del when.form
 
-    assert dict(id='1') == when.url_parameters
+    assert dict(id='1') == when.path_parameters
     assert 'GET' == when.verb
     assert when.headers is None
     assert when.query is None

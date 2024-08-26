@@ -35,7 +35,7 @@ with Given(
 
     when(
         'Trying invalid book id',
-        url_parameters={'id': None}
+        path_parameters={'id': None}
     )
 
     assert response.status == 404

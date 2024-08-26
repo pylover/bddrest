@@ -34,7 +34,7 @@ base_call:
     status: 200 OK
   title: Posting a book
   url: /books/:id
-  url_parameters:
+  path_parameters:
     id: '1'
   verb: GET
 calls:
@@ -43,7 +43,7 @@ calls:
     - 'Content-Type: text/plain;charset=utf-8'
     status: 404 Not Found
   title: Trying invalid book id
-  url_parameters:
+  path_parameters:
     id: None
 '''
 
@@ -54,7 +54,7 @@ expected_markdown = '''\
 
 As a member I have to POST a book to the library.
 
-### Url Parameters
+### Path Parameters
 
 Name | Example
 --- | ---
@@ -94,7 +94,7 @@ Content-Type: application/json
 
 ### GET /books/:id
 
-### Url Parameters
+### Path Parameters
 
 Name | Example
 --- | ---

@@ -29,8 +29,8 @@ class Call(metaclass=ABCMeta):
             url=self.url,
             verb=self.verb,
         )
-        if self.url_parameters is not None:
-            result['url_parameters'] = self.url_parameters
+        if self.path_parameters is not None:
+            result['path_parameters'] = self.path_parameters
 
         if self.body is not None:
             # Raw data
@@ -62,17 +62,17 @@ class Call(metaclass=ABCMeta):
 
         return result
 
-    def validate_url_parameters(self):
+    def validate_path_parameters(self):
         # i[1:].strip() for i in re.findall(r':[ \w]+', self.url))
         required_parameters = set(
             i[1:] for i in re.findall(
                 fr':\s?{URL_PARAMETER_VALUE_PATTERN}', self.url)
         )
 
-        if not required_parameters and self.url_parameters is None:
+        if not required_parameters and self.path_parameters is None:
             return
 
-        given_parameters = set(self.url_parameters or [])
+        given_parameters = set(self.path_parameters or [])
 
         if given_parameters != required_parameters:
             raise InvalidUrlParametersError(
@@ -80,16 +80,16 @@ class Call(metaclass=ABCMeta):
                 given_parameters
             )
 
-        for k, v in self.url_parameters.items():
+        for k, v in self.path_parameters.items():
             if not isinstance(v, str):
-                self.url_parameters[k] = str(v)
+                self.path_parameters[k] = str(v)
 
     def validate(self):
-        self.validate_url_parameters()
+        self.validate_path_parameters()
 
     @staticmethod
-    def extract_url_parameters(url):
-        url_parameters = {}
+    def extract_path_parameters(url):
+        path_parameters = {}
         query = None
         parsedurl = urlparse(url)
 
@@ -103,13 +103,13 @@ class Call(metaclass=ABCMeta):
         url = parsedurl.path
         if URL_PARAMETER_PATTERN.search(url):
             for k, v in URL_PARAMETER_PATTERN.findall(url):
-                url_parameters[k] = v
+                path_parameters[k] = v
                 url = re.sub(
                     rf'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', rf':{k}',
                     url
                 )
 
-        return url, url_parameters if url_parameters else None, query
+        return url, path_parameters if path_parameters else None, query
 
     def add_header_if_not_exists(self, headers, key, value):
         for k, v in headers:
@@ -119,8 +119,8 @@ class Call(metaclass=ABCMeta):
 
     def invoke(self, application) -> Response:
         url = self.url
-        if self.url_parameters:
-            for k, v in self.url_parameters.items():
+        if self.path_parameters:
+            for k, v in self.path_parameters.items():
                 url = url.replace(f':{k}', str(v))
 
         url = f'{url}?{querystring_encode(self.query)}' if self.query else url
@@ -203,12 +203,12 @@ class Call(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def url_parameters(self) -> dict:  # pragma: no cover
+    def path_parameters(self) -> dict:  # pragma: no cover
         pass
 
-    @url_parameters.setter
+    @path_parameters.setter
     @abstractmethod
-    def url_parameters(self, value):  # pragma: no cover
+    def path_parameters(self, value):  # pragma: no cover
         pass
 
     @property

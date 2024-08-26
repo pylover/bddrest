@@ -7,7 +7,7 @@ class FirstCall(Call):
 
     _headers = None
     _url = None
-    _url_parameters = None
+    _path_parameters = None
     _verb = None
     _query = None
     _form = None
@@ -23,7 +23,7 @@ class FirstCall(Call):
 
     _body = None
 
-    def __init__(self, url='/', verb='GET', url_parameters=None, form=None,
+    def __init__(self, url='/', verb='GET', path_parameters=None, form=None,
                  json=None, multipart=None, content_type=None, headers=None,
                  as_=None, query=None, title=None, description=None,
                  extra_environ=None, response=None,
@@ -36,10 +36,10 @@ class FirstCall(Call):
         )
 
         self.url = url
-        # the `url_parameters` and `query` attributes may be set by the url
+        # the `path_parameters` and `query` attributes may be set by the url
         # setter. so we're not going to override them anyway.
-        if url_parameters is not None:
-            self.url_parameters = url_parameters
+        if path_parameters is not None:
+            self.path_parameters = path_parameters
 
         if query is not None:
             self.query = query
@@ -65,16 +65,16 @@ class FirstCall(Call):
 
     @url.setter
     def url(self, value):
-        self._url, self.url_parameters, self.query = \
-            self.extract_url_parameters(value)
+        self._url, self.path_parameters, self.query = \
+            self.extract_path_parameters(value)
 
     @property
-    def url_parameters(self):
-        return self._url_parameters
+    def path_parameters(self):
+        return self._path_parameters
 
-    @url_parameters.setter
-    def url_parameters(self, value):
-        self._url_parameters = value
+    @path_parameters.setter
+    def path_parameters(self, value):
+        self._path_parameters = value
 
     @property
     def verb(self):

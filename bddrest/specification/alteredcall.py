@@ -12,7 +12,7 @@ UNCHANGED = Unchanged()
 
 class AlteredCall(Call):
     def __init__(self, base_call, url=UNCHANGED, verb=UNCHANGED,
-                 url_parameters=UNCHANGED, form=UNCHANGED, json=UNCHANGED,
+                 path_parameters=UNCHANGED, form=UNCHANGED, json=UNCHANGED,
                  multipart=UNCHANGED, content_type=UNCHANGED,
                  headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED, title=None,
                  description=None, extra_environ=UNCHANGED,
@@ -27,8 +27,8 @@ class AlteredCall(Call):
         )
 
         self.url = url
-        if url_parameters is not UNCHANGED:
-            self.url_parameters = url_parameters
+        if path_parameters is not UNCHANGED:
+            self.path_parameters = path_parameters
 
         if query is not UNCHANGED:
             self.query = query
@@ -80,23 +80,23 @@ class AlteredCall(Call):
             self.diff.pop('url', None)
             return
 
-        url, url_parameters, query = self.extract_url_parameters(value)
+        url, path_parameters, query = self.extract_path_parameters(value)
         if url and url != self.base_call.url:
             self.diff['url'] = url
-            self.url_parameters = url_parameters
+            self.path_parameters = path_parameters
             self.query = query
 
     @property
-    def url_parameters(self):
-        return self.diff.get('url_parameters', self.base_call.url_parameters)
+    def path_parameters(self):
+        return self.diff.get('path_parameters', self.base_call.path_parameters)
 
-    @url_parameters.setter
-    def url_parameters(self, value):
-        self.update_diff('url_parameters', value)
+    @path_parameters.setter
+    def path_parameters(self, value):
+        self.update_diff('path_parameters', value)
 
-    @url_parameters.deleter
-    def url_parameters(self):
-        del self.diff['url_parameters']
+    @path_parameters.deleter
+    def path_parameters(self):
+        del self.diff['path_parameters']
 
     @property
     def verb(self):

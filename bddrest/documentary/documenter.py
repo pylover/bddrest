@@ -40,12 +40,12 @@ class Documenter:
         if call.description:
             formatter.write_paragraph(call.description)
 
-        if call.url_parameters \
+        if call.path_parameters \
                 and (basecall is None
-                     or call.url_parameters != basecall.url_parameters):
-            formatter.write_header('Url Parameters', 3)
+                     or call.path_parameters != basecall.path_parameters):
+            formatter.write_header('Path Parameters', 3)
             formatter.write_table(
-                call.url_parameters.items(),
+                call.path_parameters.items(),
                 headers=('Name', 'Example')
             )
 

@@ -27,7 +27,7 @@ provided_story = '''
       title: Quickstart!
       description: Awesome API!
       url: /books/:id
-      url_parameters:
+      path_parameters:
         id: '1'
       query:
         a: 1
@@ -51,7 +51,7 @@ provided_story = '''
         status: 404 Not Found
       title: Trying invalid book id
       description: trying an invalid book id.
-      url_parameters:
+      path_parameters:
         id: None
       query:
         a: 2
@@ -74,7 +74,7 @@ PUT /books/:id
 Awesome API!
 </p>
 <h3>
-Url Parameters
+Path Parameters
 </h3>
 <table>
 <tr>
@@ -211,7 +211,7 @@ PUT /books/:id
 trying an invalid book id.
 </p>
 <h3>
-Url Parameters
+Path Parameters
 </h3>
 <table>
 <tr>

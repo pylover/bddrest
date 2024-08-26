@@ -114,7 +114,7 @@ class CURL:
     @classmethod
     def from_call(cls, call):
         return cls(
-            url=cls.serialize_url(call.url, call.url_parameters),
+            url=cls.serialize_url(call.url, call.path_parameters),
             query=call.query,
             form=call.form,
             verb=call.verb,
@@ -126,12 +126,12 @@ class CURL:
         )
 
     @classmethod
-    def serialize_url(cls, url, url_parameters):
+    def serialize_url(cls, url, path_parameters):
         path_part = []
 
         for part in url.split('/'):
             if part.startswith(':'):
-                part = url_parameters[part[1:]]
+                part = path_parameters[part[1:]]
 
             path_part.append(part)
 
