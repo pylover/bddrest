@@ -1,7 +1,0 @@
-build
-setuptools
-coverage
-coveralls
-pytest-cov
-bddcli >= 2.4, < 3
-flake8

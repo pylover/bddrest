@@ -1,86 +1,19 @@
-HERE = $(shell readlink -f `dirname .`)
-PKG = $(shell basename $(HERE))
-VENVPATH ?= $(HOME)/.virtualenvs/$(PKG)
-PYTEST_FLAGS = -vvv
-TEST_DIR = tests
-PY ?= $(VENVPATH)/bin/python3
-PIP ?= $(VENVPATH)/bin/pip3
-PYTEST ?= $(VENVPATH)/bin/pytest
-COVERAGE ?= $(VENVPATH)/bin/coverage
-FLAKE8 ?= $(VENVPATH)/bin/flake8
-TWINE ?= $(VENVPATH)/bin/twine
+PYDEPS_COMMON += \
+	'coveralls' \
+	'bddcli >= 2.5.1, < 3'
 
 
-ifdef F
-  TEST_FILTER = $(F)
-else
-  TEST_FILTER = $(TEST_DIR)
+# Assert the python-makelib version
+PYTHON_MAKELIB_VERSION_REQUIRED = 1.5.2
+
+
+# Ensure the python-makelib is installed
+PYTHON_MAKELIB_PATH = /usr/local/lib/python-makelib
+ifeq ("", "$(wildcard $(PYTHON_MAKELIB_PATH))")
+  MAKELIB_URL = https://github.com/pylover/python-makelib
+  $(error python-makelib is not installed. see "$(MAKELIB_URL)")
 endif
 
 
-.PHONY: test
-test:
-	$(PYTEST) $(PYTEST_FLAGS) $(TEST_FILTER)
-
-
-.PHONY: cover
-cover:
-	$(PYTEST) $(PYTEST_FLAGS) --cov=$(PKG) $(TEST_FILTER)
-
-
-.PHONY: cover-html
-cover-html: cover
-	$(COVERAGE) html
-	@echo "Browse htmlcov/index.html for the covearge report"
-
-
-.PHONY: lint
-lint:
-	$(FLAKE8)
-
-
-.PHONY: venv
-venv:
-	python3 -m venv $(VENV)
-
-
-.PHONY: env
-env:
-	$(PIP) install -r requirements-dev.txt
-	$(PIP) install -e .
-
-
-.PHONY: env-ci
-env-ci:
-	$(PIP) install -r requirements-ci.txt
-	$(PIP) install -e .
-
-
-.PHONY: venv-delete
-venv-delete: clean
-	rm -rf $(VENV)
-
-
-.PHONY: sdist
-sdist:
-	$(PY) -m build --sdist
-
-
-.PHONY: bdist
-wheel:
-	$(PY) -m build --wheel
-
-
-.PHONY: dist
-dist: sdist wheel
-
-
-.PHONY: pypi
-pypi: dist
-	$(TWINE) upload dist/*.gz dist/*.whl
-
-
-.PHONY: clean
-clean:
-	rm -rf dist/*
-	rm -rf build/*
+# Include a proper bundle rule file.
+include $(PYTHON_MAKELIB_PATH)/venv-lint-test-doc-pypi.mk

@@ -16,21 +16,37 @@ jobs:
       matrix:
         python-version: ['3.10', '3.11', '3.12']
     env:
-      VENVPATH: /usr 
+      PREFIX: /usr 
       FLAKE8: flake8
       PYTEST: pytest
       COVERAGE: coverage
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
-      run: make env-ci
-    - name: Lint with Flake8
+      run: |
+        sudo git clone https://github.com/pylover/python-makelib.git /usr/local/lib/python-makelib
+        make install-common editable-install
+        sudo cp `which bddcli-bootstrapper` /usr/local/bin
+    - name: Lint
       run: make lint
-    - name: Test with pytest
+    - name: Test
       run: make cover
     - name: Coveralls
       run: coveralls
@@ -43,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
     - name: Install dependencies
       run: python -m pip install coveralls
     - name: Coveralls Finished
@@ -58,7 +74,7 @@ jobs:
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1

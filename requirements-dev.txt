@@ -1,5 +1,0 @@
--r requirements-ci.txt
-pytest-pudb
-ipython
-ropevim
-twine
