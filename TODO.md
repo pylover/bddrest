@@ -1,1 +1,2 @@
 - write parameters table once at the base call.
+- do not print out table of json forms, just print the object instead.

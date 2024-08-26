@@ -5,14 +5,14 @@ from bddrest import Story
 
 def test_markdown():
 
-    def get_field_info(call, name):
-        return dict(
+    def get_field_info(call):
+        return dict(), dict(
             f1=dict(required=True, not_none=True, type='str'),
-        ).get(name)
+        )
 
     story = Story.loads(provided_story)
     outfile = io.StringIO()
-    story.document(onfile=lambda _: outfile, onfield=get_field_info)
+    story.document(onfile=lambda _: outfile, onstory=get_field_info)
     outputstring = outfile.getvalue()
     assert expected_markdown == outputstring
 

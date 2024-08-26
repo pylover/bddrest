@@ -5,10 +5,10 @@ from .formatters import create as createformatter
 
 
 class Documenter:
-    def __init__(self, onfile, format='markdown', onfield=None):
+    def __init__(self, onfile, format='markdown', onstory=None):
         self.format = format
         self.onfile = onfile
-        self.onfield = onfield
+        self.onstory = onstory
 
     def write_response(self, formatter, response):
         formatter.write_header(f'Response: {response.status}', 3)
@@ -36,6 +36,12 @@ class Documenter:
 
     def write_call(self, basecall, call, formatter):
         formatter.write_header(f'{call.verb} {call.url}', 3)
+
+        if self.onstory:
+            queryinfo, fieldsinfo = self.onstory(basecall)
+        else:
+            queryinfo = {}
+            fieldsinfo = {}
 
         if call.description:
             formatter.write_paragraph(call.description)
@@ -66,7 +72,7 @@ class Documenter:
             formatter.write_header('Form', 3)
             rows = []
             for k, value in call.form.items():
-                info = self.onfield(call, k) if self.onfield else {}
+                info = fieldsinfo.get(k, {})
                 if info is None:
                     info = {}
 
@@ -90,7 +96,7 @@ class Documenter:
             formatter.write_header('Multipart', 3)
             rows = []
             for k, v in call.multipart.items():
-                info = self.onfield(call, k) if self.onfield else {}
+                info = fieldsinfo.get(k, {})
                 if info is None:
                     info = {}
 
@@ -113,14 +119,14 @@ class Documenter:
             formatter.write_header('Form', 3)
             rows = []
             for k, v in call.json.items():
-                info = self.onfield(call, k) if self.onfield else {}
+                info = fieldsinfo.get(k, {})
                 required = info.get('required')
-                not_none = info.get('not_none')
+                notnone = info.get('notnone')
                 type_ = info.get('type')
                 rows.append((
                     k,
                     '?' if required is None else required and 'Yes' or 'No',
-                    '?' if not_none is None else not_none and 'No' or 'Yes',
+                    '?' if notnone is None else notnone and 'No' or 'Yes',
                     '?' if type_ is None else type_,
                     v
                 ))
