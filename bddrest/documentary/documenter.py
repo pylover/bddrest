@@ -38,9 +38,8 @@ class Documenter:
         formatter.write_header(f'{call.verb} {call.url}', 3)
 
         if self.onstory:
-            queryinfo, fieldsinfo = self.onstory(basecall)
+            _, fieldsinfo = self.onstory(basecall)
         else:
-            queryinfo = {}
             fieldsinfo = {}
 
         if call.description:
