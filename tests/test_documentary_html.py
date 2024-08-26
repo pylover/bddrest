@@ -12,7 +12,11 @@ def test_html():
 
     story = Story.loads(provided_story)
     outfile = io.StringIO()
-    story.document(outfile, onfield=get_field_info, format='html')
+    story.document(
+        onfile=lambda _: outfile,
+        onfield=get_field_info,
+        format='html'
+    )
     outputstring = outfile.getvalue()
     assert expected_html == outputstring
 

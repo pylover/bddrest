@@ -5,9 +5,9 @@ from .formatters import create as createformatter
 
 
 class Documenter:
-    def __init__(self, format='markdown', oncall=None, onfield=None):
+    def __init__(self, onfile, format='markdown', onfield=None):
         self.format = format
-        self.oncall = oncall
+        self.onfile = onfile
         self.onfield = onfield
 
     def write_response(self, formatter, response):
@@ -35,10 +35,6 @@ class Documenter:
         formatter.write_codeblock('bash', content)
 
     def write_call(self, basecall, call, formatter):
-
-        if self.oncall:
-            self.oncall(call)
-
         formatter.write_header(f'{call.verb} {call.url}', 3)
 
         if call.description:
@@ -144,8 +140,9 @@ class Documenter:
         if call.response:
             self.write_response(formatter, call.response)
 
-    def document(self, story, outfile):
+    def document(self, story):
         basecall = story.base_call
+        outfile = self.onfile(story)
         formatter = createformatter(self.format, outfile)
         formatter.write_header(basecall.title.capitalize(), 2)
         self.write_call(None, basecall, formatter)

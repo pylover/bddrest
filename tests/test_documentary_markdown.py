@@ -12,7 +12,7 @@ def test_markdown():
 
     story = Story.loads(provided_story)
     outfile = io.StringIO()
-    story.document(outfile, onfield=get_field_info)
+    story.document(onfile=lambda _: outfile, onfield=get_field_info)
     outputstring = outfile.getvalue()
     assert expected_markdown == outputstring
 

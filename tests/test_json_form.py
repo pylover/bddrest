@@ -96,7 +96,7 @@ def test_autodocument_json():
         assert 'json' in story_dict['base_call']
 
         outfile = io.StringIO()
-        story.document(outfile)
+        story.document(onfile=lambda _: outfile)
         outputstring = outfile.getvalue()
         assert 'Form' in outputstring
         assert expected_markdown == outputstring

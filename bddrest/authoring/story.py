@@ -64,9 +64,9 @@ class Story:
         for call in self.calls:
             call.validate()
 
-    def document(self, file, **kwargs):
+    def document(self, **kwargs):
         documenter = Documenter(**kwargs)
-        documenter.document(self, file)
+        documenter.document(self)
 
     @property
     def title(self):

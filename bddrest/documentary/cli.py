@@ -23,4 +23,4 @@ class DocumentaryLauncher(SubCommand):
         from ..authoring import Story
 
         story = Story.load(source)
-        story.document(outfile, format=format_)
+        story.document(onfile=lambda _: outfile, format=format_)

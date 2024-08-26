@@ -75,7 +75,7 @@ def test_upload_binary_file():
         assert 'multipart' in story_dict['base_call']
 
         outfile = io.StringIO()
-        story.document(outfile)
+        story.document(onfile=lambda _: outfile)
         outputstring = outfile.getvalue()
         assert 'Multipart' in outputstring
         assert expected_markdown == outputstring
