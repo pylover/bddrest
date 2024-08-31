@@ -2,6 +2,7 @@ import io
 
 from .curl import CURL
 from .formatters import create as createformatter
+from .helpers import loststr
 
 
 class Documenter:
@@ -138,7 +139,7 @@ class Documenter:
         if call.headers \
                 and (basecall is None or call.headers != basecall.headers):
             formatter.write_header('Request Headers', 3)
-            formatter.write_list(f'{k}: {v}' for k, v in call.headers)
+            formatter.write_list(f'{k}: {loststr(v)}' for k, v in call.headers)
 
         self.write_curl(formatter, CURL.from_call(call))
 

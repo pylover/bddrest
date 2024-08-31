@@ -2,6 +2,7 @@ import io
 import json
 
 from ..helpers import querystring_encode
+from .helpers import loststr
 
 
 class CURL:
@@ -120,7 +121,7 @@ class CURL:
             verb=call.verb,
             content_type=call.content_type,
             authorization=call.authorization,
-            headers=[f'{k}: {v}' for k, v in call.headers or []],
+            headers=[f'{k}: {loststr(v)}' for k, v in call.headers or []],
             multipart=call.multipart,
             json=call.json,
         )
