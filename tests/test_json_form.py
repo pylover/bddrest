@@ -72,7 +72,11 @@ curl -X POST --data '{"a": 1, "b": null, "c": false}' -- "$URL/"
 Content-Type: application/json
 
 ```json
-{"a": 1, "b": null, "c": false}
+{
+  "a": 1,
+  "b": null,
+  "c": false
+}
 ```
 
 '''

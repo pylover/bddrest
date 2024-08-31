@@ -1,3 +1,4 @@
+PYTEST_FLAGS = -vv
 PYDEPS_COMMON += \
 	'coveralls' \
 	'bddcli >= 2.5.1, < 3'

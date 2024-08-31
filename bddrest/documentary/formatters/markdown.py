@@ -1,3 +1,5 @@
+import json
+
 from .base import Formatter
 
 
@@ -32,6 +34,11 @@ class MarkdownFormatter(Formatter):
         self.writeline()
 
     def write_codeblock(self, language, codeblock):  # pragma: no cover
+        # formatt
+        if language == 'json':
+            j = json.loads(codeblock)
+            codeblock = json.dumps(j, indent=2)
+
         self.writeline(
             f'```{language}{self.cr}{codeblock}{self.cr}```{self.cr}'
         )

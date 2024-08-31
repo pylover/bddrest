@@ -85,7 +85,9 @@ curl -F "name=BDD Book" -- "$URL/books/1?a=b"
 Content-Type: application/json
 
 ```json
-{"foo": "bar"}
+{
+  "foo": "bar"
+}
 ```
 
 ---

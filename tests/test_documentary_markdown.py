@@ -103,7 +103,9 @@ curl -X PUT -F "f1=abc" -F "f2=123" -H "Content-Type: application/json;charset=u
 Content-Type: application/json
 
 ```json
-{"foo": "bar"}
+{
+  "foo": "bar"
+}
 ```
 
 ---
