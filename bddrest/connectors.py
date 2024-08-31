@@ -21,7 +21,7 @@ class WSGIResponse(Response):
 
 
 class Connector(metaclass=abc.ABCMeta):
-    def request(self, verb='GET', url='/', form=None, multipart=None,
+    def request(self, verb='GET', path='/', form=None, multipart=None,
                 json=None, environ=None, headers=None, body=None,
                 content_type=None, content_length=None, **kw):
         headers = headers or []
@@ -53,10 +53,10 @@ class Connector(metaclass=abc.ABCMeta):
         if content_length is not None:
             headers.append(('Content-Length', str(content_length)))
 
-        return self._send_request(verb, url, environ, headers, body, **kw)
+        return self._send_request(verb, path, environ, headers, body, **kw)
 
     @abc.abstractmethod
-    def _send_request(self, verb, url, environ, headers, body=None, **kw):
+    def _send_request(self, verb, path, environ, headers, body=None, **kw):
         pass
 
 
@@ -65,7 +65,7 @@ class WSGIConnector(Connector):
         self.application = application
         self.environ = environ
 
-    def _prepare_environ(self, verb, url, headers, payload=None,
+    def _prepare_environ(self, verb, path, headers, payload=None,
                          extra_environ=None, https=False):
         if isinstance(payload, io.BytesIO):
             input_file = payload
@@ -95,11 +95,11 @@ class WSGIConnector(Connector):
         if https:
             environ['HTTPS'] = 'yes'
 
-        if '?' in url:
-            url, query = url.split('?', 1)
+        if '?' in path:
+            path, query = path.split('?', 1)
             environ['QUERY_STRING'] = query
 
-        environ['PATH_INFO'] = unquote(url, 'iso-8859-1')
+        environ['PATH_INFO'] = unquote(path, 'iso-8859-1')
 
         if extra_environ:
             environ.update(extra_environ)
@@ -112,9 +112,9 @@ class WSGIConnector(Connector):
 
         return environ
 
-    def _send_request(self, verb, url, environ, headers, body=None,
+    def _send_request(self, verb, path, environ, headers, body=None,
                       https=False, **kw):
-        environ_ = self._prepare_environ(verb, url, headers, body, environ,
+        environ_ = self._prepare_environ(verb, path, headers, body, environ,
                                          https)
         response = None
 

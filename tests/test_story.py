@@ -35,7 +35,7 @@ def wsgi_application(environ, start_response):
         secret='ABCDEF',
         code=code,
         query=environ.get('QUERY_STRING'),
-        url=environ.get('PATH_INFO')
+        path=environ.get('PATH_INFO')
     )
 
     identity = environ.get('HTTP_AUTHORIZATION')
@@ -51,7 +51,7 @@ def test_given_when():
               'activation code',
         description='As a new visitor I have to bind my device with '
                     'activation code and phone number',
-        url='/apiv1/devices/name: SM-12345678',
+        path='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
         query=dict(
@@ -76,7 +76,7 @@ def test_given_when():
             code=745525,
             secret='ABCDEF',
             query='a=1&b=2',
-            url='/apiv1/devices/SM-12345678'
+            path='/apiv1/devices/SM-12345678'
         )
 
         when(
@@ -94,8 +94,8 @@ def test_path_parameters_encoding():
         start_response('200 OK', [
             ('Content-Type', 'text/plain'),
         ])
-        url = environ.get('PATH_INFO')
-        return [url]
+        path = environ.get('PATH_INFO')
+        return [path]
 
     with Given(app, '/id: foo%20bar'):
         assert response.status == 200
@@ -108,8 +108,8 @@ def test_path_parameters_encoding():
 
 def test_path_parameters():
     call = dict(
-        title='Multiple url parameters',
-        url='/apiv1/devices/name: SM 12345678/id: 1',
+        title='Multiple path parameters',
+        path='/apiv1/devices/name: SM 12345678/id: 1',
         verb='POST',
         form=dict(
             activationCode=['746727'],
@@ -123,7 +123,7 @@ def test_path_parameters():
             'code': 745525,
             'query': None,
             'secret': 'ABCDEF',
-            'url': '/apiv1/devices/SM 12345678/1',
+            'path': '/apiv1/devices/SM 12345678/1',
         }
 
         when(path_parameters=given | dict(name='foo'))
@@ -132,12 +132,12 @@ def test_path_parameters():
             'code': 745525,
             'query': None,
             'secret': 'ABCDEF',
-            'url': '/apiv1/devices/foo/1',
+            'path': '/apiv1/devices/foo/1',
         }
 
         with pytest.raises(InvalidUrlParametersError):
             when(
-                title='Incomplete url parameters',
+                title='Incomplete path parameters',
                 path_parameters=dict(
                     id=2
                 )
@@ -145,7 +145,7 @@ def test_path_parameters():
 
         with pytest.raises(InvalidUrlParametersError):
             when(
-                title='Extra url parameters',
+                title='Extra path parameters',
                 path_parameters=dict(
                     name='any',
                     id=3,
@@ -155,13 +155,13 @@ def test_path_parameters():
 
         with pytest.raises(InvalidUrlParametersError):
             when(
-                title='Without url parameters',
+                title='Without path parameters',
                 path_parameters=None
             )
 
     call = dict(
-        title='No url parameters',
-        url='/apiv1/devices',
+        title='No path parameters',
+        path='/apiv1/devices',
         verb='POST',
         form=dict(
             activationCode=['746727'],
@@ -177,7 +177,7 @@ def test_to_dict():
     call = dict(
         title='Binding',
         description='Awesome given description',
-        url='/apiv1/devices/name: SM-12345678',
+        path='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
         form=dict(
@@ -201,7 +201,7 @@ def test_to_dict():
         assert story_dict['base_call'] == dict(
             title='Binding',
             description='Awesome given description',
-            url='/apiv1/devices/:name',
+            path='/apiv1/devices/:name',
             verb='POST',
             as_='visitor',
             path_parameters=dict(name='SM-12345678'),
@@ -222,7 +222,7 @@ def test_to_dict():
                     'secret': 'ABCDEF',
                     'code': 745525,
                     'query': None,
-                    'url': '/apiv1/devices/SM-12345678'
+                    'path': '/apiv1/devices/SM-12345678'
                 }
             )
         )
@@ -243,7 +243,7 @@ def test_from_dict():
     data = dict(
         base_call=dict(
             title='Binding',
-            url='/apiv1/devices/:name',
+            path='/apiv1/devices/:name',
             verb='POST',
             as_='visitor',
             path_parameters=dict(name='SM-12345678'),
@@ -285,7 +285,7 @@ def test_from_dict():
 def test_dump_load():
     call = dict(
         title='Binding',
-        url='/apiv1/devices/name: SM-12345678',
+        path='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
         form=dict(
@@ -313,7 +313,7 @@ def test_dump_load():
 def test_verify():
     call = dict(
         title='Binding',
-        url='/apiv1/devices/name: SM-12345678',
+        path='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
         form=dict(
@@ -345,7 +345,7 @@ def test_dump_load_file():
     with tempfile.TemporaryFile(mode='w+', encoding='utf-8') as temp_file:
         call = dict(
             title='Binding',
-            url='/apiv1/devices/name: SM-12345678',
+            path='/apiv1/devices/name: SM-12345678',
             verb='POST',
             as_='visitor',
             form=dict(
@@ -369,10 +369,10 @@ def test_dump_load_file():
         assert loaded_story.verify(wsgi_application) is None
 
 
-def test_url_overriding():
+def test_path_overriding():
     call = dict(
-        title='Multiple url parameters',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
+        title='Multiple path parameters',
+        path='/apiv1/devices/name: SM-12345678/id: 1',
         verb='POST',
         form=dict(
             activationCode='746727',
@@ -384,7 +384,7 @@ def test_url_overriding():
         assert response.status == '200 OK'
 
         modified_call = when(
-            url='/apiv1/devices?a=b&c=d'
+            path='/apiv1/devices?a=b&c=d'
         )
         assert modified_call.path_parameters is None
         assert response.status == 200
@@ -405,7 +405,7 @@ def test_authorization():
 
     with Given(
         wsgi_application, title='Testing authorization header',
-        url='/',
+        path='/',
         authorization='testuser'
     ):
         assert response.json['identity'] == 'testuser'

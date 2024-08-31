@@ -22,7 +22,7 @@ provided_story = '''
       as_: visitor
       title: Quickstart!
       description: Awesome API!
-      url: /books/:id
+      path: /books/:id
       path_parameters:
         id: '1'
       query:

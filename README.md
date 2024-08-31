@@ -65,7 +65,7 @@ def wsgi_application(environ, start_response):
 with Given(
         wsgi_application,
         title='Quickstart!',
-        url='/books/id: 1',
+        path='/books/id: 1',
         as_='visitor') as story:
 
     assert status == 200
@@ -105,7 +105,7 @@ base_call:
       foo: bar
     status: 200 OK
   title: Posting a book
-  url: /books/:id
+  path: /books/:id
   path_parameters:
     id: '1'
   verb: GET
@@ -220,12 +220,4 @@ Add this into your `.bashrc` and or `$VIRTUAL_ENV/bin/postactivate`.
 
 ```bash
 eval "$(register-python-argcomplete bddrest)"
-```
-
-### Mockup server
-
-When you want serve the server for special yaml file using like below.
-
-```bash
-bddrest mockupserver yamlfilename
 ```

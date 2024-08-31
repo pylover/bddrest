@@ -6,7 +6,7 @@ from .call import Call
 class FirstCall(Call):
 
     _headers = None
-    _url = None
+    _path = None
     _path_parameters = None
     _verb = None
     _query = None
@@ -23,7 +23,7 @@ class FirstCall(Call):
 
     _body = None
 
-    def __init__(self, url='/', verb='GET', path_parameters=None, form=None,
+    def __init__(self, path='/', verb='GET', path_parameters=None, form=None,
                  json=None, multipart=None, content_type=None, headers=None,
                  as_=None, query=None, title=None, description=None,
                  extra_environ=None, response=None,
@@ -35,8 +35,8 @@ class FirstCall(Call):
             response=response
         )
 
-        self.url = url
-        # the `path_parameters` and `query` attributes may be set by the url
+        self.path = path
+        # the `path_parameters` and `query` attributes may be set by the path
         # setter. so we're not going to override them anyway.
         if path_parameters is not None:
             self.path_parameters = path_parameters
@@ -60,12 +60,12 @@ class FirstCall(Call):
         self.https = https
 
     @property
-    def url(self):
-        return self._url
+    def path(self):
+        return self._path
 
-    @url.setter
-    def url(self, value):
-        self._url, self.path_parameters, self.query = \
+    @path.setter
+    def path(self, value):
+        self._path, self.path_parameters, self.query = \
             self.extract_path_parameters(value)
 
     @property

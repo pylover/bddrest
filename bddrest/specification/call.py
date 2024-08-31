@@ -26,7 +26,7 @@ class Call(metaclass=ABCMeta):
     def to_dict(self):
         result = dict(
             title=self.title,
-            url=self.url,
+            path=self.path,
             verb=self.verb,
         )
         if self.path_parameters is not None:
@@ -63,10 +63,10 @@ class Call(metaclass=ABCMeta):
         return result
 
     def validate_path_parameters(self):
-        # i[1:].strip() for i in re.findall(r':[ \w]+', self.url))
+        # i[1:].strip() for i in re.findall(r':[ \w]+', self.path))
         required_parameters = set(
             i[1:] for i in re.findall(
-                fr':\s?{URL_PARAMETER_VALUE_PATTERN}', self.url)
+                fr':\s?{URL_PARAMETER_VALUE_PATTERN}', self.path)
         )
 
         if not required_parameters and self.path_parameters is None:
@@ -88,28 +88,28 @@ class Call(metaclass=ABCMeta):
         self.validate_path_parameters()
 
     @staticmethod
-    def extract_path_parameters(url):
+    def extract_path_parameters(path):
         path_parameters = {}
         query = None
-        parsedurl = urlparse(url)
+        parsedpath = urlparse(path)
 
-        if url is None:
+        if path is None:
             return None, None, None
 
         # Parsing the querystrings if available
-        if parsedurl.query:
-            query = querystring_parse(parsedurl.query)
+        if parsedpath.query:
+            query = querystring_parse(parsedpath.query)
 
-        url = parsedurl.path
-        if URL_PARAMETER_PATTERN.search(url):
-            for k, v in URL_PARAMETER_PATTERN.findall(url):
+        path = parsedpath.path
+        if URL_PARAMETER_PATTERN.search(path):
+            for k, v in URL_PARAMETER_PATTERN.findall(path):
                 path_parameters[k] = v
-                url = re.sub(
+                path = re.sub(
                     rf'{k}:\s?{URL_PARAMETER_VALUE_PATTERN}', rf':{k}',
-                    url
+                    path
                 )
 
-        return url, path_parameters if path_parameters else None, query
+        return path, path_parameters if path_parameters else None, query
 
     def add_header_if_not_exists(self, headers, key, value):
         for k, v in headers:
@@ -118,12 +118,13 @@ class Call(metaclass=ABCMeta):
         headers.append((key, value))
 
     def invoke(self, application) -> Response:
-        url = self.url
+        path = self.path
         if self.path_parameters:
             for k, v in self.path_parameters.items():
-                url = url.replace(f':{k}', str(v))
+                path = path.replace(f':{k}', str(v))
 
-        url = f'{url}?{querystring_encode(self.query)}' if self.query else url
+        path = f'{path}?{querystring_encode(self.query)}' if self.query \
+            else path
 
         headers = self.headers.copy() if self.headers else []
         if self.content_type:
@@ -157,7 +158,7 @@ class Call(metaclass=ABCMeta):
 
         response = WSGIConnector(application).request(
             self.verb,
-            url,
+            path,
             **request_params
         )
 
@@ -193,12 +194,12 @@ class Call(metaclass=ABCMeta):
 
     @property
     @abstractmethod
-    def url(self) -> str:  # pragma: no cover
+    def path(self) -> str:  # pragma: no cover
         pass
 
-    @url.setter
+    @path.setter
     @abstractmethod
-    def url(self, value):  # pragma: no cover
+    def path(self, value):  # pragma: no cover
         pass
 
     @property

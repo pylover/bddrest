@@ -25,7 +25,7 @@ def wsgi_application(environ, start_response):
 with Given(
         wsgi_application,
         title='Quickstart!',
-        url='/books/id: 1',
+        path='/books/id: 1',
         as_='visitor') as story:
 
     assert status == 200

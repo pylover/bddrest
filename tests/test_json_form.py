@@ -15,7 +15,7 @@ def wsgi_application(environ, start_response):
 def test_update_json_fields():
     call = dict(
         title='test remove form fields',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
+        path='/apiv1/devices/name: SM-12345678/id: 1',
         verb='POST',
         json=dict(
             a='1',

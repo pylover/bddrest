@@ -13,7 +13,7 @@ def test_autodump_file_object():
     with Given(
         wsgi_application,
         title='Testing auto dump',
-        url='/apiv1/devices/name: SM-12345678',
+        path='/apiv1/devices/name: SM-12345678',
         autodump=file,
     ):
         assert response.status == 200

@@ -4,7 +4,7 @@ from bddrest.documentary.curl import CURL
 
 def test_curl():
     params = dict(
-        url='example.com',
+        path='example.com',
         query=dict(c=1),
         verb='POST',
         form=dict(a=[1]),
@@ -35,7 +35,7 @@ def test_curl():
 def test_curl_from_call():
     call = FirstCall(
         title='Testing creating CURL from call',
-        url='/resources/:id',
+        path='/resources/:id',
         path_parameters=dict(id='1'),
         verb='POST',
         form=dict(a=1),

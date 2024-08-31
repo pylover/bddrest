@@ -20,7 +20,7 @@ def wsgi_application(environ, start_response):
     )
     result = dict(
         query=environ.get('QUERY_STRING'),
-        url=environ['PATH_INFO']
+        path=environ['PATH_INFO']
     )
     if form and isinstance(form, dict):
         result.update(form)
@@ -29,29 +29,29 @@ def wsgi_application(environ, start_response):
 
 
 def test_call_constructor():
-    call = FirstCall(url='/id: 1')
-    assert call.url == '/:id'
+    call = FirstCall(path='/id: 1')
+    assert call.path == '/:id'
     assert call.path_parameters == dict(id='1')
 
     call = FirstCall(
-        url='/id: 1/:name',
+        path='/id: 1/:name',
         path_parameters=dict(name='foo', id=2)
     )
     call.validate()
-    assert call.url == '/:id/:name'
+    assert call.path == '/:id/:name'
     assert call.path_parameters == dict(id='2', name='foo')
     call.conclude(wsgi_application)
-    assert '/2/foo' == call.response.json['url']
+    assert '/2/foo' == call.response.json['path']
 
 
 def test_call_invoke():
-    call = FirstCall(url='/id: 1')
+    call = FirstCall(path='/id: 1')
     call.conclude(wsgi_application)
     assert call.response is not None
 
 
 def test_call_response():
-    call = FirstCall(url='/id: 1', query='a=1')
+    call = FirstCall(path='/id: 1', query='a=1')
     call.conclude(wsgi_application)
     assert call.response is not None
     assert call.response.body is not None
@@ -60,24 +60,24 @@ def test_call_response():
     assert call.response.encoding == 'utf-8'
     assert call.response.content_type == 'application/json'
     assert call.response.text is not None
-    assert call.response.json == {'query': 'a=1', 'url': '/1'}
+    assert call.response.json == {'query': 'a=1', 'path': '/1'}
     assert call.response.headers == [
         ('Content-Type', 'application/json;charset=utf-8')
     ]
 
 
 def test_call_to_dict():
-    call = FirstCall(title='Testing Call to_dict', url='/id: 1', query='a=1')
+    call = FirstCall(title='Testing Call to_dict', path='/id: 1', query='a=1')
     call.conclude(wsgi_application)
     call_dict = call.to_dict()
     assert call_dict == dict(
         title='Testing Call to_dict',
         query=dict(a=['1']),
-        url='/:id',
+        path='/:id',
         path_parameters={'id': '1'},
         verb='GET',
         response=dict(
-            json={'query': 'a=1', 'url': '/1'},
+            json={'query': 'a=1', 'path': '/1'},
             headers=['Content-Type: application/json;charset=utf-8'],
             status='200 OK',
         )
@@ -87,7 +87,7 @@ def test_call_to_dict():
 def test_altered_call():
     call = FirstCall(
         title='Testing AlteredCall contractor',
-        url='/id: 1',
+        path='/id: 1',
         query=dict(a=1)
     )
 
@@ -103,20 +103,20 @@ def test_altered_call():
         response=dict(
             status='200 OK',
             headers=['Content-Type: application/json;charset=utf-8'],
-            json={'query': 'b=2', 'url': '/1'}
+            json={'query': 'b=2', 'path': '/1'}
         )
     )
 
 
 def test_alteredcall_setters_deleters():
     basecall = FirstCall(
-        url='/apiv1/devices/id: 1',
+        path='/apiv1/devices/id: 1',
     )
 
     when = AlteredCall(
         basecall,
         title='Testing the When class',
-        url='/apiv1/books/isbn: abc/pages/page: 3?highlight=false',
+        path='/apiv1/books/isbn: abc/pages/page: 3?highlight=false',
         verb='POST',
         form=dict(a='b'),
         headers=['A: B'],
@@ -124,7 +124,7 @@ def test_alteredcall_setters_deleters():
         as_='Admin',
         extra_environ=dict(A='B')
     )
-    assert '/apiv1/books/:isbn/pages/:page' == when.url
+    assert '/apiv1/books/:isbn/pages/:page' == when.path
     assert dict(isbn='abc', page='3') == when.path_parameters
     assert dict(highlight=['false']) == when.query
     assert dict(a=['b']) == when.form
@@ -153,7 +153,7 @@ def test_alteredcall_setters_deleters():
 
 def test_call_verify():
     call = FirstCall(
-        url='/id: 1',
+        path='/id: 1',
         query=dict(a=1)
     )
 
@@ -178,11 +178,11 @@ def test_call_verify():
 
 
 def test_querystring_parser():
-    call = FirstCall(url='/id: 1?a=1')
-    assert '/:id' == call.url
+    call = FirstCall(path='/id: 1?a=1')
+    assert '/:id' == call.path
     assert dict(a=['1']) == call.query
 
-    call = FirstCall(url='/id: 1?a=1&a=2')
+    call = FirstCall(path='/id: 1?a=1&a=2')
     assert dict(a=['1', '2']) == call.query
 
 

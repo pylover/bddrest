@@ -11,7 +11,7 @@ UNCHANGED = Unchanged()
 
 
 class AlteredCall(Call):
-    def __init__(self, base_call, url=UNCHANGED, verb=UNCHANGED,
+    def __init__(self, base_call, path=UNCHANGED, verb=UNCHANGED,
                  path_parameters=UNCHANGED, form=UNCHANGED, json=UNCHANGED,
                  multipart=UNCHANGED, content_type=UNCHANGED,
                  headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED, title=None,
@@ -26,7 +26,7 @@ class AlteredCall(Call):
             response=response
         )
 
-        self.url = url
+        self.path = path
         if path_parameters is not UNCHANGED:
             self.path_parameters = path_parameters
 
@@ -71,18 +71,18 @@ class AlteredCall(Call):
         self.diff[key] = value
 
     @property
-    def url(self):
-        return self.diff.get('url', self.base_call.url)
+    def path(self):
+        return self.diff.get('path', self.base_call.path)
 
-    @url.setter
-    def url(self, value):
+    @path.setter
+    def path(self, value):
         if value is UNCHANGED:
-            self.diff.pop('url', None)
+            self.diff.pop('path', None)
             return
 
-        url, path_parameters, query = self.extract_path_parameters(value)
-        if url and url != self.base_call.url:
-            self.diff['url'] = url
+        path, path_parameters, query = self.extract_path_parameters(value)
+        if path and path != self.base_call.path:
+            self.diff['path'] = path
             self.path_parameters = path_parameters
             self.query = query
 

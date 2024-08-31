@@ -23,7 +23,7 @@ def wsgi_application(environ, start_response):
 def test_append_form_field():
     call = dict(
         title='test add form field',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
+        path='/apiv1/devices/name: SM-12345678/id: 1',
         verb='POST',
         form=dict(
             activationCode='746727',
@@ -46,7 +46,7 @@ def test_append_form_field():
 
     call = dict(
         title='test add form field',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
+        path='/apiv1/devices/name: SM-12345678/id: 1',
         verb='POST',
     )
     with Given(wsgi_application, **call):
@@ -58,7 +58,7 @@ def test_append_form_field():
 def test_remove_from_fields():
     call = dict(
         title='test remove form fields',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
+        path='/apiv1/devices/name: SM-12345678/id: 1',
         verb='POST',
         form=dict(
             activationCode='746727',
@@ -87,7 +87,7 @@ def test_remove_from_fields():
 def test_update_from_fields():
     call = dict(
         title='test remove form fields',
-        url='/apiv1/devices/name: SM-12345678/id: 1',
+        path='/apiv1/devices/name: SM-12345678/id: 1',
         verb='POST',
         form=dict(
             activationCode='746727',

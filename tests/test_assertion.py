@@ -38,7 +38,7 @@ def test_equality():
               'activation code',
         description='As a new visitor I have to bind my device with '
                     'activation code and phone number',
-        url='/apiv1/devices/name: SM-12345678',
+        path='/apiv1/devices/name: SM-12345678',
         verb='POST',
         as_='visitor',
         query=dict(

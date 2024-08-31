@@ -6,11 +6,11 @@ from ..helpers import querystring_encode
 
 class CURL:
 
-    def __init__(self, url, form, query, authorization, verb='GET',
+    def __init__(self, path, form, query, authorization, verb='GET',
                  content_type='text/plain', headers=[], nerds_readable=None,
                  multipart=None, json=None):
 
-        self._url = url
+        self._path = path
         self._query = query
         self._form = form
         self._headers = headers
@@ -75,7 +75,7 @@ class CURL:
     @property
     def full_path(self):
         query = f'?{self.query}' if self.query else ''
-        return f'"{self._url}{query}"'
+        return f'"{self._path}{query}"'
 
     @property
     def parts(self):
@@ -114,7 +114,7 @@ class CURL:
     @classmethod
     def from_call(cls, call):
         return cls(
-            url=cls.serialize_url(call.url, call.path_parameters),
+            path=cls.serialize_path(call.path, call.path_parameters),
             query=call.query,
             form=call.form,
             verb=call.verb,
@@ -126,10 +126,10 @@ class CURL:
         )
 
     @classmethod
-    def serialize_url(cls, url, path_parameters):
+    def serialize_path(cls, path, path_parameters):
         path_part = []
 
-        for part in url.split('/'):
+        for part in path.split('/'):
             if part.startswith(':'):
                 part = path_parameters[part[1:]]
 

@@ -35,7 +35,7 @@ class Documenter:
         formatter.write_codeblock('bash', content)
 
     def write_call(self, basecall, call, formatter):
-        formatter.write_header(f'{call.verb} {call.url}', 3)
+        formatter.write_header(f'{call.verb} {call.path}', 3)
 
         if self.onstory:
             _, fieldsinfo = self.onstory(basecall)

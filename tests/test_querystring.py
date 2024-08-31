@@ -25,7 +25,7 @@ def test_querystring():
         assert response.status == 200
         assert response.text == 'foo='
 
-        when(url='/?foo=')
+        when(path='/?foo=')
         assert response.status == 200
         assert response.text == 'foo='
 
