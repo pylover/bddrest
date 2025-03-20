@@ -1,6 +1,8 @@
-from .call import Call
 from ..helpers import querystring_parse
 from ..headerset import HeaderSet
+from ..exceptions import rawurl_exc
+
+from .call import Call
 
 
 class Unchanged:
@@ -17,7 +19,7 @@ class AlteredCall(Call):
                  headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED, title=None,
                  description=None, extra_environ=UNCHANGED,
                  response=None, authorization=UNCHANGED,
-                 body=UNCHANGED, https=UNCHANGED):
+                 body=UNCHANGED, https=UNCHANGED, rawurl=UNCHANGED):
         self.base_call = base_call
         self.diff = {}
         super().__init__(
@@ -26,7 +28,16 @@ class AlteredCall(Call):
             response=response
         )
 
-        self.path = path
+        if rawurl is not UNCHANGED:
+            if (path is not UNCHANGED) or (path_parameters is not UNCHANGED) \
+                    or (query is not UNCHANGED):
+                raise rawurl_exc
+
+            self.rawurl = rawurl
+
+        else:
+            self.path = path
+
         if path_parameters is not UNCHANGED:
             self.path_parameters = path_parameters
 
@@ -69,6 +80,14 @@ class AlteredCall(Call):
             return
 
         self.diff[key] = value
+
+    @property
+    def rawurl(self):
+        return self.diff.get('rawurl', self.base_call.rawurl)
+
+    @rawurl.setter
+    def rawurl(self, value):
+        self.update_diff('rawurl', value)
 
     @property
     def path(self):

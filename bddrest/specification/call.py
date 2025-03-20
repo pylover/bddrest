@@ -27,8 +27,10 @@ class Call(metaclass=ABCMeta):
         result = dict(
             title=self.title,
             path=self.path,
+            rawurl=self.rawurl,
             verb=self.verb,
         )
+
         if self.path_parameters is not None:
             result['path_parameters'] = self.path_parameters
 
@@ -63,7 +65,6 @@ class Call(metaclass=ABCMeta):
         return result
 
     def validate_path_parameters(self):
-        # i[1:].strip() for i in re.findall(r':[ \w]+', self.path))
         required_parameters = set(
             i[1:] for i in re.findall(
                 fr':\s?{URL_PARAMETER_VALUE_PATTERN}', self.path)
@@ -85,6 +86,9 @@ class Call(metaclass=ABCMeta):
                 self.path_parameters[k] = str(v)
 
     def validate(self):
+        if self.rawurl:
+            return
+
         self.validate_path_parameters()
 
     @staticmethod
@@ -118,13 +122,16 @@ class Call(metaclass=ABCMeta):
         headers.append((key, value))
 
     def invoke(self, application) -> Response:
-        path = self.path
-        if self.path_parameters:
-            for k, v in self.path_parameters.items():
-                path = path.replace(f':{k}', str(v))
+        if self.rawurl:
+            url = self.rawurl
+        else:
+            path = self.path
+            if self.path_parameters:
+                for k, v in self.path_parameters.items():
+                    path = path.replace(f':{k}', str(v))
 
-        path = f'{path}?{querystring_encode(self.query)}' if self.query \
-            else path
+            url = f'{path}?{querystring_encode(self.query)}' if self.query \
+                else path
 
         headers = self.headers.copy() if self.headers else []
         if self.content_type:
@@ -158,7 +165,7 @@ class Call(metaclass=ABCMeta):
 
         response = WSGIConnector(application).request(
             self.verb,
-            path,
+            url,
             **request_params
         )
 
@@ -190,6 +197,16 @@ class Call(metaclass=ABCMeta):
     @verb.setter
     @abstractmethod
     def verb(self, value):  # pragma: no cover
+        pass
+
+    @property
+    @abstractmethod
+    def rawurl(self) -> str:  # pragma: no cover
+        pass
+
+    @rawurl.setter
+    @abstractmethod
+    def rawurl(self, value):  # pragma: no cover
         pass
 
     @property

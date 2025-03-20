@@ -212,6 +212,7 @@ def test_to_dict():
             headers=[
                 'X-H1: Header Value',
             ],
+            rawurl=None,
             response=dict(
                 status='200 OK',
                 headers=[
@@ -252,6 +253,7 @@ def test_from_dict():
                 phone=['+9897654321']
             ),
             headers=['X-H1: Header Value'],
+            rawurl=None,
             response=dict(
                 status='200 OK',
                 headers=[

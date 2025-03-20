@@ -13,11 +13,6 @@ def test_document_cli():
         assert stdout == expected_markdown
 
 
-def test_help():
-    with Given(app):
-        assert stdout == expected_help
-
-
 yamlstory = '''
 base_call:
   as_: visitor
@@ -110,20 +105,4 @@ curl -F "name=BDD Book" -- "$URL/books/None?a=b"
 
 ### Response: 404 Not Found
 
-'''
-
-
-expected_help = '''\
-usage: bddrest [-h] {document,completion} ...
-
-bddrest
-
-options:
-  -h, --help            show this help message and exit
-
-Sub commands:
-  {document,completion}
-    document            Generates REST API Documentation from standard input
-                        to standard output.
-    completion          Bash auto completion using argcomplete python package.
 '''

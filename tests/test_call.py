@@ -76,6 +76,7 @@ def test_call_to_dict():
         path='/:id',
         path_parameters={'id': '1'},
         verb='GET',
+        rawurl=None,
         response=dict(
             json={'query': 'a=1', 'path': '/1'},
             headers=['Content-Type: application/json;charset=utf-8'],

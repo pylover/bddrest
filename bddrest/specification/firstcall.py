@@ -1,11 +1,14 @@
 from ..headerset import HeaderSet
 from ..helpers import querystring_parse
+from ..exceptions import rawurl_exc
+
 from .call import Call
 
 
 class FirstCall(Call):
 
     _headers = None
+    _rawurl = None
     _path = None
     _path_parameters = None
     _verb = None
@@ -26,8 +29,8 @@ class FirstCall(Call):
     def __init__(self, path='/', verb='GET', path_parameters=None, form=None,
                  json=None, multipart=None, content_type=None, headers=None,
                  as_=None, query=None, title=None, description=None,
-                 extra_environ=None, response=None,
-                 authorization=None, body=None, https=False):
+                 extra_environ=None, response=None, authorization=None,
+                 body=None, https=False, rawurl=None):
 
         super().__init__(
             title=title,
@@ -35,14 +38,22 @@ class FirstCall(Call):
             response=response
         )
 
-        self.path = path
-        # the `path_parameters` and `query` attributes may be set by the path
-        # setter. so we're not going to override them anyway.
-        if path_parameters is not None:
-            self.path_parameters = path_parameters
+        if rawurl:
+            if (path != '/') or path_parameters or query:
+                raise rawurl_exc
 
-        if query is not None:
-            self.query = query
+            self.rawurl = rawurl
+
+        else:
+            self.path = path
+
+            # the `path_parameters` and `query` attributes may be set by the
+            # path setter. so we're not going to override them anyway.
+            if path_parameters is not None:
+                self.path_parameters = path_parameters
+
+            if query is not None:
+                self.query = query
 
         self.verb = verb
         if body is not None:
@@ -60,11 +71,22 @@ class FirstCall(Call):
         self.https = https
 
     @property
+    def rawurl(self):
+        return self._rawurl
+
+    @rawurl.setter
+    def rawurl(self, value):
+        self._rawurl = value
+
+    @property
     def path(self):
         return self._path
 
     @path.setter
     def path(self, value):
+        if self.rawurl:
+            raise rawurl_exc
+
         self._path, self.path_parameters, self.query = \
             self.extract_path_parameters(value)
 
@@ -74,6 +96,9 @@ class FirstCall(Call):
 
     @path_parameters.setter
     def path_parameters(self, value):
+        if self.rawurl:
+            raise rawurl_exc
+
         self._path_parameters = value
 
     @property
@@ -98,6 +123,9 @@ class FirstCall(Call):
 
     @query.setter
     def query(self, value):
+        if self.rawurl:
+            raise rawurl_exc
+
         self._query = querystring_parse(value)
 
     @property
