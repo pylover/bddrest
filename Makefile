@@ -1,11 +1,11 @@
 PYTEST_FLAGS = -vv
 PYDEPS_COMMON += \
 	'coveralls' \
-	'bddcli >= 2.5.1, < 3'
+	'bddcli >= 2.10.1, < 3'
 
 
 # Assert the python-makelib version
-PYTHON_MAKELIB_VERSION_REQUIRED = 1.5.2
+PYTHON_MAKELIB_VERSION_REQUIRED = 2.5.2
 
 
 # Ensure the python-makelib is installed

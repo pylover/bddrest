@@ -7,6 +7,7 @@ from urllib.parse import unquote
 import bddrest
 from .helpers import encode_multipart_data, querystring_encode
 from .response import Response
+from .headerset import HeaderSet
 
 
 class WSGIResponse(Response):
@@ -24,7 +25,7 @@ class Connector(metaclass=abc.ABCMeta):
     def request(self, verb='GET', path='/', form=None, multipart=None,
                 json=None, environ=None, headers=None, body=None,
                 content_type=None, content_length=None, **kw):
-        headers = headers or []
+        headers = HeaderSet(headers)
 
         if body is None:
             if multipart:
@@ -104,7 +105,7 @@ class WSGIConnector(Connector):
         if extra_environ:
             environ.update(extra_environ)
 
-        for k, v in headers:
+        for k, v in headers.items():
             key = k.upper().replace('-', '_')
             if key not in ['CONTENT_TYPE', 'CONTENT_LENGTH']:
                 key = 'HTTP_' + key
