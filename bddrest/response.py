@@ -66,19 +66,17 @@ class Response:
 
     def __init__(self, status, headers, body=None, json=None):
         self.status = HTTPStatus(status)
-        self.headers = HeaderSet(headers) if headers is not None else None
+        # self.cookies = CookieSet()
+        self.headers = HeaderSet(headers)
         if json:
             self.body = jsonlib.dumps(json).encode()
         elif body is not None:
             self.body = body.encode() if not isinstance(body, bytes) else body
 
-        if headers:
-            for k, v in self.headers:
-                if k.lower() == 'content-type':
-                    match = CONTENT_TYPE_PATTERN.match(v)
-                    if match:
-                        self.content_type, self.encoding = match.groups()
-                    break
+        ctype = self.headers.get('content-type')
+        if ctype:
+            m = CONTENT_TYPE_PATTERN.match(ctype)
+            self.content_type, self.encoding = m.groups()
 
     @property
     def text(self):
@@ -98,7 +96,7 @@ class Response:
             status=str(self.status)
         )
         if self.headers:
-            result['headers'] = self.headers.simple
+            result['headers'] = self.headers.tostrlist()
 
         if self.body:
             if self.content_type == 'application/json':

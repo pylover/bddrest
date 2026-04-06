@@ -48,7 +48,7 @@ class Call(metaclass=ABCMeta):
             result['multipart'] = self.multipart
 
         if self.headers is not None:
-            result['headers'] = [': '.join(h) for h in self.headers]
+            result['headers'] = self.headers.tostrlist()
 
         if self.as_ is not None:
             result['as_'] = self.as_

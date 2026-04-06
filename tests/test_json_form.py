@@ -7,7 +7,7 @@ from bddrest import Given, when, response, given, status, story
 def wsgi_application(environ, start_response):
     form = json.load(environ['wsgi.input'])
     start_response('200 OK', [
-        ('Content-Type', 'application/json;charset=utf-8'),
+        ('content-type', 'application/json;charset=utf-8'),
     ])
     yield json.dumps(form).encode()
 
@@ -69,7 +69,7 @@ curl -X POST --data '{"a": 1, "b": null, "c": false}' -- "$URL/"
 
 #### Body
 
-Content-Type: application/json
+content-type: application/json
 
 ```json
 {

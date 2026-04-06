@@ -33,17 +33,17 @@ provided_story = '''
         f1: abc
         f2: 123
       headers:
-        - 'Content-Type: application/json;charset=utf-8'
+        - 'content-type: application/json;charset=utf-8'
       response:
         headers:
-        - 'Content-Type: application/json;charset=utf-8'
+        - 'content-type: application/json;charset=utf-8'
         json:
           foo: bar
         status: 200 OK
     calls:
     - response:
         headers:
-        - 'Content-Type: text/plain;charset=utf-8'
+        - 'content-type: text/plain;charset=utf-8'
         status: 404 Not Found
       title: Trying invalid book id
       description: trying an invalid book id.
@@ -53,7 +53,7 @@ provided_story = '''
         a: 2
         b: 4
       headers:
-      - 'A: B'
+      - 'a: B'
       form:
         f1: cba
 '''
@@ -88,19 +88,19 @@ f2 | ? | ? | 123
 
 ### Request Headers
 
-* Content-Type: application/json;charset=utf-8
+* content-type: application/json;charset=utf-8
 
 ### CURL
 
 ```bash
-curl -X PUT -F "f1=abc" -F "f2=123" -H "Content-Type: application/json;charset=utf-8" -- "$URL/books/1?a=1&b=2"
+curl -X PUT -F "f1=abc" -F "f2=123" -H "content-type: application/json;charset=utf-8" -- "$URL/books/1?a=1&b=2"
 ```
 
 ### Response: 200 OK
 
 #### Body
 
-Content-Type: application/json
+content-type: application/json
 
 ```json
 {
@@ -137,12 +137,12 @@ f1 | Yes | str | cba
 
 ### Request Headers
 
-* A: B
+* a: B
 
 ### CURL
 
 ```bash
-curl -X PUT -F "f1=cba" -H "A: B" -- "$URL/books/None?a=2&b=4"
+curl -X PUT -F "f1=cba" -H "a: B" -- "$URL/books/None?a=2&b=4"
 ```
 
 ### Response: 404 Not Found

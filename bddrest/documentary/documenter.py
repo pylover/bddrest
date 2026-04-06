@@ -16,7 +16,7 @@ class Documenter:
         ignore_headers = ['content-type']
 
         headers = {
-            k: v for k, v in response.headers
+            k: v for k, v in response.headers.items()
             if k.lower() not in ignore_headers
         }
         if headers:
@@ -25,7 +25,7 @@ class Documenter:
 
         if response.status.code == 200 and response.body:
             formatter.write_header('Body', 4)
-            formatter.write_paragraph(f'Content-Type: {response.content_type}')
+            formatter.write_paragraph(f'content-type: {response.content_type}')
             mime = ''
             if response.content_type and 'json' in response.content_type:
                 mime = 'json'
@@ -139,7 +139,9 @@ class Documenter:
         if call.headers \
                 and (basecall is None or call.headers != basecall.headers):
             formatter.write_header('Request Headers', 3)
-            formatter.write_list(f'{k}: {loststr(v)}' for k, v in call.headers)
+            formatter.write_list(
+                f'{k}: {loststr(v)}' for k, v in call.headers.items()
+            )
 
         self.write_curl(formatter, CURL.from_call(call))
 

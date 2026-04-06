@@ -99,13 +99,13 @@ class CURL:
         if self.content_type:
             parts.append(self.compile_argument(
                 '-H',
-                f'"Content-Type: {self.content_type}"'
+                f'"content-type: {self.content_type}"'
             ))
 
         if self.authorization:
             parts.append(self.compile_argument(
                 '-H',
-                '"Authorization: $TOKEN"'
+                '"authorization: $TOKEN"'
             ))
 
         parts.append('--')
@@ -114,6 +114,8 @@ class CURL:
 
     @classmethod
     def from_call(cls, call):
+        headers = [f'{k}: {loststr(v)}' for k, v in call.headers.items()] if \
+            call.headers else []
         return cls(
             path=cls.serialize_path(call.path, call.path_parameters),
             query=call.query,
@@ -121,7 +123,7 @@ class CURL:
             verb=call.verb,
             content_type=call.content_type,
             authorization=call.authorization,
-            headers=[f'{k}: {loststr(v)}' for k, v in call.headers or []],
+            headers=headers,
             multipart=call.multipart,
             json=call.json,
         )

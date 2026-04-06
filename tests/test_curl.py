@@ -8,7 +8,7 @@ def test_curl():
         query=dict(c=1),
         verb='POST',
         form=dict(a=[1]),
-        headers=['A: B'],
+        headers=['a: B'],
         content_type='text/plain',
         authorization='base64-encoded-jwt-token'
     )
@@ -16,18 +16,18 @@ def test_curl():
     assert str(CURL(**params)) == 'curl ' \
         '-X POST ' \
         '-F "a=1" ' \
-        '-H "A: B" ' \
-        '-H "Content-Type: text/plain" ' \
-        '-H "Authorization: $TOKEN" ' \
+        '-H "a: B" ' \
+        '-H "content-type: text/plain" ' \
+        '-H "authorization: $TOKEN" ' \
         '-- ' \
         '"example.com?c=1"'
 
     assert str(CURL(nerds_readable=True, **params)) == 'curl ' \
         '-XPOST ' \
         '-F"a=1" ' \
-        '-H"A: B" ' \
-        '-H"Content-Type: text/plain" ' \
-        '-H"Authorization: $TOKEN" ' \
+        '-H"a: B" ' \
+        '-H"content-type: text/plain" ' \
+        '-H"authorization: $TOKEN" ' \
         '-- ' \
         '"example.com?c=1"'
 
@@ -48,8 +48,8 @@ def test_curl_from_call():
     assert str(CURL.from_call(call)) == 'curl ' \
         '-X POST ' \
         '-F "a=1" ' \
-        '-H "A: B" ' \
-        '-H "Content-Type: text/plain" ' \
-        '-H "Authorization: $TOKEN" ' \
+        '-H "a: B" ' \
+        '-H "content-type: text/plain" ' \
+        '-H "authorization: $TOKEN" ' \
         '-- ' \
         '"$URL/resources/1?q=1"'

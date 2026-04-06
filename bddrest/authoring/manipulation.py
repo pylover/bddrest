@@ -1,6 +1,8 @@
 import abc
 from collections.abc import Iterable
 
+from ..headerset import HeaderSet
+
 
 class Manipulator(metaclass=abc.ABCMeta):
     def __init__(self, *args, **kwargs):
@@ -27,6 +29,15 @@ class Manipulator(metaclass=abc.ABCMeta):
 
 class Append(Manipulator):
     def apply(self, container):
+        if isinstance(container, HeaderSet):
+            for k, v in self.dict_diff.items():
+                container.append(k, v)
+
+            for item in self.list_diff:
+                container.append(item)
+
+            return
+
         if isinstance(container, dict):
             for k, v in self.dict_diff.items():
                 if k in container:

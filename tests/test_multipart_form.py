@@ -50,7 +50,7 @@ curl -X POST -F "a=@<path/to/file>" -- "$URL/"
 
 #### Body
 
-Content-Type: text/plain
+content-type: text/plain
 
 ```
 L5uEQbqDZrdzj5AX9wjtVA==\n

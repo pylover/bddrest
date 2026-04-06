@@ -23,7 +23,7 @@ base_call:
     a: b
   response:
     headers:
-    - 'Content-Type: application/json;charset=utf-8'
+    - 'content-type: application/json;charset=utf-8'
     json:
       foo: bar
     status: 200 OK
@@ -35,7 +35,7 @@ base_call:
 calls:
 - response:
     headers:
-    - 'Content-Type: text/plain;charset=utf-8'
+    - 'content-type: text/plain;charset=utf-8'
     status: 404 Not Found
   title: Trying invalid book id
   path_parameters:
@@ -77,7 +77,7 @@ curl -F "name=BDD Book" -- "$URL/books/1?a=b"
 
 #### Body
 
-Content-Type: application/json
+content-type: application/json
 
 ```json
 {
