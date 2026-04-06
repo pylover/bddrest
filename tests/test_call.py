@@ -61,8 +61,8 @@ def test_call_response():
     assert call.response.content_type == 'application/json'
     assert call.response.text is not None
     assert call.response.json == {'query': 'a=1', 'path': '/1'}
-    assert call.response.headers == [
-        ('Content-Type', 'application/json;charset=utf-8')
+    assert call.response.headers.tostrlist() == [
+        'content-type: application/json;charset=utf-8'
     ]
 
 
@@ -79,7 +79,7 @@ def test_call_to_dict():
         rawurl=None,
         response=dict(
             json={'query': 'a=1', 'path': '/1'},
-            headers=['Content-Type: application/json;charset=utf-8'],
+            headers=['content-type: application/json;charset=utf-8'],
             status='200 OK',
         )
     )
@@ -103,7 +103,7 @@ def test_altered_call():
         query=dict(b=[2]),
         response=dict(
             status='200 OK',
-            headers=['Content-Type: application/json;charset=utf-8'],
+            headers=['content-type: application/json;charset=utf-8'],
             json={'query': 'b=2', 'path': '/1'}
         )
     )

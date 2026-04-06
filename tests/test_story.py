@@ -184,7 +184,7 @@ def test_to_dict():
             activationCode=['746727'],
             phone=['+9897654321']
         ),
-        headers=[('X-H1', 'Header Value')]
+        headers=[('x-h1', 'Header Value')]
     )
     with Given(wsgi_application, **call):
         assert response.status == '200 OK'
@@ -210,14 +210,14 @@ def test_to_dict():
                 phone=['+9897654321']
             ),
             headers=[
-                'X-H1: Header Value',
+                'x-h1: Header Value',
             ],
             rawurl=None,
             response=dict(
                 status='200 OK',
                 headers=[
-                    'Content-Type: application/json;charset=utf-8',
-                    'X-Pagination-Count: 10'
+                    'content-type: application/json;charset=utf-8',
+                    'x-pagination-count: 10'
                 ],
                 json={
                     'secret': 'ABCDEF',
@@ -234,7 +234,7 @@ def test_to_dict():
                 activationCode=['badCode']
             ),
             response=dict(
-                headers=['Content-Type: text/plain;utf-8'],
+                headers=['content-type: text/plain;utf-8'],
                 status='400 Bad Request',
             )
         )
@@ -252,13 +252,13 @@ def test_from_dict():
                 activationCode=['746727'],
                 phone=['+9897654321']
             ),
-            headers=['X-H1: Header Value'],
+            headers=['x-h1: Header Value'],
             rawurl=None,
             response=dict(
                 status='200 OK',
                 headers=[
-                    'Content-Type: application/json;charset=utf-8',
-                    'X-Pagination-Count: 10'
+                    'content-type: application/json;charset=utf-8',
+                    'x-pagination-count: 10'
                 ],
                 json={'secret': 'ABCDEF', 'code': 745525, 'query': ''}
             )
@@ -270,7 +270,7 @@ def test_from_dict():
                     activationCode=['badCode']
                 ),
                 response=dict(
-                    headers=['Content-Type: text/plain;utf-8'],
+                    headers=['content-type: text/plain;utf-8'],
                     status='400 Bad Request',
                 )
             )
@@ -354,7 +354,7 @@ def test_dump_load_file():
                 activationCode=['746727'],
                 phone=['+9897654321']
             ),
-            headers=[('X-H1', 'Header Value')]
+            headers=[('x-h1', 'Header Value')]
         )
         with Given(wsgi_application, **call):
             assert response.status == '200 OK'

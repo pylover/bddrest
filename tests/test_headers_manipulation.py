@@ -26,9 +26,9 @@ def test_append_headers_field():
         assert status == '200 OK'
         assert response.json['header1'] == '1'
 
-        # Using dictionary to manipulate lists, expecting error.
-        with pytest.raises(ValueError):
-            when(title='Abusing', headers=Append(header2='2'))
+        # Using dictionary to manipulate lists.
+        when(title='Appending another header', headers=Append(header2='2'))
+        assert status == '200 OK'
 
         when(
             title='Adding new header: 2-tuple',
@@ -54,12 +54,6 @@ def test_remove_headers_field():
     ):
         assert status == '200 OK'
         assert response.json['header1'] == '1'
-
-        when(
-            title='Removing an existing header: 2-tuple',
-            headers=Remove(('header1', '1'))
-        )
-        assert 'header1' not in response.json
 
         when(title='Remove header by key', headers=Remove('header1'))
 

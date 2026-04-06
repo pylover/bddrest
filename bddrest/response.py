@@ -96,7 +96,7 @@ class Response:
             status=str(self.status)
         )
         if self.headers:
-            result['headers'] = self.headers.simple
+            result['headers'] = self.headers.tostrlist()
 
         if self.body:
             if self.content_type == 'application/json':

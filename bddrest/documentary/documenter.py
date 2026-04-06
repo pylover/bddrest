@@ -16,7 +16,7 @@ class Documenter:
         ignore_headers = ['content-type']
 
         headers = {
-            k: v for k, v in response.headers
+            k: v for k, v in response.headers.items()
             if k.lower() not in ignore_headers
         }
         if headers:

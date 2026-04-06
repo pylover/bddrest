@@ -33,14 +33,13 @@ class HeaderSet(OrderedDict):
 
         super().__setitem__(k, val)
 
+    def tostrlist(self):
+        return [f'{k}: {v}' for k, v in self.items()]
+
     # @staticmethod
     # def _normalize_item(h):
     #     k, v = h.split(':', 1) if isinstance(h, str) else h
     #     return k, v.strip()
-
-    # @property
-    # def simple(self):
-    #     return [f'{k}: {v}' for k, v in self]
 
     # def _get_item_by_key(self, key):
     #     testkey = key.casefold()
