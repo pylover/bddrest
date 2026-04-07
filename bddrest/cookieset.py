@@ -21,7 +21,7 @@ class CookieSet(OrderedDict):
             return
 
         k, v = item.split('=', 1) if isinstance(item, str) else item
-        self[k] = v
+        self[k.strip()] = v.strip()
 
     def __setitem__(self, k, v):
         k = k.strip().lower()

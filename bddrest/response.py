@@ -72,14 +72,14 @@ class Response:
         for h in headers:
             if isinstance(h, str):
                 if h.lower().startswith('set-cookie'):
-                    self.cookies.append(h)
+                    self.cookies.append(h[11:].strip())
                     continue
 
                 headers_.append(h)
             else:
                 k, v = h
                 if k.lower() == 'set-cookie':
-                    self.cookies.append(v)
+                    self.cookies.append(v.split('='))
                     continue
 
                 headers_.append((k, v))
