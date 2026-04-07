@@ -23,6 +23,8 @@ def test_append():
         'quux': 'thud'
     }
 
+    assert headers['FOO'] == 'bar,corge'
+
 
 def test_iteration():
     headers = HeaderSet(('foo: bar', 'baz: QUX', 'foo: corge'))

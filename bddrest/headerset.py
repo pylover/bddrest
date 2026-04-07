@@ -33,8 +33,8 @@ class HeaderSet(OrderedDict):
 
         super().__setitem__(k, val)
 
-    def tostrlist(self):
-        return [f'{k}: {v}' for k, v in self.items()]
+    def __getitem__(self, k):
+        return super().__getitem__(k.lower())
 
     def __contains__(self, key):
         if isinstance(key, str):
@@ -47,3 +47,6 @@ class HeaderSet(OrderedDict):
             return False
         else:
             raise TypeError(f'{type(key)}')
+
+    def tostrlist(self):
+        return [f'{k}: {v}' for k, v in self.items()]

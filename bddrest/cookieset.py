@@ -24,7 +24,7 @@ class CookieSet(OrderedDict):
         self[k.strip()] = v.strip()
 
     def __setitem__(self, k, v):
-        k = k.strip().lower()
+        k = k.strip()
         val = self.get(k)
         if val:
             val += f',{v.strip()}'
@@ -38,7 +38,7 @@ class CookieSet(OrderedDict):
 
     def __contains__(self, key):
         if isinstance(key, str):
-            return super().__contains__(key.lower())
+            return super().__contains__(key)
 
         elif isinstance(key, Pattern):
             for i in self:
