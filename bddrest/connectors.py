@@ -8,6 +8,7 @@ import bddrest
 from .helpers import encode_multipart_data, querystring_encode
 from .response import Response
 from .headerset import HeaderSet
+from .cookieset import CookieSet
 
 
 class WSGIResponse(Response):
@@ -23,9 +24,10 @@ class WSGIResponse(Response):
 
 class Connector(metaclass=abc.ABCMeta):
     def request(self, verb='GET', path='/', form=None, multipart=None,
-                json=None, environ=None, headers=None, body=None,
+                json=None, environ=None, headers=None, cookies=None, body=None,
                 content_type=None, content_length=None, **kw):
         headers = HeaderSet(headers)
+        cookies = CookieSet(cookies)
 
         if body is None:
             if multipart:
@@ -54,10 +56,12 @@ class Connector(metaclass=abc.ABCMeta):
         if content_length is not None:
             headers.append(('Content-Length', str(content_length)))
 
-        return self._send_request(verb, path, environ, headers, body, **kw)
+        return self._send_request(verb, path, environ, headers, cookies, body,
+                                  **kw)
 
     @abc.abstractmethod
-    def _send_request(self, verb, path, environ, headers, body=None, **kw):
+    def _send_request(self, verb, path, environ, headers, cookies, body=None,
+                      **kw):
         pass
 
 
@@ -66,7 +70,7 @@ class WSGIConnector(Connector):
         self.application = application
         self.environ = environ
 
-    def _prepare_environ(self, verb, path, headers, payload=None,
+    def _prepare_environ(self, verb, path, headers, cookies, payload=None,
                          extra_environ=None, https=False):
         if isinstance(payload, io.BytesIO):
             input_file = payload
@@ -111,12 +115,17 @@ class WSGIConnector(Connector):
                 key = 'HTTP_' + key
             environ[key] = v
 
+        if cookies:
+            environ['HTTP_COOKIE'] = ';'.join(
+                f'{k}={v}' for k, v in cookies.items()
+            )
+
         return environ
 
-    def _send_request(self, verb, path, environ, headers, body=None,
+    def _send_request(self, verb, path, environ, headers, cookies, body=None,
                       https=False, **kw):
-        environ_ = self._prepare_environ(verb, path, headers, body, environ,
-                                         https)
+        environ_ = self._prepare_environ(verb, path, headers, cookies, body,
+                                         environ, https)
         response = None
 
         def start_response(status, headers, exc_info=None):

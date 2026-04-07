@@ -47,8 +47,11 @@ class Call(metaclass=ABCMeta):
             # Multipart form
             result['multipart'] = self.multipart
 
-        if self.headers is not None:
+        if self.headers:
             result['headers'] = self.headers.tostrlist()
+
+        if self.cookies:
+            result['cookies'] = self.cookies.tostrlist()
 
         if self.as_ is not None:
             result['as_'] = self.as_
@@ -115,7 +118,7 @@ class Call(metaclass=ABCMeta):
 
         return path, path_parameters if path_parameters else None, query
 
-    def add_header_if_not_exists(self, headers, key, value):
+    def add_overwrite_header(self, headers, key, value):
         for k, v in headers:
             if k.lower() == key.lower():
                 headers.remove((k, v))
@@ -135,14 +138,14 @@ class Call(metaclass=ABCMeta):
 
         headers = self.headers.copy() if self.headers else []
         if self.content_type:
-            self.add_header_if_not_exists(
+            self.add_overwrite_header(
                 headers,
                 'Content-Type',
                 self.content_type
             )
 
         if self.authorization:
-            self.add_header_if_not_exists(
+            self.add_overwrite_header(
                 headers,
                 'authorization',
                 self.authorization
@@ -151,6 +154,7 @@ class Call(metaclass=ABCMeta):
         request_params = dict(
             environ=self.extra_environ,
             headers=headers,
+            cookies=self.cookies.copy() if self.cookies else {},
             https=self.https,
         )
 

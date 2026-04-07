@@ -1,5 +1,6 @@
 from ..helpers import querystring_parse
 from ..headerset import HeaderSet
+from ..cookieset import CookieSet
 from ..exceptions import rawurl_exc
 
 from .call import Call
@@ -19,7 +20,8 @@ class AlteredCall(Call):
                  headers=UNCHANGED, as_=UNCHANGED, query=UNCHANGED, title=None,
                  description=None, extra_environ=UNCHANGED,
                  response=None, authorization=UNCHANGED,
-                 body=UNCHANGED, https=UNCHANGED, rawurl=UNCHANGED):
+                 body=UNCHANGED, https=UNCHANGED, rawurl=UNCHANGED,
+                 cookies=UNCHANGED):
         self.base_call = base_call
         self.diff = {}
         super().__init__(
@@ -59,6 +61,7 @@ class AlteredCall(Call):
         self.content_type = content_type
         self.authorization = authorization
         self.headers = headers
+        self.cookies = cookies
         self.as_ = as_
         self.https = https
 
@@ -143,6 +146,21 @@ class AlteredCall(Call):
     @headers.deleter
     def headers(self):
         del self.diff['headers']
+
+    @property
+    def cookies(self):
+        return self.diff.get('cookies', self.base_call.cookies)
+
+    @cookies.setter
+    def cookies(self, value):
+        self.update_diff(
+            'cookies',
+            value if value is UNCHANGED else CookieSet(value)
+        )
+
+    @cookies.deleter
+    def cookies(self):
+        del self.diff['cookies']
 
     @property
     def query(self):

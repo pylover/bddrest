@@ -1,4 +1,5 @@
 from ..headerset import HeaderSet
+from ..cookieset import CookieSet
 from ..helpers import querystring_parse
 from ..exceptions import rawurl_exc
 
@@ -8,6 +9,7 @@ from .call import Call
 class FirstCall(Call):
 
     _headers = None
+    _cookies = None
     _rawurl = None
     _path = None
     _path_parameters = None
@@ -30,7 +32,7 @@ class FirstCall(Call):
                  json=None, multipart=None, content_type=None, headers=None,
                  as_=None, query=None, title=None, description=None,
                  extra_environ=None, response=None, authorization=None,
-                 body=None, https=False, rawurl=None):
+                 body=None, https=False, rawurl=None, cookies=None):
 
         super().__init__(
             title=title,
@@ -66,6 +68,7 @@ class FirstCall(Call):
         self.content_type = content_type
         self.authorization = authorization
         self.headers = headers
+        self.cookies = cookies
         self.as_ = as_
         self.extra_environ = extra_environ
         self.https = https
@@ -116,6 +119,14 @@ class FirstCall(Call):
     @headers.setter
     def headers(self, value):
         self._headers = HeaderSet(value) if value is not None else None
+
+    @property
+    def cookies(self):
+        return self._cookies
+
+    @cookies.setter
+    def cookies(self, value):
+        self._cookies = CookieSet(value) if value is not None else None
 
     @property
     def query(self):

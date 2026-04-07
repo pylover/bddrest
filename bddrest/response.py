@@ -2,6 +2,7 @@ import json as jsonlib
 import re
 
 from .headerset import HeaderSet
+from .cookieset import CookieSet
 
 
 CONTENT_TYPE_PATTERN = re.compile(r'(\w+/\w+)(?:;\s?charset=(.+))?', re.I)
@@ -66,8 +67,24 @@ class Response:
 
     def __init__(self, status, headers, body=None, json=None):
         self.status = HTTPStatus(status)
-        # self.cookies = CookieSet()
-        self.headers = HeaderSet(headers)
+        self.cookies = CookieSet()
+        headers_ = []
+        for h in headers:
+            if isinstance(h, str):
+                if h.lower().startswith('set-cookie'):
+                    self.cookies.append(h)
+                    continue
+
+                headers_.append(h)
+            else:
+                k, v = h
+                if k.lower() == 'set-cookie':
+                    self.cookies.append(v)
+                    continue
+
+                headers_.append((k, v))
+
+        self.headers = HeaderSet(headers_)
         if json:
             self.body = jsonlib.dumps(json).encode()
         elif body is not None:
