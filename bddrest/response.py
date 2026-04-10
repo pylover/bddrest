@@ -79,7 +79,7 @@ class Response:
             else:
                 k, v = h
                 if k.lower() == 'set-cookie':
-                    self.cookies.append(v.split('='))
+                    self.cookies.append(v.split('=', 1))
                     continue
 
                 headers_.append((k, v))
